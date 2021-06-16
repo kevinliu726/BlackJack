@@ -58,74 +58,72 @@ const Login = () => {
         <Grid item xs={12} sm={6} style={{ background: "#000000" }}>
           <img src="https://i.imgur.com/QLvVzn4.jpg" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </Grid>
-        {
-          <Grid
-            container
-            item
-            xs={12}
-            sm={6}
-            style={{ padding: 10, background: `radial-gradient(circle at center,#003300 0,black 70%)` }}
-            direction="column"
-            justify="space-between"
-            alignItems="center"
-          >
-            <div />
-            <div style={{ display: "flex", flexDirection: "column", padding: 30, borderRadius: "10%" }}>
-              <FormControl className={clsx(classes.root)} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-username">Username</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-username"
-                  type="text"
-                  autoComplete="off"
-                  value={username}
-                  onKeyPress={(event) => {
-                    handleEnter(event, "username");
-                  }}
-                  onChange={(event) => {
-                    setUsername(event.target.value);
-                  }}
-                  labelWidth={70}
-                />
-              </FormControl>
-              <FormControl className={clsx(classes.root)} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="off"
-                  value={password}
-                  onKeyPress={(event) => {
-                    handleEnter(event, "password");
-                  }}
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={(event) => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  labelWidth={70}
-                />
-              </FormControl>
-              <div style={{ height: 10 }} />
-              <Button id="login_btn" variant="contained" onClick={postData}>
-                Log in
-              </Button>
-              <div style={{ height: 10 }} />
-              <Button id="login_btn" variant="contained" onClick={postData}>
-                Register
-              </Button>
-            </div>
-            <div />
-          </Grid>
-        }
+        <Grid
+          container
+          item
+          xs={12}
+          sm={6}
+          style={{ padding: 10, background: `radial-gradient(circle at center,#003300 0,black 70%)` }}
+          direction="column"
+          justify="space-between"
+          alignItems="center"
+        >
+          <div />
+          <div style={{ display: "flex", flexDirection: "column", padding: 30, borderRadius: "10%" }}>
+            <FormControl className={clsx(classes.root)} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-username">Username</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-username"
+                type="text"
+                autoComplete="off"
+                value={username}
+                onKeyPress={(event) => {
+                  handleEnter(event, "username");
+                }}
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                }}
+                labelWidth={70}
+              />
+            </FormControl>
+            <FormControl className={clsx(classes.root)} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="off"
+                value={password}
+                onKeyPress={(event) => {
+                  handleEnter(event, "password");
+                }}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={(event) => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+              />
+            </FormControl>
+            <div style={{ height: 10 }} />
+            <Button id="login_btn" variant="contained" onClick={postData}>
+              Log in
+            </Button>
+            <div style={{ height: 10 }} />
+            <Button id="login_btn" variant="contained" onClick={postData}>
+              Register
+            </Button>
+          </div>
+          <div />
+        </Grid>
       </Grid>
     </div>
   );
