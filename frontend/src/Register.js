@@ -48,21 +48,26 @@ const Register = () => {
   };
 
   return (
-    <Grid container style={{ minHeight: "100vh", minWidth: "100vh" }}>
-      <Grid item xs={12} sm={6} style={{ background: "#000000" }}>
-        <img src="https://i.imgur.com/QLvVzn4.jpg" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      </Grid>
-      <Grid
-        container
-        item
-        xs={12}
-        sm={6}
-        style={{ padding: 10, background: `radial-gradient(circle at center,#003300 0,black 70%)` }}
-        direction="column"
-        justify="space-evenly"
-        alignItems="center"
+    <div style={{ display: "flex", flexDirection: "row", minHeight: "100vh", minWidth: "100vh" }}>
+      <div style={{ display: "flex", width: "50%", justifyContent: "center", background: "#000000" }}>
+        <img
+          src="https://i.imgur.com/68CxQO4.jpg"
+          style={{ display: "flex", marginBottom: "25%", marginLeft: "20%", width: "80%", objectFit: "contain" }}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 10,
+          width: "50%",
+          background: `radial-gradient(circle at center,#003300 0,black 70%)`,
+        }}
       >
-        <div style={{ display: "flex", flexDirection: "column", padding: 30, borderRadius: "10%" }}>
+        <img src="https://i.imgur.com/WnjOzIH.png" style={{ display: "flex" }}></img>
+        <div style={{ display: "flex", flexDirection: "column", borderRadius: "10%" }}>
           <h1 style={{ color: "lightgray", textAlign: "center" }}>Register</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "#d5d5d5", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
@@ -146,8 +151,8 @@ const Register = () => {
           </Button>
         </div>
         <div />
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 
