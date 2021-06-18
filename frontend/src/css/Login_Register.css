@@ -1,0 +1,28 @@
+/********************/
+/* Login & Register */
+/********************/
+
+#login_btn,
+#register_btn {
+  margin-left: 8px;
+  margin-right: 8px;
+  background-color: #717171;
+  color: white;
+}
+
+#login_btn:hover,
+#register_btn:hover {
+  background-color: #d5d5d5;
+  color: white;
+}
+
+#join_btn,
+#back_to_login_btn {
+  background-color: transparent;
+  color: #888888;
+}
+#join_btn:hover,
+#back_to_login_btn:hover {
+  background-color: transparent;
+  color: #bbbbbb;
+}

@@ -12,7 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
 import "./css/Login_Register.css";
 
-const Login = () => {
+const Register = () => {
   const classes = makeStyles({
     root: {
       display: "flex",
@@ -32,7 +32,9 @@ const Login = () => {
   })();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const handleEnter = (e, now) => {
     if (e.key === "Enter") {
       if (now === "username") {
@@ -47,11 +49,8 @@ const Login = () => {
 
   return (
     <Grid container style={{ minHeight: "100vh", minWidth: "100vh" }}>
-      <Grid item xs={12} sm={6} style={{ display: "flex", justifyContent: "center", background: "#000000" }}>
-        <img
-          src="https://i.imgur.com/68CxQO4.jpg"
-          style={{ display: "flex", marginBottom: "25%", marginLeft: "20%", width: "80%", objectFit: "contain" }}
-        />
+      <Grid item xs={12} sm={6} style={{ background: "#000000" }}>
+        <img src="https://i.imgur.com/QLvVzn4.jpg" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </Grid>
       <Grid
         container
@@ -63,10 +62,9 @@ const Login = () => {
         justify="space-evenly"
         alignItems="center"
       >
-        <img src="https://i.imgur.com/Embdpbt.png"></img>
         <div style={{ display: "flex", flexDirection: "column", padding: 30, borderRadius: "10%" }}>
-          <h1 style={{ color: "#d5d5d5", textAlign: "center" }}>Login</h1>
-          <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "100%", textAlign: "center" }} />
+          <h1 style={{ color: "lightgray", textAlign: "center" }}>Register</h1>
+          <Divider variant="fullWidth" style={{ backgroundColor: "#d5d5d5", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
           <FormControl className={clsx(classes.root)} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-username">Username</InputLabel>
@@ -101,7 +99,7 @@ const Login = () => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={(event) => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword(!showPassword)}
                     edge="end"
                   >
                     {showPassword ? <Visibility /> : <VisibilityOff />}
@@ -111,13 +109,40 @@ const Login = () => {
               labelWidth={70}
             />
           </FormControl>
+          <FormControl className={clsx(classes.root)} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showConfirmPassword ? "text" : "password"}
+              autoComplete="off"
+              value={confirmPassword}
+              onKeyPress={(event) => {
+                handleEnter(event, "password");
+              }}
+              onChange={(event) => {
+                setConfirmPassword(event.target.value);
+              }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              labelWidth={132}
+            />
+          </FormControl>
           <div style={{ height: 10 }} />
-          <Button id="login_btn" variant="contained" onClick={() => (window.location.href = "/Menu")}>
-            Log in
+          <Button id="register_btn" variant="contained" onClick={() => (window.location.href = "/Menu")}>
+            Register
           </Button>
           <div style={{ height: 10 }} />
-          <Button id="join_btn" onClick={() => (window.location.href = "/Register")}>
-            No account? Create One
+          <Button id="back_to_login_btn" onClick={() => (window.location.href = "/Login")}>
+            Back To Login
           </Button>
         </div>
         <div />
@@ -126,4 +151,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
