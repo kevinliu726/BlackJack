@@ -1,16 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import Room from "./Room";
+import { EnterPasswordModal, CreateRoomModal } from "./Components/Modal";
 import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Button } from "@material-ui/core";
 import "./css/Lobby.css";
 
 const Lobby = ({ isPublic, room_type }) => {
+  const [username, setUsername] = useState("Kevin");
+  const [openEnterPassword, setOpenEnterPassword] = useState(false);
+  const [openCreateRoom, setOpenCreateRoom] = useState(false);
   const goBackToMenu = () => {
     window.location.href = "/Menu";
   };
+
+  const handleOpenCreate = () => {
+    setOpenCreateRoom(true);
+  };
+
+  const handleOpenEnterPassword = () => {
+    setOpenEnterPassword(true);
+  };
+
+  const handleCloseCreate = () => {
+    setOpenCreateRoom(false);
+  };
+
+  const handleClosePassword = () => {
+    setOpenEnterPassword(false);
+  };
+
+  const handleEnter = () => {
+    console.log("Enter Room");
+    setOpenEnterPassword(false);
+    window.location.href = "/Menu";
+  };
+
+  const handleCreate = () => {
+    console.log("Create Room");
+    setOpenCreateRoom(false);
+    window.location.href = "/Menu";
+  };
+
+  const goToGame = (room_id, isPublic) => {
+    if (isPublic) {
+      window.location.href = `/Game/${room_id}/${username}`;
+    } else {
+      handleOpenEnterPassword();
+    }
+  };
+
   return (
     <div style={{ position: "relative" }}>
+      <EnterPasswordModal open={openEnterPassword} handleClose={handleClosePassword} handleEnter={handleEnter} />
+      <CreateRoomModal open={openCreateRoom} handleClose={handleCloseCreate} handleEnter={handleCreate} />
       <Button
         style={{
           display: "flex",
@@ -29,7 +72,7 @@ const Lobby = ({ isPublic, room_type }) => {
         <div className="lobby_nav_bar">
           <Button
             style={{
-              marginLeft: "4.5%",
+              marginLeft: "5.5%",
               display: "flex",
               borderRadius: 20,
               width: "7%",
@@ -38,30 +81,39 @@ const Lobby = ({ isPublic, room_type }) => {
               fontWeight: "Bold",
               backgroundColor: "#d4af37",
             }}
+            onClick={() => handleOpenCreate()}
           >
             create
           </Button>
           <div className="lobby_tag">{room_type}</div>
-          <Button style={{ display: "flex", marginRight: "4%", width: "5%", height: "50%", color: "#d4af37" }}>
+          <Button style={{ display: "flex", marginRight: "4%", width: "5%", height: "80%", color: "#d4af37" }}>
             <SearchIcon style={{ width: "100%", height: "100%" }} />
           </Button>
         </div>
         <div className="lobby_cascade">
-          <Room id={1} key={1} name={"Test1"} colab={11}></Room>
-          <Room id={2} key={2} name={"Test2"} colab={2}></Room>
-          <Room id={3} key={3} name={"Test3"} colab={37}></Room>
-          <Room id={4} key={1} name={"Test4"} colab={11}></Room>
-          <Room id={5} key={2} name={"Test5"} colab={2}></Room>
-          <Room id={6} key={3} name={"Test6"} colab={37}></Room>
-          <Room id={7} key={1} name={"Test7"} colab={11}></Room>
-          <Room id={8} key={2} name={"Test8"} colab={2}></Room>
-          <Room id={9} key={3} name={"Test9"} colab={37}></Room>
-          <Room id={10} key={1} name={"Test10"} colab={11}></Room>
-          <Room id={11} key={2} name={"Test11"} colab={2}></Room>
-          <Room id={12} key={3} name={"Test12"} colab={37}></Room>
-          <Room id={13} key={3} name={"Test13"} colab={37}></Room>
-          <Room id={14} key={3} name={"Test14"} colab={37}></Room>
-          <Room id={14} key={3} name={"Test14"} colab={37} fake={true}></Room>
+          <Room
+            id={1}
+            key={1}
+            name={"Test1"}
+            owner={"Kevin"}
+            peopleLimit={12}
+            betLimit={500}
+            goToGame={() => goToGame(333, isPublic)}
+          ></Room>
+          <Room id={2} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={3} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={4} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={5} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={6} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={7} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={8} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={9} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={10} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={11} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={12} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={13} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={14} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
+          <Room id={15} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500} fake={true}></Room>
         </div>
       </div>
     </div>

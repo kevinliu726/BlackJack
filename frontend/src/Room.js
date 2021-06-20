@@ -6,33 +6,36 @@ import "./css/Room.css";
 
 class Room extends Component {
   render() {
-    const { id, key, name, colab, fake = false } = this.props;
+    const { id, key, name, owner, peopleLimit, betLimit, goToGame, fake = false } = this.props;
     return (
-      <div id={id} key={key} className={fake ? "room_container empty" : "room_container"}>
+      <button id={id} key={key} className={fake ? "room_container empty" : "room_container"} onClick={goToGame}>
         <img
           src="https://i.imgur.com/VaT2IrY.png"
           style={{
             marginLeft: "2%",
-            width: "150%",
-            height: "125%",
-            objectFit: "contain",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
             alignSelf: "center",
             opacity: 0.1,
           }}
         ></img>
         <div className="room_info">
           <div style={{ display: "flex", color: "white", fontSize: 18, fontWeight: "bold" }}>{name}</div>
-          <div>
+          <div className="info">
             <AccountCircleIcon style={{ color: "white" }}></AccountCircleIcon>
+            <div className="info_text">{owner}</div>
           </div>
-          <div>
+          <div className="info">
             <GroupIcon style={{ color: "white" }}></GroupIcon>
+            <div className="info_text">{peopleLimit + " people"}</div>
           </div>
-          <div>
+          <div className="info">
             <AttachMoneyIcon style={{ color: "white" }}></AttachMoneyIcon>
+            <div className="info_text">{betLimit}</div>
           </div>
         </div>
-      </div>
+      </button>
     );
   }
 }

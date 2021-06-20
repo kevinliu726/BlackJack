@@ -4,6 +4,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Menu from "./Menu";
 import Room from "./Lobby";
+import Game from "./Game";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 function App() {
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route path="/Lobby/Public" exact>
           <Room isPublic={true} room_type={"PUBLIC"} />
+        </Route>
+        <Route path="/Game/:hash/:username" exact={true}>
+          <Login />
         </Route>
       </Switch>
     </Router>

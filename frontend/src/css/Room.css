@@ -5,7 +5,7 @@
   min-height: 170px;
   min-width: 300px;
   height: 25%;
-  width: 27%;
+  width: 25%;
   margin: 1.5%;
   border: solid;
   border-color: white;
@@ -29,4 +29,16 @@
   height: 90%;
   flex-direction: column;
   justify-content: space-evenly;
+}
+.info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.info_text {
+  margin-top: 1%;
+  padding-left: 5%;
+  font-size: 18px;
+  color: whitesmoke;
+  align-self: center;
 }
