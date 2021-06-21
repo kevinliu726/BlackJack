@@ -64,9 +64,9 @@ const Login = () => {
           background: `radial-gradient(circle at center,#003300 0,black 70%)`,
         }}
       >
-        <img src="https://i.imgur.com/WnjOzIH.png" style={{ display: "flex" }}></img>
+        <img src="https://i.imgur.com/s3ekBEP.png" style={{ display: "flex", marginLeft: "1%" }}></img>
         <div style={{ display: "flex", flexDirection: "column", borderRadius: "10%" }}>
-          <h1 style={{ color: "#d5d5d5", textAlign: "center" }}>Login</h1>
+          <h1 style={{ fontFamily: "Georgia", color: "#d5d5d5", textAlign: "center" }}>Login</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
           <FormControl className={clsx(classes.root)} variant="outlined">
