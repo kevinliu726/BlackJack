@@ -8,6 +8,7 @@ import "./css/Lobby.css";
 
 const Lobby = ({ isPublic, room_type }) => {
   const [username, setUsername] = useState("Kevin");
+  const [enterRoomID, setEnterRoomID] = useState("");
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
   const goBackToMenu = () => {
@@ -30,30 +31,35 @@ const Lobby = ({ isPublic, room_type }) => {
     setOpenEnterPassword(false);
   };
 
-  const handleEnter = () => {
+  const handleEnter = (e) => {
     console.log("Enter Room");
     setOpenEnterPassword(false);
-    window.location.href = "/Menu";
+    window.location.href = `/Game/${enterRoomID}/${username}`;
   };
 
-  const handleCreate = () => {
+  const handleCreate = (e) => {
     console.log("Create Room");
     setOpenCreateRoom(false);
-    window.location.href = "/Menu";
+    window.location.href = `/Game/${e}/${username}`;
   };
 
   const goToGame = (room_id, isPublic) => {
     if (isPublic) {
       window.location.href = `/Game/${room_id}/${username}`;
     } else {
+      setEnterRoomID(room_id);
       handleOpenEnterPassword();
     }
   };
 
   return (
     <div style={{ position: "relative" }}>
-      <EnterPasswordModal open={openEnterPassword} handleClose={handleClosePassword} handleEnter={handleEnter} />
-      <CreateRoomModal open={openCreateRoom} handleClose={handleCloseCreate} handleEnter={handleCreate} />
+      <EnterPasswordModal
+        open={openEnterPassword}
+        handleClose={handleClosePassword}
+        handleEnter={() => handleEnter()}
+      />
+      <CreateRoomModal open={openCreateRoom} handleClose={handleCloseCreate} handleEnter={() => handleCreate} />
       <Button
         style={{
           display: "flex",

@@ -22,7 +22,7 @@ function App() {
           <Room isPublic={true} room_type={"PUBLIC"} />
         </Route>
         <Route path="/Game/:hash/:username" exact={true}>
-          <Login />
+          <Game />
         </Route>
       </Switch>
     </Router>

@@ -10,6 +10,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import "./css/Login_Register.css";
 
 const Login = () => {
@@ -32,16 +33,32 @@ const Login = () => {
   })();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUError] = useState(false);
+  const [passwordError, setPError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const handleEnter = (e, now) => {
-    if (e.key === "Enter") {
-      if (now === "username") {
-        let next = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[1].childNodes[0];
-        next.focus();
-      } else if (now === "password") {
-        let next = e.target.parentNode.parentNode.parentNode.childNodes[3];
-        next.click();
-      }
+  const passwordOnChange = (event) => {
+    if (event.target.value == "") {
+      setPError(true);
+    } else {
+      setPError(false);
+    }
+    setPassword(event.target.value);
+  };
+  const usernameOnChange = (event) => {
+    if (event.target.value == "") {
+      setUError(true);
+    } else {
+      setUError(false);
+    }
+    setUsername(event.target.value);
+  };
+  const goToMenu = () => {
+    if (password != "" && username != "") {
+      //Check Valid Username and Password
+      window.location.href = "/Menu";
+    } else {
+      setUError(username == "");
+      setPError(password == "");
     }
   };
 
@@ -64,9 +81,9 @@ const Login = () => {
           background: `radial-gradient(circle at center,#003300 0,black 70%)`,
         }}
       >
-        <img src="https://i.imgur.com/WnjOzIH.png" style={{ display: "flex" }}></img>
+        <img src="https://i.imgur.com/s3ekBEP.png" style={{ display: "flex", marginLeft: "1%" }}></img>
         <div style={{ display: "flex", flexDirection: "column", borderRadius: "10%" }}>
-          <h1 style={{ color: "#d5d5d5", textAlign: "center" }}>Login</h1>
+          <h1 style={{ fontFamily: "Georgia", color: "#d5d5d5", textAlign: "center" }}>Login</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
           <FormControl className={clsx(classes.root)} variant="outlined">
@@ -75,15 +92,13 @@ const Login = () => {
               id="outlined-adornment-username"
               type="text"
               autoComplete="off"
+              required="required"
               value={username}
-              onKeyPress={(event) => {
-                handleEnter(event, "username");
-              }}
-              onChange={(event) => {
-                setUsername(event.target.value);
-              }}
+              error={usernameError}
+              onChange={usernameOnChange}
               labelWidth={70}
             />
+            {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
           </FormControl>
           <FormControl className={clsx(classes.root)} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -91,13 +106,10 @@ const Login = () => {
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
               autoComplete="off"
+              required={true}
               value={password}
-              onKeyPress={(event) => {
-                handleEnter(event, "password");
-              }}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
+              error={passwordError}
+              onChange={passwordOnChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -111,9 +123,10 @@ const Login = () => {
               }
               labelWidth={70}
             />
+            {passwordError && <FormHelperText style={{ color: "red" }}>Password can't be empty</FormHelperText>}
           </FormControl>
           <div style={{ height: 10 }} />
-          <Button id="login_btn" variant="contained" onClick={() => (window.location.href = "/Menu")}>
+          <Button id="login_btn" variant="contained" onClick={() => goToMenu()}>
             Log in
           </Button>
           <div style={{ height: 10 }} />
