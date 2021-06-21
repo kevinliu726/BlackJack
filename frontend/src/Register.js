@@ -11,6 +11,9 @@ import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "./css/Login_Register.css";
+import { REGISTER } from "./graphql/Mutation";
+import { NAME_EXIST } from "./graphql/Query";
+import { useMutation, useQuery } from "@apollo/client";
 
 const Register = () => {
   const classes = makeStyles({
@@ -39,6 +42,14 @@ const Register = () => {
   const [matchError, setMError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [register, {data: registerData}] = useMutation(REGISTER);
+  const {loading, data: nameExistData} = useQuery(NAME_EXIST, {variables: {username}});
+
+  if(registerData && registerData.register){
+    window.location.href = "/Menu";
+  }
+
   const usernameOnChange = (event) => {
     if (event.target.value === "") {
       setUError(true);
@@ -69,7 +80,8 @@ const Register = () => {
       if (password !== confirmPassword) {
         setMError(true);
       } else {
-        window.location.href = "/Menu";
+        register({variables: {username, password}});
+        // window.location.href = "/Menu";
       }
     } else {
       setUError(username === "");
@@ -114,6 +126,7 @@ const Register = () => {
               labelWidth={70}
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
+            {(registerData && registerData.register === false) && <FormHelperText style={{ color: "red" }}>The username is used by other user already.</FormHelperText>}
           </FormControl>
           <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>

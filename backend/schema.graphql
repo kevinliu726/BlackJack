@@ -1,0 +1,8 @@
+type Query {
+    nameExist(name: String): Boolean
+    isLogIn(name: String, password: String): Boolean
+}
+
+type Mutation {
+    register(name: String, password: String): Boolean
+}
