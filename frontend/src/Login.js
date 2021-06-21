@@ -12,6 +12,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "./css/Login_Register.css";
+import { LOG_IN } from "./graphql/Query";
+import { useLazyQuery } from "@apollo/client";
 
 const Login = () => {
   const classes = makeStyles({
@@ -36,6 +38,14 @@ const Login = () => {
   const [usernameError, setUError] = useState(false);
   const [passwordError, setPError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [isLogIn, {data, loading}] = useLazyQuery(LOG_IN);
+
+
+  if(data && data.isLogIn) {
+    window.location.href = "/Menu";
+  }
+
   const passwordOnChange = (event) => {
     if (event.target.value == "") {
       setPError(true);
@@ -54,8 +64,7 @@ const Login = () => {
   };
   const goToMenu = () => {
     if (password != "" && username != "") {
-      //Check Valid Username and Password
-      window.location.href = "/Menu";
+      isLogIn({variables: {username, password}});
     } else {
       setUError(username == "");
       setPError(password == "");
@@ -96,6 +105,7 @@ const Login = () => {
               value={username}
               error={usernameError}
               onChange={usernameOnChange}
+              onBlur={() => setUError(false)}
               labelWidth={70}
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
@@ -110,6 +120,7 @@ const Login = () => {
               value={password}
               error={passwordError}
               onChange={passwordOnChange}
+              onBlur={() => setPError(false)}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -124,6 +135,7 @@ const Login = () => {
               labelWidth={70}
             />
             {passwordError && <FormHelperText style={{ color: "red" }}>Password can't be empty</FormHelperText>}
+            {(data && data.isLogIn === false) && <FormHelperText style={{ color: "red" }}>Wrong username or password.</FormHelperText>}
           </FormControl>
           <div style={{ height: 10 }} />
           <Button id="login_btn" variant="contained" onClick={() => goToMenu()}>
