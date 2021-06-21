@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
+import SettingModal from "./Components/SettingModal";
 import { Button } from "@material-ui/core";
 import "./css/Menu.css";
+import HistoryModal from "./Components/HistoryModal";
 
 const Menu = () => {
+  const [openSetting, setOpenSetting] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
+  const handleOpenSetting = () => {
+    setOpenSetting(true);
+  };
+  const handleOpenHistory = () => {
+    setOpenHistory(true);
+  };
+
+  const handleCloseSetting = () => {
+    setOpenSetting(false);
+  };
+  const handleCloseHistory = () => {
+    setOpenHistory(false);
+  };
+  const handleSubmit = (e) => {
+    console.log("Submit");
+    setOpenSetting(false);
+  };
+
   const postData = () => {
     console.log("Fuck");
   };
@@ -41,15 +63,17 @@ const Menu = () => {
             height: "8%",
           }}
         >
-          <Button id="setting" variant="contained" onClick={postData}>
+          <Button id="setting" variant="contained" onClick={() => handleOpenSetting()}>
             Setting
           </Button>
-          <Button id="history" variant="contained" onClick={postData}>
+          <Button id="history" variant="contained" onClick={() => handleOpenHistory()}>
             History
           </Button>
           <Button id="rules" variant="contained" onClick={postData}>
             Rules
           </Button>
+          <SettingModal open={openSetting} handleClose={handleCloseSetting} handleSubmit={() => handleSubmit} />
+          <HistoryModal open={openHistory} handleClose={handleCloseHistory} />
         </div>
       </div>
       <Button id="right_btn" variant="contained" onClick={() => goToLobby(false)}>

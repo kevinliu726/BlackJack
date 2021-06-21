@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Room from "./Room";
-import { EnterPasswordModal, CreateRoomModal } from "./Components/Modal";
+import EnterPasswordModal from "./Components/EnterPasswordModal";
+import CreateRoomModal from "./Components/CreateRoomModal";
 import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import "./css/Lobby.css";
 
 const Lobby = ({ isPublic, room_type }) => {
@@ -11,6 +12,7 @@ const Lobby = ({ isPublic, room_type }) => {
   const [enterRoomID, setEnterRoomID] = useState("");
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
+  const [openSearchRoom, setOpenSearchRoom] = useState(false);
   const goBackToMenu = () => {
     window.location.href = "/Menu";
   };
@@ -43,6 +45,12 @@ const Lobby = ({ isPublic, room_type }) => {
     window.location.href = `/Game/${e}/${username}`;
   };
 
+  const searchRoomClick = () => {
+    setOpenSearchRoom(true);
+  };
+  const searchRoomLeave = () => {
+    setOpenSearchRoom(false);
+  };
   const goToGame = (room_id, isPublic) => {
     if (isPublic) {
       window.location.href = `/Game/${room_id}/${username}`;
@@ -59,7 +67,12 @@ const Lobby = ({ isPublic, room_type }) => {
         handleClose={handleClosePassword}
         handleEnter={() => handleEnter()}
       />
-      <CreateRoomModal open={openCreateRoom} handleClose={handleCloseCreate} handleEnter={() => handleCreate} />
+      <CreateRoomModal
+        open={openCreateRoom}
+        isPublic={isPublic}
+        handleClose={handleCloseCreate}
+        handleEnter={() => handleCreate()}
+      />
       <Button
         style={{
           display: "flex",
@@ -92,9 +105,31 @@ const Lobby = ({ isPublic, room_type }) => {
             create
           </Button>
           <div className="lobby_tag">{room_type}</div>
-          <Button style={{ display: "flex", marginRight: "4%", width: "5%", height: "80%", color: "#d4af37" }}>
-            <SearchIcon style={{ width: "100%", height: "100%" }} />
-          </Button>
+          {!openSearchRoom && (
+            <Button
+              onClick={() => searchRoomClick()}
+              style={{ display: "flex", marginRight: "4%", width: "5%", height: "80%", color: "#d4af37" }}
+            >
+              <SearchIcon style={{ width: "100%", height: "100%" }} />
+            </Button>
+          )}
+          {openSearchRoom && (
+            <TextField
+              autoFocus="true"
+              label="Search"
+              variant="filled"
+              onBlur={() => searchRoomLeave()}
+              style={{
+                background: "#d4af37",
+                color: "#d4af37",
+                border: "solid",
+                height: "80%",
+                borderRadius: "20px",
+                marginRight: "4%",
+                width: "10%",
+              }}
+            ></TextField>
+          )}
         </div>
         <div className="lobby_cascade">
           <Room

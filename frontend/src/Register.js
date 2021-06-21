@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import clsx from "clsx";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -41,7 +40,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const usernameOnChange = (event) => {
-    if (event.target.value == "") {
+    if (event.target.value === "") {
       setUError(true);
     } else {
       setUError(false);
@@ -49,7 +48,7 @@ const Register = () => {
     setUsername(event.target.value);
   };
   const passwordOnChange = (event) => {
-    if (event.target.value == "") {
+    if (event.target.value === "") {
       setPError(true);
     } else {
       setPError(false);
@@ -58,7 +57,7 @@ const Register = () => {
   };
   const confirmPasswordOnChange = (event) => {
     setMError(false);
-    if (event.target.value == "") {
+    if (event.target.value === "") {
       setCPError(true);
     } else {
       setCPError(false);
@@ -66,16 +65,16 @@ const Register = () => {
     setConfirmPassword(event.target.value);
   };
   const goToMenu = () => {
-    if (password != "" && username != "" && confirmPassword != "") {
-      if (password != confirmPassword) {
+    if (password !== "" && username !== "" && confirmPassword !== "") {
+      if (password !== confirmPassword) {
         setMError(true);
       } else {
         window.location.href = "/Menu";
       }
     } else {
-      setUError(username == "");
-      setPError(password == "");
-      setCPError(password == "");
+      setUError(username === "");
+      setPError(password === "");
+      setCPError(password === "");
     }
   };
 
@@ -103,7 +102,7 @@ const Register = () => {
           <h1 style={{ fontFamily: "Georgia", color: "lightgray", textAlign: "center" }}>Register</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "#d5d5d5", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
-          <FormControl className={clsx(classes.root)} variant="outlined">
+          <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-username">Username</InputLabel>
             <OutlinedInput
               id="outlined-adornment-username"
@@ -116,7 +115,7 @@ const Register = () => {
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
           </FormControl>
-          <FormControl className={clsx(classes.root)} variant="outlined">
+          <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
@@ -140,7 +139,7 @@ const Register = () => {
             />
             {passwordError && <FormHelperText style={{ color: "red" }}>Password can't be empty</FormHelperText>}
           </FormControl>
-          <FormControl className={clsx(classes.root)} variant="outlined">
+          <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"

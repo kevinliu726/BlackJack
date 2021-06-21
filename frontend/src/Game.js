@@ -1,6 +1,5 @@
 import Player from "./Components/Player";
 import "./css/Game.css";
-
 const Game = () => {
   return (
     <div

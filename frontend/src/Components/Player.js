@@ -3,7 +3,7 @@ import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 
 const Player = ({ className, state }) => {
   var isWin = true;
-  if (state == "ACTIVE" || state == "TURN") {
+  if (state === "ACTIVE" || state === "TURN") {
     return (
       <div className={className + " " + state}>
         <div className={"info_container"}>
@@ -13,14 +13,14 @@ const Player = ({ className, state }) => {
         </div>
         <div className={"cards"}>
           <img className={"card"} src={require("../cards/back.jpeg").default} alt="cards"></img>
-          <img className={"card" + " rest"} src={require("../cards/2_of_clubs.png").default} alt="cards"></img>
-          <img className={"card" + " rest"} src={require("../cards/jack_of_clubs.png").default} alt="cards"></img>
-          <img className={"card" + " rest"} src={require("../cards/2_of_clubs.png").default} alt="cards"></img>
-          <img className={"card" + " rest"} src={require("../cards/2_of_clubs.png").default} alt="cards"></img>
+          <img className={"card rest"} src={require("../cards/2_of_clubs.png").default} alt="cards"></img>
+          <img className={"card rest"} src={require("../cards/jack_of_clubs.png").default} alt="cards"></img>
+          <img className={"card rest"} src={require("../cards/2_of_clubs.png").default} alt="cards"></img>
+          <img className={"card rest"} src={require("../cards/2_of_clubs.png").default} alt="cards"></img>
         </div>
       </div>
     );
-  } else if (state == "AWAY") {
+  } else if (state === "AWAY") {
     return (
       <div className={className + " " + state}>
         <div className={"icon"}>

@@ -37,7 +37,7 @@ const Login = () => {
   const [passwordError, setPError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const passwordOnChange = (event) => {
-    if (event.target.value == "") {
+    if (event.target.value === "") {
       setPError(true);
     } else {
       setPError(false);
@@ -45,7 +45,7 @@ const Login = () => {
     setPassword(event.target.value);
   };
   const usernameOnChange = (event) => {
-    if (event.target.value == "") {
+    if (event.target.value === "") {
       setUError(true);
     } else {
       setUError(false);
@@ -53,12 +53,12 @@ const Login = () => {
     setUsername(event.target.value);
   };
   const goToMenu = () => {
-    if (password != "" && username != "") {
+    if (password !== "" && username !== "") {
       //Check Valid Username and Password
       window.location.href = "/Menu";
     } else {
-      setUError(username == "");
-      setPError(password == "");
+      setUError(username === "");
+      setPError(password === "");
     }
   };
 
