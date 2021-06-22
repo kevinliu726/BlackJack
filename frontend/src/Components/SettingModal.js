@@ -15,7 +15,7 @@ import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const SettingModal = ({ open, handleClose }) => {
+const SettingModal = ({ open, handleClose, handleEnter }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPError] = useState(false);
@@ -39,7 +39,7 @@ const SettingModal = ({ open, handleClose }) => {
       if (password !== confirmPassword) {
         setMError(true);
       } else {
-        handleClose();
+        handleEnter();
       }
     } else {
       setPError(password === "");

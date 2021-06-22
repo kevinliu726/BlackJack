@@ -42,13 +42,11 @@ const Lobby = ({
   };
 
   const handleEnter = (e) => {
-    console.log("Enter Room");
     setOpenEnterPassword(false);
     window.location.href = `/Game/${enterRoomID}/${username}`;
   };
 
   const handleCreate = (e) => {
-    console.log("Create Room");
     setOpenCreateRoom(false);
     window.location.href = `/Game/${e}/${username}`;
   };
