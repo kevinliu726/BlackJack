@@ -12,8 +12,7 @@ import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "./css/Login_Register.css";
 import { REGISTER } from "./graphql/Mutation";
-import { NAME_EXIST } from "./graphql/Query";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
 const Register = () => {
   const classes = makeStyles({
@@ -43,8 +42,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [register, { data: registerData }] = useMutation(REGISTER);
-  const { loading, data: nameExistData } = useQuery(NAME_EXIST, { variables: { username } });
+  const [register, {data: registerData}] = useMutation(REGISTER);
 
   if (registerData && registerData.register) {
     window.location.href = `/Menu/${username}`;

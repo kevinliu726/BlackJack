@@ -3,6 +3,7 @@ import db from "./db.js";
 import { GraphQLServer, PubSub } from "graphql-yoga";
 import Query from "./resolvers/Query.js";
 import Mutation from "./resolvers/Mutation.js";
+import Subscription from "./resolvers/Subscription.js";
 
 const pubSub = new PubSub();
 
@@ -10,7 +11,8 @@ const server = new GraphQLServer({
   typeDefs: "./schema.graphql",
   resolvers: {
       Query,
-      Mutation
+      Mutation,
+      Subscription
   },
   context: {
     db,

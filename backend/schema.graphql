@@ -1,8 +1,65 @@
 type Query {
     nameExist(name: String): Boolean
     isLogIn(name: String, password: String): Boolean
+    getLobby(roomType: String): [RoomInfo]
 }
 
 type Mutation {
     register(name: String, password: String): Boolean
+    createRoom(roomInfo: CreateRoomInfo): Room
+}
+
+type Subscription {
+    subscribeLobby(roomType: String): RoomInfo
+}
+
+type Room {
+    id: ID
+    roomInfo: RoomInfo
+    players: [Player]
+    deck: [Int]
+    state: String
+    turnPlayerIndex: Int
+}
+
+input CreateRoomInfo{
+    roomType: String
+    password: String
+    name: String
+    host: String
+    decksNumber: Int
+    minBet: Int
+    maxBet: Int
+}
+
+type RoomInfo {
+    roomType: String
+    password: String
+    name: String
+    host: String
+    decksNumber: Int
+    playersNumber: Int
+    minBet: Int
+    maxBet: Int
+}
+
+type Player {
+    name: String
+    index: Int
+    state: String
+    isBank: Boolean
+    isBattled: Boolean
+    canStand: Boolean
+    canHit: Boolean
+    canBlackJack: Boolean
+    cash: Int
+    bet: Int
+    cards: [Card]
+    resultType: String
+    resultTimes: Int
+}
+
+type Card {
+    visible: Boolean
+    number: Int
 }
