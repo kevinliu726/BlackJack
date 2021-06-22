@@ -1,4 +1,4 @@
-import UserModel from "./dbModels/UserModel.js";
+import db from "./db.js";
 import mongoose from "mongoose";
 import "dotenv-defaults/config.js";
 
@@ -19,7 +19,9 @@ function connectMongo() {
 }
 
 const deleteDb = async () => {
-    await UserModel.deleteMany({});
+    await db.UserModel.deleteMany({});
+    await db.PlayerModel.deleteMany({});
+    await db.RoomModel.deleteMany({});
 }
 
 const mongo = {
