@@ -44,8 +44,8 @@ const Register = () => {
 
   const [register, {data: registerData}] = useMutation(REGISTER);
 
-  if(registerData && registerData.register){
-    window.location.href = "/Menu";
+  if (registerData && registerData.register) {
+    window.location.href = `/Menu/${username}`;
   }
 
   const usernameOnChange = (event) => {
@@ -78,7 +78,7 @@ const Register = () => {
       if (password !== confirmPassword) {
         setMError(true);
       } else {
-        register({variables: {username, password}});
+        register({ variables: { username, password } });
         // window.location.href = "/Menu";
       }
     } else {
@@ -124,7 +124,9 @@ const Register = () => {
               labelWidth={70}
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
-            {(registerData && registerData.register === false) && <FormHelperText style={{ color: "red" }}>The username is used by other user already.</FormHelperText>}
+            {registerData && registerData.register === false && (
+              <FormHelperText style={{ color: "red" }}>The username is used by other user already.</FormHelperText>
+            )}
           </FormControl>
           <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>

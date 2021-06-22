@@ -42,7 +42,7 @@ const Login = () => {
   const [isLogIn, { data, loading }] = useLazyQuery(LOG_IN);
 
   if (data && data.isLogIn) {
-    window.location.href = "/Menu";
+    window.location.href = `/Menu/${username}`;
   }
 
   const passwordOnChange = (event) => {
@@ -62,7 +62,7 @@ const Login = () => {
     setUsername(event.target.value);
   };
   const goToMenu = () => {
-    if (password != "" && username != "") {
+    if (password !== "" && username !== "") {
       isLogIn({ variables: { username, password } });
     } else {
       setUError(username === "");

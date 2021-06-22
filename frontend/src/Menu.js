@@ -4,7 +4,11 @@ import { Button } from "@material-ui/core";
 import "./css/Menu.css";
 import HistoryModal from "./Components/HistoryModal";
 
-const Menu = () => {
+const Menu = ({
+  match: {
+    params: { username },
+  },
+}) => {
   const [openSetting, setOpenSetting] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const handleOpenSetting = () => {
@@ -27,13 +31,14 @@ const Menu = () => {
 
   const postData = () => {
     console.log("Fuck");
+    console.log(username);
   };
 
   const goToLobby = (isPublic) => {
     if (isPublic) {
-      window.location.href = "/Lobby/Public";
+      window.location.href = `/Lobby/${"Public"}/${username}`;
     } else {
-      window.location.href = "/Lobby/Private";
+      window.location.href = `/Lobby/${"Private"}/${username}`;
     }
   };
 

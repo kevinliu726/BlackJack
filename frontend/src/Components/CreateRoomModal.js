@@ -5,58 +5,57 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import { FormControl, FormControlLabel, FormLabel } from "@material-ui/core";
 
 const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
-  const [roomName, setRoomName] = useState("");
-  const [roomNameError, setRError] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPError] = useState(false);
-  const [lower, setLower] = useState(1);
-  const [lowerError, setLError] = useState(false);
-  const [upper, setUpper] = useState(Number.MAX_SAFE_INTEGER);
-  const [crossError, setCError] = useState(false);
-  const roomNameOnChange = (event) => {
-    if (event.target.value === "") {
-      setRError(true);
-    } else {
-      setRError(false);
-    }
-    setRoomName(event.target.value);
+  const initValues = {
+    roomName: "",
+    password: "",
+    deckNumber: "1",
+    lower: 1,
+    upper: Number.MAX_SAFE_INTEGER,
   };
-  const passwordOnChange = (event) => {
-    if (event.target.value === "") {
-      setPError(true);
-    } else {
-      setPError(false);
-    }
-    setPassword(event.target.value);
+  const initError = {
+    roomName: false,
+    password: false,
+    lower: false,
+    cross: false,
   };
-  const lowerOnChange = (event) => {
-    setCError(false);
-    if (event.target.value !== "" && event.target.value <= 0) {
-      setLError(true);
+  const [values, setValues] = useState(initValues);
+  const [error, setError] = useState(initError);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    console.log(name, value);
+    if (name === "lower" && value === "") {
+      setValues({
+        ...values,
+        ["lower"]: 1,
+      });
+    } else if (name === "lower" && value === "") {
+      setValues({
+        ...values,
+        ["upper"]: Number.MAX_SAFE_INTEGER,
+      });
     } else {
-      setLError(false);
+      setValues({
+        ...values,
+        [name]: value,
+      });
     }
-    if (event.target.value !== "") {
-      setLower(event.target.value);
-    } else {
-      setLower(1);
-    }
-  };
-  const upperOnChange = (event) => {
-    setCError(false);
-    setUpper(event.target.value);
   };
   const handleCreate = () => {
-    if (roomName !== "" && password !== "" && lower > 0 && lower <= upper) {
+    if (values.roomName !== "" && values.password !== "" && values.lower > 0 && values.lower <= values.upper) {
       //send Data
       handleEnter();
     } else {
-      setRError(roomName === "");
-      setPError(password === "");
-      setLError(lower <= 0);
-      setCError(lower > upper);
+      setError({
+        ["roomName"]: values.roomName === "",
+        ["password"]: values.password === "",
+        ["lower"]: values.lower <= 0,
+        ["cross"]: values.lower > values.upper,
+      });
     }
   };
   return (
@@ -65,44 +64,56 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
       <DialogContent>
         <TextField
           autoFocus
+          autoComplete="off"
           margin="dense"
-          id="Name"
-          error={roomNameError}
+          name="roomName"
+          error={error.roomName}
           label="Room Name"
           type="text"
           fullWidth
-          onChange={roomNameOnChange}
+          onChange={handleInputChange}
         />
         {!isPublic && (
           <TextField
-            autoFocus
+            autoComplete="off"
             margin="dense"
-            id="Password"
-            error={passwordError}
+            name="password"
+            error={error.password}
             label="Password"
             type="text"
             fullWidth
-            onChange={passwordOnChange}
+            onChange={handleInputChange}
           />
         )}
-        <span>Bet</span>
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <TextField
-            label="Lower Bound"
+            autoComplete="off"
+            label="Bet Lower Bound"
+            name="lower"
             type="number"
-            error={lowerError || crossError}
-            onChange={lowerOnChange}
+            error={error.lower || error.cross}
+            onChange={handleInputChange}
             style={{ width: "40%" }}
           ></TextField>
           <span>---</span>
           <TextField
-            label="Upper Bound"
+            autoComplete="off"
+            label="Bet Upper Bound"
+            name="upper"
             type="number"
-            error={crossError}
-            onChange={upperOnChange}
+            error={error.cross}
+            onChange={handleInputChange}
             style={{ width: "40%" }}
           ></TextField>
         </div>
+        <FormControl>
+          <FormLabel>Deck Number</FormLabel>
+          <RadioGroup row name="deckNumber" value={values.deckNumber} onChange={handleInputChange}>
+            <FormControlLabel value="1" control={<Radio />} label="one" />
+            <FormControlLabel value="2" control={<Radio />} label="two" />
+            <FormControlLabel value="3" control={<Radio />} label="three" />
+          </RadioGroup>
+        </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">

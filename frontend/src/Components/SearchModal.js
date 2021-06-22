@@ -9,7 +9,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
+const SearchModal = ({ open, handleClose, handleEnter }) => {
   const classes = makeStyles((theme) => ({
     dialog: {
       display: "flex",
@@ -42,47 +42,45 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
       },
     },
   }))();
-  const [password, setPassword] = useState("");
-  const [passwordError, setPError] = useState(false);
-  const [passwordWrongError, setPWError] = useState(false);
-  const passwordOnChange = (event) => {
-    setPWError(false);
+  const [searchName, setSearchName] = useState("");
+  const [searchNameError, setSNError] = useState(false);
+  const searchNameOnChange = (event) => {
     if (event.target.value === "") {
-      setPError(true);
+      setSNError(true);
     } else {
-      setPError(false);
+      setSNError(false);
     }
-    setPassword(event.target.value);
+    setSearchName(event.target.value);
+  };
+  const handleCancel = () => {
+    setSNError(false);
+    handleClose();
   };
   const checkBeforeEnter = () => {
-    if (password === "") {
-      setPError(true);
+    if (searchName === "") {
+      setSNError(true);
     } else {
-      // check password Right;
-      //Right setPWError(false)
-      //handleEnter
-      //Wrong setPWError(wrong)
       handleEnter();
     }
   };
   return (
-    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Enter Room</DialogTitle>
+    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Search Room</DialogTitle>
       <DialogContent>
         <FormControl className={classes.form} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          <InputLabel htmlFor="search">Room Name</InputLabel>
           <OutlinedInput
-            id="outlined-adornment-password"
+            id="search"
             type="text"
-            error={passwordError}
-            onChange={passwordOnChange}
+            error={searchNameError}
+            onChange={searchNameOnChange}
             autoComplete="off"
-            labelWidth={70}
+            labelWidth={90}
           />
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} style={{ color: "black" }}>
+        <Button onClick={handleCancel} style={{ color: "black" }}>
           Cancel
         </Button>
         <Button onClick={checkBeforeEnter} style={{ color: "#0288d1" }}>
@@ -93,4 +91,4 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
   );
 };
 
-export default EnterPasswordModal;
+export default SearchModal;

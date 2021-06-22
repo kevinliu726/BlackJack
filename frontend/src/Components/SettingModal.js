@@ -75,6 +75,12 @@ const SettingModal = ({ open, handleClose }) => {
       flexDirection: "column",
       justifyContent: "space-evenly",
     },
+    dialogActions: {
+      display: "flex",
+      width: "90%",
+      alignSelf: "center",
+      justifyContent: "space-between",
+    },
     form: {
       display: "flex",
       flexWrap: "wrap",
@@ -150,14 +156,11 @@ const SettingModal = ({ open, handleClose }) => {
           {matchError && <FormHelperText style={{ color: "red" }}>Doesn't Match with Password</FormHelperText>}
         </FormControl>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleLogout()} color="primary">
-          Logout
-        </Button>
-        <Button onClick={handleClose} color="primary">
+      <DialogActions className={classes.dialogActions}>
+        <Button onClick={handleClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={() => handleSubmit()} color="primary">
+        <Button onClick={() => handleSubmit()} style={{ color: "#03a9f4" }}>
           Submit
         </Button>
       </DialogActions>
