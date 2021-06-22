@@ -1,11 +1,16 @@
 .TURN {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
   background: white;
   box-shadow: 0 0 30px #9ecaed;
 }
 
 .ACTIVE {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  justify-content: space-evenly;
   color: white;
   background: transparent;
   border: solid;
@@ -14,6 +19,7 @@
 }
 
 .UNSEATED {
+  display: flex;
   background: transparent;
   border: dashed;
   border-width: 2px;
@@ -27,6 +33,8 @@
 }
 
 .AWAY {
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   background: rgb(172, 169, 169);
 }
@@ -44,37 +52,42 @@
   display: flex;
   height: 100%;
   width: 15%;
+  border-radius: 10px;
 }
 
 .info_container {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  flex-direction: row;
+  align-self: center;
+  justify-content: space-between;
   border-radius: 15px;
-  width: 30%;
-  height: 100%;
+  width: 90%;
+  height: 10%;
 }
 .info_name {
+  width: 50%;
   font-family: Georgia;
   font-weight: bold;
   font: 20px;
-  width: 100%;
-  margin-top: 5%;
-  margin-left: 7%;
+}
+.dealer.info_container.info_name {
+  font-family: Georgia;
+  font-weight: bold;
+  font: 50px;
 }
 .info_money_lose {
+  width: 50%;
   font-family: Georgia;
   font-weight: bold;
   color: red;
   font-size: 20px;
 }
 .info_money_win {
+  width: 50%;
   font-family: Georgia;
   font-weight: bold;
   color: green;
   font-size: 20px;
-  align-self: center;
-  margin-top: 25%;
 }
 .sit_text {
   display: flex;

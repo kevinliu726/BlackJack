@@ -6,11 +6,11 @@ const Player = ({ className, state }) => {
   if (state === "ACTIVE" || state === "TURN") {
     return (
       <div className={className + " " + state}>
-        {/* <div className={"info_container"}>
+        <div className={"info_container"}>
           <div className={"info_name"}>Kevin</div>
           {isWin && <div className={"info_money_win"}>4000</div>}
           {!isWin && <div className={"info_money_lose"}>-4000</div>}
-        </div> */}
+        </div>
         <div className={"cards"}>
           <img className={"card"} src={require("../cards/back.jpeg").default} alt="cards"></img>
           <img className={"card rest"} src={require("../cards/5.png").default} alt="cards"></img>

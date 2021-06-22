@@ -1,8 +1,5 @@
 .player {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
   position: absolute;
   border-radius: 15px;
 }
