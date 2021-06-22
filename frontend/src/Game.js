@@ -1,4 +1,6 @@
 import Player from "./Components/Player";
+import Button from "@material-ui/core/Button";
+
 import "./css/Game.css";
 const Game = () => {
   return (
@@ -13,6 +15,8 @@ const Game = () => {
         height: "100vh",
       }}
     >
+      <Button id="leave_btn">Leave</Button>
+      <Button id="away_btn">Away</Button>
       <img
         src="https://i.imgur.com/oPXcEoE.png"
         style={{ width: "80%", height: "70%", objectFit: "cover", marginBottom: "5%" }}

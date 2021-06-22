@@ -8,13 +8,18 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const SearchModal = ({ open, handleClose, handleEnter }) => {
-  const classes = makeStyles((theme) => ({
+  const classes = makeStyles(() => ({
     dialog: {
       display: "flex",
-      color: "black",
+      background: "black",
+      color: "#c0c0c0",
       borderRadius: "20px",
+      border: "solid",
+      borderColor: "#d4af37",
+      borderWidth: "2px",
     },
     dialogTitle: {
       display: "flex",
@@ -31,28 +36,25 @@ const SearchModal = ({ open, handleClose, handleEnter }) => {
       flexWrap: "wrap",
       margin: 8,
       "& label": { color: "gray" },
-      "& label.Mui-focused": { color: "black" },
-      "& .MuiInputAdornment-root": { color: "#black" },
-      "& .MuiIconButton-label": { color: "#black" },
-      "& .MuiInputBase-input": { color: "#black" },
+      "& label.Mui-focused": { color: "#c0c0c0" },
+      "& .MuiInputAdornment-root": { color: "#c0c0c0" },
+      "& .MuiIconButton-label": { color: "#c0c0c0" },
+      "& .MuiInputBase-input": { color: "#c0c0c0" },
       "& .MuiOutlinedInput-root": {
-        "& fieldset": { borderColor: "#03a9f4" },
-        "&:hover fieldset": { borderColor: "#03a9f4" },
-        "&.Mui-focused fieldset": { borderColor: "#03a9f4" },
+        "& fieldset": { borderColor: "#d4af37" },
+        "&:hover fieldset": { borderColor: "#d4af37" },
+        "&.Mui-focused fieldset": { borderColor: "#d4af37" },
       },
     },
   }))();
   const [searchName, setSearchName] = useState("");
   const [searchNameError, setSNError] = useState(false);
   const searchNameOnChange = (event) => {
-    if (event.target.value === "") {
-      setSNError(true);
-    } else {
-      setSNError(false);
-    }
+    setSNError(false);
     setSearchName(event.target.value);
   };
   const handleCancel = () => {
+    setSearchName("");
     setSNError(false);
     handleClose();
   };
@@ -78,12 +80,15 @@ const SearchModal = ({ open, handleClose, handleEnter }) => {
             labelWidth={90}
           />
         </FormControl>
+        {searchNameError && (
+          <FormHelperText style={{ marginLeft: 8, color: "red" }}>Room name can't be empty</FormHelperText>
+        )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel} style={{ color: "black" }}>
+      <DialogActions className={classes.dialogActions}>
+        <Button onClick={handleClose} style={{ color: "#c0c0c0" }}>
           Cancel
         </Button>
-        <Button onClick={checkBeforeEnter} style={{ color: "#0288d1" }}>
+        <Button onClick={checkBeforeEnter} style={{ color: "#d4af37" }}>
           Enter
         </Button>
       </DialogActions>

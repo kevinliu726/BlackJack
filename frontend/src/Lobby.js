@@ -100,12 +100,12 @@ const Lobby = ({
             style={{
               marginLeft: "5.5%",
               display: "flex",
-              borderRadius: 20,
               width: "7%",
               height: "70%",
               fontFamily: "Georgia",
               fontWeight: "Bold",
-              backgroundColor: "#d4af37",
+              fontSize: "17px",
+              color: "#d4af37",
             }}
             onClick={() => handleOpenCreate()}
           >

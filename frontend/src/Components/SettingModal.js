@@ -24,21 +24,13 @@ const SettingModal = ({ open, handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const passwordOnChange = (event) => {
-    if (event.target.value === "") {
-      setPError(true);
-    } else {
-      setPError(false);
-    }
+    setPError(false);
     setPassword(event.target.value);
   };
 
   const confirmPasswordOnChange = (event) => {
     setMError(false);
-    if (event.target.value === "") {
-      setCPError(true);
-    } else {
-      setCPError(false);
-    }
+    setCPError(false);
     setConfirmPassword(event.target.value);
   };
 
@@ -47,7 +39,7 @@ const SettingModal = ({ open, handleClose }) => {
       if (password !== confirmPassword) {
         setMError(true);
       } else {
-        window.location.href = "/Menu";
+        handleClose();
       }
     } else {
       setPError(password === "");
@@ -55,11 +47,18 @@ const SettingModal = ({ open, handleClose }) => {
     }
   };
 
-  const handleLogout = () => {
-    window.location.href = "/Login";
+  const handleCancel = () => {
+    setPassword("");
+    setConfirmPassword("");
+    setPError(false);
+    setCPError(false);
+    setMError(false);
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    handleClose();
   };
 
-  const classes = makeStyles((theme) => ({
+  const classes = makeStyles(() => ({
     dialog: {
       display: "flex",
       background: "black",
@@ -98,7 +97,7 @@ const SettingModal = ({ open, handleClose }) => {
     },
   }))();
   return (
-    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
         Setting
       </DialogTitle>
@@ -153,11 +152,11 @@ const SettingModal = ({ open, handleClose }) => {
           {confirmPasswordError && (
             <FormHelperText style={{ color: "red" }}>Confirm Password can't be empty</FormHelperText>
           )}
-          {matchError && <FormHelperText style={{ color: "red" }}>Doesn't Match with Password</FormHelperText>}
+          {matchError && <FormHelperText style={{ color: "red" }}>Doesn't match with Password</FormHelperText>}
         </FormControl>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button onClick={handleClose} color="secondary">
+        <Button onClick={handleCancel} color="secondary">
           Cancel
         </Button>
         <Button onClick={() => handleSubmit()} style={{ color: "#03a9f4" }}>

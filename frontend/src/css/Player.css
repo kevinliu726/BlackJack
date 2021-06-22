@@ -35,7 +35,7 @@
 .AWAY {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
   background: rgb(172, 169, 169);
 }
 
@@ -59,35 +59,57 @@
   display: flex;
   flex-direction: row;
   align-self: center;
+  align-items: center;
   justify-content: space-between;
   border-radius: 15px;
   width: 90%;
-  height: 10%;
+  height: 15%;
 }
 .info_name {
+  display: flex;
   width: 50%;
   font-family: Georgia;
   font-weight: bold;
-  font: 20px;
+  font-size: 20px;
 }
-.dealer.info_container.info_name {
+.info_name_dealer {
+  display: flex;
+  width: 50%;
   font-family: Georgia;
   font-weight: bold;
-  font: 50px;
+  font-size: 30px;
 }
 .info_money_lose {
   width: 50%;
+  text-align: right;
   font-family: Georgia;
   font-weight: bold;
   color: red;
   font-size: 20px;
 }
-.info_money_win {
+.info_money_lose_dealer {
   width: 50%;
+  text-align: right;
   font-family: Georgia;
   font-weight: bold;
-  color: green;
+  color: red;
+  font-size: 30px;
+}
+.info_money_win {
+  width: 50%;
+  text-align: right;
+  font-family: Georgia;
+  font-weight: bold;
+  color: goldenrod;
   font-size: 20px;
+}
+.info_money_win_dealer {
+  width: 50%;
+  text-align: right;
+  font-family: Georgia;
+  font-weight: bold;
+  color: goldenrod;
+  font-size: 30px;
 }
 .sit_text {
   display: flex;
@@ -101,7 +123,7 @@
 }
 .away {
   display: flex;
-  width: 50%;
+  width: 30%;
   height: 100%;
   align-items: center;
   font-family: Georgia;
@@ -113,6 +135,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 50%;
+  width: 30%;
   height: 100%;
 }

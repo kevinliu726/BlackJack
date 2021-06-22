@@ -8,13 +8,18 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
   const classes = makeStyles((theme) => ({
     dialog: {
       display: "flex",
-      color: "black",
+      background: "black",
+      color: "#c0c0c0",
       borderRadius: "20px",
+      border: "solid",
+      borderColor: "#03a9f4",
+      borderWidth: "2px",
     },
     dialogTitle: {
       display: "flex",
@@ -31,10 +36,10 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
       flexWrap: "wrap",
       margin: 8,
       "& label": { color: "gray" },
-      "& label.Mui-focused": { color: "black" },
-      "& .MuiInputAdornment-root": { color: "#black" },
-      "& .MuiIconButton-label": { color: "#black" },
-      "& .MuiInputBase-input": { color: "#black" },
+      "& label.Mui-focused": { color: "#c0c0c0" },
+      "& .MuiInputAdornment-root": { color: "#c0c0c0" },
+      "& .MuiIconButton-label": { color: "#c0c0c0" },
+      "& .MuiInputBase-input": { color: "#c0c0c0" },
       "& .MuiOutlinedInput-root": {
         "& fieldset": { borderColor: "#03a9f4" },
         "&:hover fieldset": { borderColor: "#03a9f4" },
@@ -47,12 +52,14 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
   const [passwordWrongError, setPWError] = useState(false);
   const passwordOnChange = (event) => {
     setPWError(false);
-    if (event.target.value === "") {
-      setPError(true);
-    } else {
-      setPError(false);
-    }
+    setPError(false);
     setPassword(event.target.value);
+  };
+  const handleCancel = () => {
+    setPassword("");
+    setPError(false);
+    setPWError(false);
+    handleClose();
   };
   const checkBeforeEnter = () => {
     if (password === "") {
@@ -66,7 +73,7 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
     }
   };
   return (
-    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Enter Room</DialogTitle>
       <DialogContent>
         <FormControl className={classes.form} variant="outlined">
@@ -80,9 +87,12 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
             labelWidth={70}
           />
         </FormControl>
+        {passwordError && (
+          <FormHelperText style={{ marginLeft: 8, color: "red" }}>Password can't be empty</FormHelperText>
+        )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} style={{ color: "black" }}>
+      <DialogActions className={classes.dialogActions}>
+        <Button onClick={handleCancel} style={{ color: "#c0c0c0" }}>
           Cancel
         </Button>
         <Button onClick={checkBeforeEnter} style={{ color: "#0288d1" }}>

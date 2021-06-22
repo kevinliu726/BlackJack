@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SettingModal from "./Components/SettingModal";
-import { Button } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 import "./css/Menu.css";
 import HistoryModal from "./Components/HistoryModal";
 
@@ -29,6 +29,10 @@ const Menu = ({
     setOpenSetting(false);
   };
 
+  const logout = () => {
+    window.location.href = "/Login";
+  };
+
   const postData = () => {
     console.log("Fuck");
     console.log(username);
@@ -52,13 +56,12 @@ const Menu = ({
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          marginBottom: "5%",
           width: "30%",
           height: "100%",
         }}
       >
         <img src="https://i.imgur.com/HbsdxjO.png" style={{ marginLeft: "4%", width: "150%", alignSelf: "center" }} />
-        <div style={{ height: "25%" }} />
+        <div style={{ height: "15%" }} />
         <div
           style={{
             display: "flex",
@@ -80,6 +83,9 @@ const Menu = ({
           <SettingModal open={openSetting} handleClose={handleCloseSetting} handleSubmit={() => handleSubmit} />
           <HistoryModal open={openHistory} handleClose={handleCloseHistory} />
         </div>
+        <Button id="logout" variant="contained" onClick={logout}>
+          Logout
+        </Button>
       </div>
       <Button id="right_btn" variant="contained" onClick={() => goToLobby(false)}>
         Private
