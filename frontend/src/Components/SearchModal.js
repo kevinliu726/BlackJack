@@ -1,50 +1,90 @@
 import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 const SearchModal = ({ open, handleClose, handleEnter }) => {
-  const [roomName, setRoomName] = useState("");
-  const [roomNameError, setRNError] = useState(false);
-  const roomNameOnChange = (event) => {
+  const classes = makeStyles((theme) => ({
+    dialog: {
+      display: "flex",
+      color: "black",
+      borderRadius: "20px",
+    },
+    dialogTitle: {
+      display: "flex",
+      paddingBottom: "0px",
+    },
+    dialogActions: {
+      display: "flex",
+      width: "90%",
+      alignSelf: "center",
+      justifyContent: "space-between",
+    },
+    form: {
+      display: "flex",
+      flexWrap: "wrap",
+      margin: 8,
+      "& label": { color: "gray" },
+      "& label.Mui-focused": { color: "black" },
+      "& .MuiInputAdornment-root": { color: "#black" },
+      "& .MuiIconButton-label": { color: "#black" },
+      "& .MuiInputBase-input": { color: "#black" },
+      "& .MuiOutlinedInput-root": {
+        "& fieldset": { borderColor: "#03a9f4" },
+        "&:hover fieldset": { borderColor: "#03a9f4" },
+        "&.Mui-focused fieldset": { borderColor: "#03a9f4" },
+      },
+    },
+  }))();
+  const [searchName, setSearchName] = useState("");
+  const [searchNameError, setSNError] = useState(false);
+  const searchNameOnChange = (event) => {
     if (event.target.value === "") {
-      setRNError(true);
+      setSNError(true);
     } else {
-      setRNError(false);
+      setSNError(false);
     }
-    setRoomName(event.target.value);
+    setSearchName(event.target.value);
   };
-  const handleSearch = () => {
-    if (roomName !== "") {
-      handleEnter();
+  const handleCancel = () => {
+    setSNError(false);
+    handleClose();
+  };
+  const checkBeforeEnter = () => {
+    if (searchName === "") {
+      setSNError(true);
     } else {
-      setRNError(roomName === "");
+      handleEnter();
     }
   };
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Search Room</DialogTitle>
       <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          error={roomNameError}
-          onChange={roomNameOnChange}
-          label="Room Name"
-          type="text"
-          fullWidth
-        />
+        <FormControl className={classes.form} variant="outlined">
+          <InputLabel htmlFor="search">Room Name</InputLabel>
+          <OutlinedInput
+            id="search"
+            type="text"
+            error={searchNameError}
+            onChange={searchNameOnChange}
+            autoComplete="off"
+            labelWidth={90}
+          />
+        </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleCancel} style={{ color: "black" }}>
           Cancel
         </Button>
-        <Button onClick={handleSearch} color="primary">
-          Search
+        <Button onClick={checkBeforeEnter} style={{ color: "#0288d1" }}>
+          Enter
         </Button>
       </DialogActions>
     </Dialog>

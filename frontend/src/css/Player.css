@@ -4,6 +4,8 @@
 }
 
 .ACTIVE {
+  display: flex;
+  justify-content: flex-end;
   color: white;
   background: transparent;
   border: solid;
@@ -32,20 +34,16 @@
 .cards {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 80%;
-  width: 70%;
+  justify-content: space-evenly;
+  bottom: 0%;
+  height: 50%;
+  width: 100%;
 }
 
 .card {
   display: flex;
   height: 100%;
-  width: 30%;
-}
-
-.rest {
-  margin-left: -15%;
+  width: 15%;
 }
 
 .info_container {

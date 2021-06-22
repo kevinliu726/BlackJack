@@ -68,23 +68,6 @@ const Lobby = ({
 
   return (
     <div style={{ position: "relative" }}>
-      <EnterPasswordModal
-        open={openEnterPassword}
-        handleClose={handleClosePassword}
-        handleEnter={() => handleEnter()}
-      />
-      <CreateRoomModal
-        open={openCreateRoom}
-        isPublic={isPublic}
-        handleClose={handleCloseCreate}
-        handleEnter={() => handleCreate()}
-      />
-      <SearchModal
-        open={openSearchRoom}
-        isPublic={isPublic}
-        handleClose={handleCloseSearch}
-        handleEnter={() => handleSearch()}
-      />
       <Button
         style={{
           display: "flex",
@@ -101,6 +84,18 @@ const Lobby = ({
       </Button>
       <div className="lobby_container">
         <div className="lobby_nav_bar">
+          <CreateRoomModal
+            open={openCreateRoom}
+            isPublic={isPublic}
+            handleClose={handleCloseCreate}
+            handleEnter={() => handleCreate()}
+          />
+          <SearchModal
+            open={openSearchRoom}
+            isPublic={isPublic}
+            handleClose={handleCloseSearch}
+            handleEnter={() => handleSearch()}
+          />
           <Button
             style={{
               marginLeft: "5.5%",
@@ -133,6 +128,11 @@ const Lobby = ({
         </div>
         <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "73%", textAlign: "center" }} />
         <div className="lobby_cascade">
+          <EnterPasswordModal
+            open={openEnterPassword}
+            handleClose={handleClosePassword}
+            handleEnter={() => handleEnter()}
+          />
           {/*Get Room List*/}
           <Room
             id={1}
