@@ -2,33 +2,41 @@ import React, { useState } from "react";
 import Room from "./Room";
 import EnterPasswordModal from "./Components/EnterPasswordModal";
 import CreateRoomModal from "./Components/CreateRoomModal";
+import SearchModal from "./Components/SearchModal";
 import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { Button, TextField } from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
+import { Button } from "@material-ui/core";
 import "./css/Lobby.css";
 
-const Lobby = ({ isPublic, room_type }) => {
-  const [username, setUsername] = useState("Kevin");
+const Lobby = ({
+  match: {
+    params: { username, room_type },
+  },
+}) => {
+  const isPublic = room_type === "Public" ? true : false;
   const [enterRoomID, setEnterRoomID] = useState("");
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
   const [openSearchRoom, setOpenSearchRoom] = useState(false);
   const goBackToMenu = () => {
-    window.location.href = "/Menu";
+    window.location.href = `/Menu/${username}`;
   };
-
+  const handleOpenSearch = () => {
+    setOpenSearchRoom(true);
+  };
   const handleOpenCreate = () => {
     setOpenCreateRoom(true);
   };
-
   const handleOpenEnterPassword = () => {
     setOpenEnterPassword(true);
   };
-
+  const handleCloseSearch = () => {
+    setOpenSearchRoom(false);
+  };
   const handleCloseCreate = () => {
     setOpenCreateRoom(false);
   };
-
   const handleClosePassword = () => {
     setOpenEnterPassword(false);
   };
@@ -45,12 +53,10 @@ const Lobby = ({ isPublic, room_type }) => {
     window.location.href = `/Game/${e}/${username}`;
   };
 
-  const searchRoomClick = () => {
-    setOpenSearchRoom(true);
-  };
-  const searchRoomLeave = () => {
+  const handleSearch = () => {
     setOpenSearchRoom(false);
   };
+
   const goToGame = (room_id, isPublic) => {
     if (isPublic) {
       window.location.href = `/Game/${room_id}/${username}`;
@@ -72,6 +78,12 @@ const Lobby = ({ isPublic, room_type }) => {
         isPublic={isPublic}
         handleClose={handleCloseCreate}
         handleEnter={() => handleCreate()}
+      />
+      <SearchModal
+        open={openSearchRoom}
+        isPublic={isPublic}
+        handleClose={handleCloseSearch}
+        handleEnter={() => handleSearch()}
       />
       <Button
         style={{
@@ -104,34 +116,24 @@ const Lobby = ({ isPublic, room_type }) => {
           >
             create
           </Button>
-          <div className="lobby_tag">{room_type}</div>
-          {!openSearchRoom && (
-            <Button
-              onClick={() => searchRoomClick()}
-              style={{ display: "flex", marginRight: "4%", width: "5%", height: "80%", color: "#d4af37" }}
-            >
-              <SearchIcon style={{ width: "100%", height: "100%" }} />
-            </Button>
-          )}
-          {openSearchRoom && (
-            <TextField
-              autoFocus="true"
-              label="Search"
-              variant="filled"
-              onBlur={() => searchRoomLeave()}
-              style={{
-                background: "#d4af37",
-                color: "#d4af37",
-                border: "solid",
-                height: "80%",
-                borderRadius: "20px",
-                marginRight: "4%",
-                width: "10%",
-              }}
-            ></TextField>
-          )}
+          <div className="lobby_tag">{room_type.toUpperCase()}</div>
+          <Button
+            onClick={() => handleOpenSearch()}
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginRight: "4%",
+              width: "50px",
+              height: "80%",
+              color: "#d4af37",
+            }}
+          >
+            <SearchIcon style={{ width: "100%", height: "100%" }} />
+          </Button>
         </div>
+        <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "73%", textAlign: "center" }} />
         <div className="lobby_cascade">
+          {/*Get Room List*/}
           <Room
             id={1}
             key={1}

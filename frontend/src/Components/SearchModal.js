@@ -6,41 +6,35 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
-  const [password, setPassword] = useState("");
-  const [passwordError, setPError] = useState(false);
-  const [passwordWrongError, setPWError] = useState(false);
-  const passwordOnChange = (event) => {
-    setPWError(false);
+const SearchModal = ({ open, handleClose, handleEnter }) => {
+  const [roomName, setRoomName] = useState("");
+  const [roomNameError, setRNError] = useState(false);
+  const roomNameOnChange = (event) => {
     if (event.target.value === "") {
-      setPError(true);
+      setRNError(true);
     } else {
-      setPError(false);
+      setRNError(false);
     }
-    setPassword(event.target.value);
+    setRoomName(event.target.value);
   };
-  const checkBeforeEnter = () => {
-    if (password === "") {
-      setPError(true);
-    } else {
-      // check password Right;
-      //Right setPWError(false)
-      //handleEnter
-      //Wrong setPWError(wrong)
+  const handleSearch = () => {
+    if (roomName !== "") {
       handleEnter();
+    } else {
+      setRNError(roomName === "");
     }
   };
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Enter Room</DialogTitle>
+      <DialogTitle id="form-dialog-title">Search Room</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
           id="name"
-          error={passwordError || passwordWrongError}
-          onChange={passwordOnChange}
-          label="Password"
+          error={roomNameError}
+          onChange={roomNameOnChange}
+          label="Room Name"
           type="text"
           fullWidth
         />
@@ -49,12 +43,12 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={checkBeforeEnter} color="primary">
-          Enter
+        <Button onClick={handleSearch} color="primary">
+          Search
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default EnterPasswordModal;
+export default SearchModal;

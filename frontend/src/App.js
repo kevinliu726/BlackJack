@@ -14,13 +14,8 @@ function App() {
         <Route path="/" exact component={Login} />
         <Route path="/Login" exact component={Login} />
         <Route path="/Register" exact component={Register} />
-        <Route path="/Menu" exact component={Menu} />
-        <Route path="/Lobby/Private" exact>
-          <Room isPublic={false} room_type={"PRIVATE"} />
-        </Route>
-        <Route path="/Lobby/Public" exact>
-          <Room isPublic={true} room_type={"PUBLIC"} />
-        </Route>
+        <Route path="/Menu/:username" exact component={Menu} />
+        <Route path="/Lobby/:room_type/:username" exact component={Room} />
         <Route path="/Game/:hash/:username" exact={true}>
           <Game />
         </Route>
