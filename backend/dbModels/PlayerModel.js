@@ -7,9 +7,9 @@ const PlayerSchema = new Schema({
     state: String,
     isBank: Boolean,
     isBattled: Boolean,
+    canBet: Boolean,
     canStand: Boolean,
     canHit: Boolean,
-    canBlackJack: Boolean,
     cash: Number,
     bet: Number,
     cards: [{

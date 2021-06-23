@@ -20,9 +20,16 @@ const Query = {
         const {db} = context;
         const roomsInfo = [];
         await db.RoomModel.find({"roomInfo.roomType": roomType}, function(err, rooms){
-            rooms.forEach(room => roomsInfo.push(room.roomInfo));
+            rooms.forEach(room => {
+                roomsInfo.push(room.roomInfo)
+            });
         });
         return roomsInfo;
+    },
+    async enterRoom(parent, {roomID}, {db}, info){
+        const room = await db.RoomModel.findOne({roomID});
+        const playerModels = await Promise.all(room.players.map(async (_id, index) => await db.PlayerModel.findById(_id)));
+        return {...room, players: playerModels};
     }
 }
 

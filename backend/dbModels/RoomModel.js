@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const {Schema} = mongoose;
 
 const RoomSchema = new Schema({
+    roomID: String,
     roomInfo: {
         roomType: String,
         password: String,
