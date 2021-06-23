@@ -81,9 +81,12 @@
 #away_btn {
   display: flex;
   position: absolute;
+  justify-content: center;
+  align-items: center;
   background-color: red;
   width: 4%;
   height: 8%;
+  font-size: medium;
   color: aqua;
 }
 

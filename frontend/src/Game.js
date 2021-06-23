@@ -15,8 +15,8 @@ const Game = () => {
         height: "100vh",
       }}
     >
-      <Button id="leave_btn">Leave</Button>
-      <Button id="away_btn">Away</Button>
+      <div id="leave_btn">Leave</div>
+      <div id="away_btn">Away</div>
       <img
         src="https://i.imgur.com/oPXcEoE.png"
         style={{ width: "80%", height: "70%", objectFit: "cover", marginBottom: "5%" }}

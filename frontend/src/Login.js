@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import clsx from "clsx";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -39,11 +38,13 @@ const Login = () => {
   const [passwordError, setPError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [isLogIn, { data, loading }] = useLazyQuery(LOG_IN);
-
-  if (data && data.isLogIn) {
-    window.location.href = `/Menu/${username}`;
-  }
+  const [isLogIn, { data, loading }] = useLazyQuery(LOG_IN, {
+    onCompleted: (data) => {
+      if (data && data.isLogIn) {
+        window.location.href = `/Menu/${username}`;
+      }
+    },
+  });
 
   const passwordOnChange = (event) => {
     if (event.target.value === "") {
@@ -61,14 +62,14 @@ const Login = () => {
     }
     setUsername(event.target.value);
   };
-  const goToMenu = () => {
+  function goToMenu() {
     if (password !== "" && username !== "") {
       isLogIn({ variables: { username, password } });
     } else {
       setUError(username === "");
       setPError(password === "");
     }
-  };
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "row", minHeight: "100vh", minWidth: "100vh" }}>
@@ -94,13 +95,12 @@ const Login = () => {
           <h1 style={{ fontFamily: "Georgia", color: "#d5d5d5", textAlign: "center" }}>Login</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
-          <FormControl className={clsx(classes.root)} variant="outlined">
+          <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-username">Username</InputLabel>
             <OutlinedInput
               id="outlined-adornment-username"
               type="text"
               autoComplete="off"
-              required="required"
               value={username}
               error={usernameError}
               onChange={usernameOnChange}
@@ -109,13 +109,12 @@ const Login = () => {
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
           </FormControl>
-          <FormControl className={clsx(classes.root)} variant="outlined">
+          <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
               autoComplete="off"
-              required={true}
               value={password}
               error={passwordError}
               onChange={passwordOnChange}
