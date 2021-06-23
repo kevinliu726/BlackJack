@@ -17,9 +17,7 @@ function App() {
         <Route path="/Register" exact component={Register} />
         <Route path="/Menu/:username" exact component={Menu} />
         <Route path="/Lobby/:room_type/:username" exact component={Lobby} />
-        <Route path="/Game/:hash/:username" exact={true}>
-          <Game />
-        </Route>
+        <Route path="/Game/:rood_id/:username" exact component={Game} />
       </Switch>
     </Router>
   );

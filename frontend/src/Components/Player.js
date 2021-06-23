@@ -1,7 +1,7 @@
 import "../css/Player.css";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 
-const Player = ({ className, state }) => {
+const Player = ({ className, state, name }) => {
   var isWin = true;
   var isDealer = className.includes("dealer");
   var info_name = "info_name";
@@ -16,7 +16,7 @@ const Player = ({ className, state }) => {
     return (
       <div className={className + " " + state}>
         <div className={"info_container"}>
-          <div className={info_name}>Kevin</div>
+          <div className={info_name}>{name}</div>
           {isWin && <div className={money_win}>4000</div>}
           {!isWin && <div className={money_loss}>-4000</div>}
         </div>
@@ -36,13 +36,7 @@ const Player = ({ className, state }) => {
           <DirectionsWalkIcon style={{ display: "flex", height: "50%", width: "100%" }}></DirectionsWalkIcon>
           <span>AWAY</span>
         </div>
-        <div className={"away"}>Kevin</div>
-      </div>
-    );
-  } else {
-    return (
-      <div className={className + " " + state}>
-        <div className={"sit_text"}>SIT</div>
+        <div className={"away"}>{name}</div>
       </div>
     );
   }

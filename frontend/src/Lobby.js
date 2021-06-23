@@ -41,13 +41,14 @@ const Lobby = ({
     setOpenEnterPassword(false);
   };
 
-  const handleEnter = (e) => {
+  const handleEnter = () => {
     setOpenEnterPassword(false);
     window.location.href = `/Game/${enterRoomID}/${username}`;
   };
 
   const handleCreate = (e) => {
     setOpenCreateRoom(false);
+    // createRoom(roomInfo: RoomInfo): Room
     window.location.href = `/Game/${e}/${username}`;
   };
 
@@ -131,7 +132,7 @@ const Lobby = ({
             handleClose={handleClosePassword}
             handleEnter={() => handleEnter()}
           />
-          {/*Get Room List*/}
+          {/*Get Room List, Still need modify*/}
           <Room
             id={1}
             key={1}

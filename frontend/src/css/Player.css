@@ -18,20 +18,6 @@
   border-color: white;
 }
 
-.UNSEATED {
-  display: flex;
-  background: transparent;
-  border: dashed;
-  border-width: 2px;
-  border-color: rgb(80, 79, 79);
-  color: rgb(80, 79, 79);
-}
-
-.UNSEATED:hover {
-  border-color: rgb(178, 181, 181);
-  color: rgb(178, 181, 181);
-}
-
 .AWAY {
   display: flex;
   flex-direction: row;

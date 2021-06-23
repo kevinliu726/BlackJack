@@ -77,26 +77,60 @@
   width: 18%;
   height: 15%;
 }
-#leave_btn,
-#away_btn {
+.top_btn_container {
   display: flex;
   position: absolute;
-  justify-content: center;
-  align-items: center;
-  background-color: red;
-  width: 4%;
-  height: 8%;
-  font-size: medium;
-  color: aqua;
-}
-
-#leave_btn {
-  top: 11%;
-  left: 1%;
-}
-#away_btn {
   top: 1%;
   left: 1%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 5%;
+  height: 20%;
+}
+.go_btn {
+  display: flex;
+  width: 90%;
+  height: 45%;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  font-size: medium;
+  color: aqua;
+  background: gray;
+}
+.btm_btn_container {
+  display: flex;
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 30%;
+  height: 13%;
+}
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 23%;
+  height: 90%;
+  border-radius: 20px;
+  font-size: medium;
+  color: aqua;
+  background: gray;
+}
+.UNSEATED {
+  display: flex;
+  background: transparent;
+  border: dashed;
+  border-width: 2px;
+  border-color: rgb(80, 79, 79);
+  color: rgb(80, 79, 79);
 }
 
-/* #btn0, #btn1, #btn2 {} */
+.UNSEATED:hover {
+  border-color: rgb(178, 181, 181);
+  color: rgb(178, 181, 181);
+}
