@@ -42,11 +42,13 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [register, {data: registerData}] = useMutation(REGISTER);
-
-  if (registerData && registerData.register) {
-    window.location.href = `/Menu/${username}`;
-  }
+  const [register, { data: registerData }] = useMutation(REGISTER, {
+    onCompleted: (registerData) => {
+      if (registerData && registerData.register) {
+        window.location.href = `/Menu/${username}`;
+      }
+    },
+  });
 
   const usernameOnChange = (event) => {
     if (event.target.value === "") {
