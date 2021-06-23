@@ -155,9 +155,9 @@ const Register = () => {
             {passwordError && <FormHelperText style={{ color: "red" }}>Password can't be empty</FormHelperText>}
           </FormControl>
           <FormControl className={classes.root} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+            <InputLabel htmlFor="outlined-adornment-password2">Confirm Password</InputLabel>
             <OutlinedInput
-              id="outlined-adornment-password"
+              id="outlined-adornment-password2"
               type={showConfirmPassword ? "text" : "password"}
               autoComplete="off"
               value={confirmPassword}
