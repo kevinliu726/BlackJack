@@ -1,5 +1,9 @@
 import Player from "./Components/Player";
 import "./css/Game.css";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 const players = [
   {
@@ -122,6 +126,27 @@ const Game = ({
     params: { room_type, room_id, username },
   },
 }) => {
+  const classes = makeStyles(() => ({
+    form: {
+      display: "flex",
+      flexWrap: "wrap",
+      height: "100%",
+      width: "30%",
+      justifyContent: "center",
+      "& .MuiInputBase-input": { fontSize: "21px", fontWeight: "bold", color: "goldenrod" },
+      "& .MuiOutlinedInput-root": {
+        height: "80%",
+        borderRadius: "20px",
+        "& fieldset": { borderColor: "goldenrod" },
+        "&:hover fieldset": { borderColor: "goldenrod" },
+        "&.Mui-focused fieldset": { borderColor: "goldenrod" },
+        "& input::placeholder": { fontSize: "16px" },
+        "& input::-webkit-outer-spin-button": { "-webkit-appearance": "none" },
+        "& input::-webkit-inner-spin-button": { "-webkit-appearance": "none" },
+      },
+    },
+  }))();
+  const [betNum, setBetNum] = useState(1);
   const [battleList, setBattleList] = useState([]);
   const [usePlayers, setPlayers] = useState(players);
   const [myIndex, setMyIndex] = useState(4);
@@ -148,6 +173,10 @@ const Game = ({
   const hit = () => {
     //hit(room_id,myIndex)
   };
+  const betNumOnChange = (event) => {
+    setBetNum(event.target.value);
+  };
+
   const away = () => {
     const newPlayers = [...usePlayers];
     newPlayers[myIndex].state = "AWAY";
@@ -159,7 +188,7 @@ const Game = ({
     newPlayers[myIndex].state = "UNSEATED";
     setPlayers(newPlayers);
     //leave()
-    window.location.href = `/Lobby/${"Private"}/${username}`;
+    window.location.href = `/Lobby/${room_type}/${username}`;
   };
 
   let showAll = [];
@@ -203,26 +232,65 @@ const Game = ({
       }}
     >
       <div className="top_btn_container">
-        <button className="go_btn" id="leave_btn" onClick={() => leave()}>
-          LEAVE
-        </button>
-        <button className="go_btn" id="away_btn" onClick={() => away()}>
-          AWAY
-        </button>
+        {
+          <button className="go_btn" id="leave_btn" onClick={() => leave()}>
+            LEAVE
+          </button>
+        }
+        {
+          <button className="go_btn" id="away_btn" onClick={() => away()}>
+            AWAY
+          </button>
+        }
       </div>
       <div className="btm_btn_container">
-        <button className="btn" id="stand_btn">
-          STAND
-        </button>
-        <button className="btn" id="catch_btn">
-          CATCH
-        </button>
-        <button className="btn" id="hit_btn">
-          HIT
-        </button>
-        <button className="btn" id="bet_btn">
-          BET
-        </button>
+        {/*
+        Player View in Game Bet + Number, Stand + Hit
+        Dealer View in Game Stand + Catch, Cancel + Submit
+        Player View not in Game Leave + Away
+        Dealer View not in Game End + Start
+        */}
+        {
+          // <button className="btn" id="stand_btn">
+          //   STAND
+          // </button>
+        }
+        {
+          // <button className="btn" id="catch_btn">
+          //   CATCH
+          // </button>
+        }
+        {
+          // <button className="btn" id="hit_btn">
+          //   HIT
+          // </button>
+        }
+        {
+          <button className="btn" id="bet_btn">
+            BET
+          </button>
+        }
+        {
+          <FormControl className={classes.form} variant="outlined">
+            <OutlinedInput
+              id="betNum"
+              type="number"
+              onChange={betNumOnChange}
+              autoComplete="off"
+              placeholder="min - max"
+            />
+          </FormControl>
+        }
+        {
+          // <button className="btn" id="end_btn">
+          //   END
+          // </button>
+        }
+        {
+          // <button className="btn" id="start_btn">
+          //   START
+          // </button>
+        }
       </div>
 
       <img

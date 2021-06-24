@@ -39,3 +39,14 @@
   flex-wrap: wrap;
   overflow: scroll;
 }
+.room_warning_text {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-self: center;
+  font-size: x-large;
+  font-family: Georgia;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  opacity: 0.7;
+}

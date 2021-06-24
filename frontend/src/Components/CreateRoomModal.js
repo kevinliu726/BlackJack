@@ -34,7 +34,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
       alignSelf: "center",
       justifyContent: "space-between",
     },
-    form: {
+    text: {
       display: "flex",
       flexWrap: "wrap",
       margin: 8,
@@ -49,7 +49,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
         "&.Mui-focused fieldset": { borderColor: "#03a9f4" },
       },
     },
-    form2: {
+    bet: {
       display: "flex",
       flexWrap: "wrap",
       margin: 8,
@@ -62,9 +62,11 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
         "& fieldset": { borderColor: "#d4af37" },
         "&:hover fieldset": { borderColor: "#d4af37" },
         "&.Mui-focused fieldset": { borderColor: "#d4af37" },
+        "& input::-webkit-outer-spin-button": { "-webkit-appearance": "none" },
+        "& input::-webkit-inner-spin-button": { "-webkit-appearance": "none" },
       },
     },
-    form3: {
+    deck: {
       display: "flex",
       flexWrap: "wrap",
       marginTop: 8,
@@ -142,7 +144,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
     <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Create Room</DialogTitle>
       <DialogContent>
-        <FormControl className={classes.form} variant="outlined">
+        <FormControl className={classes.text} variant="outlined">
           <InputLabel htmlFor="room">Room Name</InputLabel>
           <OutlinedInput
             id="room"
@@ -157,7 +159,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
           <FormHelperText style={{ marginLeft: 8, color: "red" }}>Room name can't be empty</FormHelperText>
         )}
         {!isPublic && (
-          <FormControl className={classes.form} variant="outlined">
+          <FormControl className={classes.text} variant="outlined">
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
               id="password"
@@ -173,7 +175,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
           <FormHelperText style={{ marginLeft: 8, color: "red" }}>Password can't be empty</FormHelperText>
         )}
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <FormControl className={classes.form2} style={{ width: "40%" }} variant="outlined">
+          <FormControl className={classes.bet} style={{ width: "40%" }} variant="outlined">
             <InputLabel htmlFor="betLower">Bet Lower Bound</InputLabel>
             <OutlinedInput
               id="betLower"
@@ -185,7 +187,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
             />
           </FormControl>
           <span>---</span>
-          <FormControl className={classes.form2} style={{ width: "40%" }} variant="outlined">
+          <FormControl className={classes.bet} style={{ width: "40%" }} variant="outlined">
             <InputLabel htmlFor="betUpper">Bet Upper Bound</InputLabel>
             <OutlinedInput
               id="betUpper"
@@ -212,7 +214,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
             margin: 8,
           }}
         >
-          <FormControl className={classes.form3}>
+          <FormControl className={classes.deck}>
             <FormLabel>Deck Number</FormLabel>
             <RadioGroup row name="bet" value={deckNumber} onChange={deckNumberOnChange}>
               <FormControlLabel value="1" control={<Radio />} label="one" />

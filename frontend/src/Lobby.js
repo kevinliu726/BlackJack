@@ -8,7 +8,38 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Divider from "@material-ui/core/Divider";
 import { Button } from "@material-ui/core";
 import "./css/Lobby.css";
-
+const initRoomList = [
+  {
+    id: 1,
+    roomType: "Public",
+    password: "",
+    name: "Test1",
+    host: "Kevin",
+    playersNumber: 12,
+    minBet: 20,
+    maxBet: 500,
+  },
+  {
+    id: 2,
+    roomType: "Public",
+    password: "",
+    name: "Test2",
+    host: "Kevin2",
+    playersNumber: 3,
+    minBet: 30,
+    maxBet: 512,
+  },
+  {
+    id: 3,
+    roomType: "Private",
+    password: "1234",
+    name: "Test3",
+    host: "Kevin3",
+    playersNumber: 3,
+    minBet: 30,
+    maxBet: 512,
+  },
+];
 const Lobby = ({
   match: {
     params: { username, room_type },
@@ -19,6 +50,7 @@ const Lobby = ({
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
   const [openSearchRoom, setOpenSearchRoom] = useState(false);
+  const [roomList, setRoomList] = useState(initRoomList);
   const goBackToMenu = () => {
     window.location.href = `/Menu/${username}`;
   };
@@ -56,7 +88,7 @@ const Lobby = ({
     setOpenSearchRoom(false);
   };
 
-  const goToGame = (room_id, isPublic) => {
+  const goToGame = (room_id) => {
     if (isPublic) {
       window.location.href = `/Game/${room_type}/${room_id}/${username}`;
     } else {
@@ -64,7 +96,6 @@ const Lobby = ({
       handleOpenEnterPassword();
     }
   };
-
   return (
     <div style={{ position: "relative" }}>
       <Button
@@ -132,30 +163,21 @@ const Lobby = ({
             handleClose={handleClosePassword}
             handleEnter={() => handleEnter()}
           />
-          {/*Get Room List, Still need modify*/}
-          <Room
-            id={1}
-            key={1}
-            name={"Test1"}
-            owner={"Kevin"}
-            peopleLimit={12}
-            betLimit={500}
-            goToGame={() => goToGame(333, isPublic)}
-          ></Room>
-          <Room id={2} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={3} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={4} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={5} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={6} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={7} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={8} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={9} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={10} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={11} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={12} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={13} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={14} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500}></Room>
-          <Room id={15} key={1} name={"Test1"} owner={"Kevin"} peopleLimit={12} betLimit={500} fake={true}></Room>
+          {roomList.map((room) => (
+            <Room
+              id={room.id}
+              name={room.name}
+              host={room.host}
+              playersNumber={room.playersNumber}
+              minBet={room.minBet}
+              maxBet={room.maxBet}
+              goToGame={() => goToGame(room.id)}
+            />
+          ))}
+          {roomList.length === 0 && <div className="room_warning_text">NO ROOM EXISTS</div>}
+          {roomList.length % 3 === 1 && <Room fake={true} />}
+          {roomList.length % 3 === 1 && <Room fake={true} />}
+          {roomList.length % 3 === 2 && <Room fake={true} />}
         </div>
       </div>
     </div>

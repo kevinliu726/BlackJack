@@ -160,8 +160,15 @@
 #hit_btn {
   border-color: goldenrod;
   color: goldenrod;
-  /* border-color: rgb(11, 165, 11);
-  color: rgb(11, 165, 11); */
+}
+#start_btn {
+  border-color: goldenrod;
+  color: goldenrod;
+  font-size: 21px;
+}
+#end_btn {
+  border-color: white;
+  color: white;
 }
 #catch_btn {
   border-color: white;
