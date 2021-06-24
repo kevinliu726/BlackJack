@@ -11,21 +11,19 @@ const shuffle = (decksNumber) => {
     return deck;
 }
 
-const getNewPlayer = ({isBank, name, index}) => {
+const getNewPlayer = ({isBank, name, index, state}) => {
     return {
         name,
         index,
-        state: "ACTIVE",
+        state,
         isBank,
-        isBattled: false,
+        canBattle: true,
         canBet: false,
         canStand: false,
         canHit: false,
-        canBlackJack: false,
         cash: 0,
         bet: 0,
         cards: [],
-        resultType: "NONE",
         resultTimes: 0,
     }
 }
@@ -86,30 +84,27 @@ const battle = async (bank, player) => {
         else if(playerState.point > 21) playerResultTimes = -1;
         else playerResultTimes = (playerState.point > bankState.point) ? 1 : (playerState.point < bankState.point ? -1 : 0);
     }
-    player.isBattled = true;
+    player.canBattle = false;
     player.resultTimes = playerResultTimes;
     player.cash += player.bet + player.resultTimes * player.bet;
+    player.cards[0].visible = true;
     bank.cash -= player.resultTimes * player.bet;
     await player.save();
     await bank.save();
 }
 
-const findBlackJack = async (room, playerModels) => {
-    if(playerModels[11].canBlackJack){
-        await Promise.all(
-            playerModels
-            .filter(p => p && p.state === "ACTIVE" && !p.isBank)
-            .map(async p => await battle(playerModels[11], p))
-        );
+const findBlackJack = async (room) => {
+    if(room.players[11].canBlackJack){
+        for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank)){
+            await battle(room.player[11], p);
+        }
     }
     else {
-        await Promise.all(
-            playerModels
-            .filter(p => p && p.state === "ACTIVE" && !p.isBank && p.canBlackJack)
-            .map(async p => await battle(playerModels[11], p))
-        )
+        for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank && p.canBlackJack)){
+            await battle(room.player[11], p);
+        }
     }
-    if(playerModels.filter(p => p && !p.isBank && p.state === "ACTIVE").every(p => p.isBattled)){
+    if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").every(p => !p.canBattle)){
         room.state === "GAMEOVER";
     }
     await room.save();

@@ -6,7 +6,7 @@ const PlayerSchema = new Schema({
     index: Number,
     state: String,
     isBank: Boolean,
-    isBattled: Boolean,
+    canBattle: Boolean,
     canBet: Boolean,
     canStand: Boolean,
     canHit: Boolean,
@@ -16,7 +16,6 @@ const PlayerSchema = new Schema({
         visible: Boolean,
         number: Number,
     }],
-    resultType: String,
     resultTimes: Number,
 })
 

@@ -17,7 +17,8 @@ type Mutation {
 }
 
 type Subscription {
-    subscribeLobby(roomType: String): RoomInfo
+    subscribeLobby(roomType: String): [Room]
+    subscribeRoom(roomID: ID): Room
 }
 
 type Room {
@@ -26,7 +27,6 @@ type Room {
     players: [Player]
     deck: [Int]
     state: String
-    turnPlayerIndex: Int
 }
 
 input CreateRoomInfo{
@@ -55,14 +55,13 @@ type Player {
     index: Int
     state: String
     isBank: Boolean
-    isBattled: Boolean
+    canBattle: Boolean
     canBet: Boolean
     canStand: Boolean
     canHit: Boolean
     cash: Int
     bet: Int
     cards: [Card]
-    resultType: String
     resultTimes: Int
 }
 
