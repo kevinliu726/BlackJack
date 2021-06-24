@@ -5,79 +5,121 @@ const players = [
   {
     name: "K1",
     index: 0,
-    state: "TURN",
+    state: "ACTIVE",
     isBank: false,
+    cash: -100,
+    cards: [
+      { visible: false, index: 1 },
+      { visible: true, index: 3 },
+      { visible: true, index: 2 },
+      { visible: true, index: 65 },
+      { visible: true, index: 22 },
+    ],
   },
   {
     name: "K2",
     index: 1,
     state: "ACTIVE",
+    cash: 200,
     isBank: false,
+    cards: [
+      { visible: false, index: 1 },
+      { visible: true, index: 3 },
+      { visible: true, index: 21 },
+      { visible: true, index: 88 },
+    ],
   },
   {
     name: "K3",
     index: 2,
     state: "AWAY",
+    cash: 100,
     isBank: false,
+    cards: [
+      { visible: false, index: 1 },
+      { visible: true, index: 3 },
+      { visible: true, index: 32 },
+    ],
   },
   {
     name: "K4",
     index: 3,
     state: "ACTIVE",
+    cash: -100,
     isBank: false,
+    cards: [
+      { visible: false, index: 1 },
+      { visible: true, index: 3 },
+    ],
   },
   {
     name: "K5551",
     index: 4,
     state: "ACTIVE",
+    cash: -1030,
     isBank: false,
+    cards: [],
   },
   {
     name: "K1q",
     index: 5,
+    cash: 10320,
     state: "ACTIVE",
     isBank: false,
+    cards: [],
   },
   {
     name: "K1ee",
     index: 6,
+    cash: 10320,
     state: "ACTIVE",
     isBank: false,
+    cards: [],
   },
   {
     name: "Kwet1",
     index: 7,
+    cash: 10320,
     state: "ACTIVE",
     isBank: false,
+    cards: [],
   },
   {
     name: "K1we",
     index: 8,
     state: "UNSEATED",
+    cash: 320,
     isBank: false,
+    cards: [],
   },
   {
     name: "K1tt",
     index: 9,
     state: "ACTIVE",
+    cash: 10,
     isBank: false,
+    cards: [],
   },
   {
     name: "Kqwe1",
     index: 10,
+    cash: -320,
     state: "ACTIVE",
     isBank: false,
+    cards: [],
   },
   {
     name: "K221",
     index: 11,
-    state: "ACTIVE",
+    cash: 102,
+    state: "TURN",
     isBank: true,
+    cards: [],
   },
 ];
 const Game = ({
   match: {
-    params: { username, room_id },
+    params: { room_type, room_id, username },
   },
 }) => {
   const [battleList, setBattleList] = useState([]);
@@ -117,12 +159,15 @@ const Game = ({
     newPlayers[myIndex].state = "UNSEATED";
     setPlayers(newPlayers);
     //leave()
+    window.location.href = `/Lobby/${"Private"}/${username}`;
   };
 
   let showAll = [];
   usePlayers.map((player) => {
     if (player.isBank) {
-      showAll.push(<Player className={"player dealer"} state={player.state} name={player.name}></Player>);
+      showAll.push(
+        <Player className={"player dealer"} state={player.state} name={player.name} cards={player.cards}></Player>
+      );
     } else {
       let index = ((player.index + 4 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
@@ -137,6 +182,8 @@ const Game = ({
             className={"player player_" + index}
             state={player.state}
             name={player.name}
+            cards={player.cards}
+            cash={player.cash}
             onClick={() => addBattleList(player.index)}
           ></Player>
         );
@@ -156,26 +203,26 @@ const Game = ({
       }}
     >
       <div className="top_btn_container">
-        <div className="go_btn" onClick={() => leave()}>
-          Leave
-        </div>
-        <div className="go_btn" onClick={() => away()}>
-          Away
-        </div>
+        <button className="go_btn" id="leave_btn" onClick={() => leave()}>
+          LEAVE
+        </button>
+        <button className="go_btn" id="away_btn" onClick={() => away()}>
+          AWAY
+        </button>
       </div>
       <div className="btm_btn_container">
-        <div className="btn" id="stand_btn" onClick={() => away()}>
+        <button className="btn" id="stand_btn">
           STAND
-        </div>
-        <div className="btn" id="hit_btn" onClick={() => leave()}>
-          HIT
-        </div>
-        <div className="btn" id="catch_btn" onClick={() => away()}>
+        </button>
+        <button className="btn" id="catch_btn">
           CATCH
-        </div>
-        <div className="btn" id="bet_btn" onClick={() => away()}>
+        </button>
+        <button className="btn" id="hit_btn">
+          HIT
+        </button>
+        <button className="btn" id="bet_btn">
           BET
-        </div>
+        </button>
       </div>
 
       <img

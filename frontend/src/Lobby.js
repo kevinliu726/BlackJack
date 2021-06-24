@@ -43,13 +43,13 @@ const Lobby = ({
 
   const handleEnter = () => {
     setOpenEnterPassword(false);
-    window.location.href = `/Game/${enterRoomID}/${username}`;
+    window.location.href = `/Game/${room_type}/${enterRoomID}/${username}`;
   };
 
   const handleCreate = (e) => {
     setOpenCreateRoom(false);
     // createRoom(roomInfo: RoomInfo): Room
-    window.location.href = `/Game/${e}/${username}`;
+    window.location.href = `/Game/${room_type}/${e}/${username}`;
   };
 
   const handleSearch = () => {
@@ -58,7 +58,7 @@ const Lobby = ({
 
   const goToGame = (room_id, isPublic) => {
     if (isPublic) {
-      window.location.href = `/Game/${room_id}/${username}`;
+      window.location.href = `/Game/${room_type}/${room_id}/${username}`;
     } else {
       setEnterRoomID(room_id);
       handleOpenEnterPassword();
