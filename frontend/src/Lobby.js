@@ -41,15 +41,14 @@ const Lobby = ({
     setOpenEnterPassword(false);
   };
 
-  const handleEnter = (e) => {
-    console.log("Enter Room");
+  const handleEnter = () => {
     setOpenEnterPassword(false);
     window.location.href = `/Game/${enterRoomID}/${username}`;
   };
 
   const handleCreate = (e) => {
-    console.log("Create Room");
     setOpenCreateRoom(false);
+    // createRoom(roomInfo: RoomInfo): Room
     window.location.href = `/Game/${e}/${username}`;
   };
 
@@ -100,12 +99,12 @@ const Lobby = ({
             style={{
               marginLeft: "5.5%",
               display: "flex",
-              borderRadius: 20,
               width: "7%",
               height: "70%",
               fontFamily: "Georgia",
               fontWeight: "Bold",
-              backgroundColor: "#d4af37",
+              fontSize: "17px",
+              color: "#d4af37",
             }}
             onClick={() => handleOpenCreate()}
           >
@@ -133,7 +132,7 @@ const Lobby = ({
             handleClose={handleClosePassword}
             handleEnter={() => handleEnter()}
           />
-          {/*Get Room List*/}
+          {/*Get Room List, Still need modify*/}
           <Room
             id={1}
             key={1}

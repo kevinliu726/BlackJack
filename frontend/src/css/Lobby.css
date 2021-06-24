@@ -25,6 +25,7 @@
   font-size: 50px;
   color: rgb(255, 255, 255);
   align-self: "center";
+  margin-right: 3%;
   opacity: 0.7;
 }
 
@@ -33,11 +34,8 @@
   background: transparent;
   width: 80%;
   height: 80%;
-  /* flex: 1; */
   flex-direction: row;
   justify-content: space-evenly;
   flex-wrap: wrap;
   overflow: scroll;
-
-  /* background-color: blue; */
 }

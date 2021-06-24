@@ -32,7 +32,9 @@ class Room extends Component {
           </div>
           <div className="info">
             <AttachMoneyIcon style={{ color: "white" }}></AttachMoneyIcon>
-            <div className="info_text">{betLimit}</div>
+            <div className="info_text">
+              {betLimit} - {betLimit}
+            </div>
           </div>
         </div>
       </button>

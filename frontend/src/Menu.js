@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import SettingModal from "./Components/SettingModal";
-import { Button } from "@material-ui/core";
-import "./css/Menu.css";
 import HistoryModal from "./Components/HistoryModal";
+import RulesModal from "./Components/RulesModal";
+import Button from "@material-ui/core/Button";
+import "./css/Menu.css";
 
 const Menu = ({
   match: {
@@ -11,11 +12,15 @@ const Menu = ({
 }) => {
   const [openSetting, setOpenSetting] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
+  const [openRules, setOpenRules] = useState(false);
   const handleOpenSetting = () => {
     setOpenSetting(true);
   };
   const handleOpenHistory = () => {
     setOpenHistory(true);
+  };
+  const handleOpenRules = () => {
+    setOpenRules(true);
   };
 
   const handleCloseSetting = () => {
@@ -24,16 +29,16 @@ const Menu = ({
   const handleCloseHistory = () => {
     setOpenHistory(false);
   };
-  const handleSubmit = (e) => {
-    console.log("Submit");
+  const handleCloseRules = () => {
+    setOpenRules(false);
+  };
+  const handleSubmit = () => {
+    // Submit Change Password
     setOpenSetting(false);
   };
-
-  const postData = () => {
-    console.log("Fuck");
-    console.log(username);
+  const logout = () => {
+    window.location.href = "/Login";
   };
-
   const goToLobby = (isPublic) => {
     if (isPublic) {
       window.location.href = `/Lobby/${"Public"}/${username}`;
@@ -52,13 +57,12 @@ const Menu = ({
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          marginBottom: "5%",
           width: "30%",
           height: "100%",
         }}
       >
         <img src="https://i.imgur.com/HbsdxjO.png" style={{ marginLeft: "4%", width: "150%", alignSelf: "center" }} />
-        <div style={{ height: "25%" }} />
+        <div style={{ height: "15%" }} />
         <div
           style={{
             display: "flex",
@@ -74,12 +78,16 @@ const Menu = ({
           <Button id="history" variant="contained" onClick={() => handleOpenHistory()}>
             History
           </Button>
-          <Button id="rules" variant="contained" onClick={postData}>
+          <Button id="rules" variant="contained" onClick={() => handleOpenRules()}>
             Rules
           </Button>
-          <SettingModal open={openSetting} handleClose={handleCloseSetting} handleSubmit={() => handleSubmit} />
+          <SettingModal open={openSetting} handleClose={handleCloseSetting} handleEnter={() => handleSubmit} />
           <HistoryModal open={openHistory} handleClose={handleCloseHistory} />
+          <RulesModal open={openRules} handleClose={handleCloseRules} />
         </div>
+        <Button id="logout" variant="contained" onClick={logout}>
+          Logout
+        </Button>
       </div>
       <Button id="right_btn" variant="contained" onClick={() => goToLobby(false)}>
         Private

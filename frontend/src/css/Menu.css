@@ -42,7 +42,20 @@
 }
 #setting:hover,
 #history:hover,
-#rules:hover {
+#rules:hover,
+#logout:hover {
   background-color: #858484; /*#858484 for menu button hover*/
+  color: white;
+}
+#logout {
+  display: flex;
+  margin-top: 8%;
+  margin-bottom: 3%;
+  height: 8%;
+  width: 20%;
+  align-self: center;
+  font-family: Georgia;
+  font-weight: Bold;
+  background-color: transparent;
   color: white;
 }
