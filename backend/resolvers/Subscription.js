@@ -5,6 +5,11 @@ const Subscription = {
             const {pubSub} = context;
             return pubSub.asyncIterator(roomType);
         }
+    },
+    subscribeRoom: {
+        subscribe(parent, {roomID}, {pubSub}, info){
+            return pubSub.asyncIterator(`room_${roomID}`);
+        }
     }
 }
 

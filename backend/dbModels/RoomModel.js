@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const {Schema} = mongoose;
 
 const RoomSchema = new Schema({
+    roomID: String,
     roomInfo: {
         roomType: String,
         password: String,
@@ -15,7 +16,6 @@ const RoomSchema = new Schema({
     players: [{type: mongoose.Types.ObjectId, ref: "Player"}],
     deck: [Number],
     state: String,
-    turnPlayerIndex: Number,
 })
 
 const RoomModel = mongoose.model("Room", RoomSchema);
