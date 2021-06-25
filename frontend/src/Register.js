@@ -81,7 +81,6 @@ const Register = () => {
         setMError(true);
       } else {
         register({ variables: { username, password } });
-        // window.location.href = "/Menu";
       }
     } else {
       setUError(username === "");

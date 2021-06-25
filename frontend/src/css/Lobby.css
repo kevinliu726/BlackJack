@@ -50,3 +50,30 @@
   color: rgb(255, 255, 255);
   opacity: 0.7;
 }
+#create_btn {
+  margin-left: 5.5%;
+  display: flex;
+  width: 7%;
+  height: 70%;
+  font-family: Georgia;
+  font-weight: Bold;
+  font-size: 17px;
+  color: #d4af37;
+}
+#search_btn {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 4%;
+  width: 50px;
+  height: 80%;
+  color: #d4af37;
+}
+#back_btn {
+  display: flex;
+  position: absolute;
+  top: 7.5%;
+  left: 3%;
+  width: 3%;
+  height: 5%;
+  color: gray;
+}

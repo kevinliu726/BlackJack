@@ -11,9 +11,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "./css/Login_Register.css";
-import { LOG_IN } from "./graphql/Query";
+import { LOG_IN, NAME_EXIST } from "./graphql/Query";
 import { useLazyQuery } from "@apollo/client";
-
 const Login = () => {
   const classes = makeStyles({
     root: {
@@ -32,42 +31,63 @@ const Login = () => {
       },
     },
   })();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [values, setValues] = useState({
+    username: "",
+    password: "",
+  });
   const [usernameError, setUError] = useState(false);
   const [passwordError, setPError] = useState(false);
+  const [nameExistError, setNEError] = useState(false);
+  const [matchError, setMError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [isLogIn, { data, loading }] = useLazyQuery(LOG_IN, {
+  const [nameExist] = useLazyQuery(NAME_EXIST, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      if (data && data.nameExist) {
+        setNEError(false);
+        let username = values.username;
+        let password = values.password;
+        isLogIn({
+          variables: {
+            username,
+            password,
+          },
+        });
+      } else {
+        setNEError(true);
+      }
+    },
+  });
+  const [isLogIn] = useLazyQuery(LOG_IN, {
     onCompleted: (data) => {
       if (data && data.isLogIn) {
-        window.location.href = `/Menu/${username}`;
+        window.location.href = `/Menu/${values.username}`;
+      } else {
+        setMError(true);
       }
     },
   });
 
-  const passwordOnChange = (event) => {
-    if (event.target.value === "") {
-      setPError(true);
-    } else {
-      setPError(false);
-    }
-    setPassword(event.target.value);
-  };
-  const usernameOnChange = (event) => {
-    if (event.target.value === "") {
-      setUError(true);
-    } else {
-      setUError(false);
-    }
-    setUsername(event.target.value);
+  const valuesOnChange = (event) => {
+    const { name, value } = event.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
   };
   function goToMenu() {
-    if (password !== "" && username !== "") {
-      isLogIn({ variables: { username, password } });
-    } else {
-      setUError(username === "");
-      setPError(password === "");
+    setUError(values.username === "");
+    setPError(values.password === "");
+    setMError(false);
+    setNEError(false);
+    if (values.password !== "" && values.username !== "") {
+      let username = values.username;
+      nameExist({
+        variables: {
+          username,
+        },
+      });
     }
   }
 
@@ -101,13 +121,14 @@ const Login = () => {
               id="outlined-adornment-username"
               type="text"
               autoComplete="off"
-              value={username}
-              error={usernameError}
-              onChange={usernameOnChange}
-              onBlur={() => setUError(false)}
+              value={values.username}
+              name="username"
+              error={usernameError || nameExistError}
+              onChange={valuesOnChange}
               labelWidth={70}
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
+            {nameExistError && <FormHelperText style={{ color: "red" }}>Username doesn't exist</FormHelperText>}
           </FormControl>
           <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -115,10 +136,10 @@ const Login = () => {
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
               autoComplete="off"
-              value={password}
+              value={values.password}
               error={passwordError}
-              onChange={passwordOnChange}
-              onBlur={() => setPError(false)}
+              name="password"
+              onChange={valuesOnChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -133,9 +154,7 @@ const Login = () => {
               labelWidth={70}
             />
             {passwordError && <FormHelperText style={{ color: "red" }}>Password can't be empty</FormHelperText>}
-            {data && data.isLogIn === false && (
-              <FormHelperText style={{ color: "red" }}>Wrong username or password.</FormHelperText>
-            )}
+            {matchError && <FormHelperText style={{ color: "red" }}>Wrong username or password.</FormHelperText>}
           </FormControl>
           <div style={{ height: 10 }} />
           <Button id="login_btn" variant="contained" onClick={() => goToMenu()}>

@@ -98,18 +98,7 @@ const Lobby = ({
   };
   return (
     <div style={{ position: "relative" }}>
-      <Button
-        style={{
-          display: "flex",
-          position: "absolute",
-          top: "7.5%",
-          left: "3%",
-          width: "3%",
-          height: "5%",
-          color: "gray",
-        }}
-        onClick={() => goBackToMenu()}
-      >
+      <Button id="back_btn" onClick={() => goBackToMenu()}>
         <ArrowBackIcon style={{ width: "100%", height: "100%" }}></ArrowBackIcon>
       </Button>
       <div className="lobby_container">
@@ -126,33 +115,11 @@ const Lobby = ({
             handleClose={handleCloseSearch}
             handleEnter={() => handleSearch()}
           />
-          <Button
-            style={{
-              marginLeft: "5.5%",
-              display: "flex",
-              width: "7%",
-              height: "70%",
-              fontFamily: "Georgia",
-              fontWeight: "Bold",
-              fontSize: "17px",
-              color: "#d4af37",
-            }}
-            onClick={() => handleOpenCreate()}
-          >
+          <Button id="create_btn" onClick={() => handleOpenCreate()}>
             create
           </Button>
           <div className="lobby_tag">{room_type.toUpperCase()}</div>
-          <Button
-            onClick={() => handleOpenSearch()}
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginRight: "4%",
-              width: "50px",
-              height: "80%",
-              color: "#d4af37",
-            }}
-          >
+          <Button id="search_btn" onClick={() => handleOpenSearch()}>
             <SearchIcon style={{ width: "100%", height: "100%" }} />
           </Button>
         </div>
