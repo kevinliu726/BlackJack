@@ -10,8 +10,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import "./css/Login_Register.css";
-import { LOG_IN, NAME_EXIST } from "./graphql/Query";
+import "../css/Login_Register.css";
+import { LOG_IN, NAME_EXIST } from "../graphql/Query";
 import { useLazyQuery } from "@apollo/client";
 const Login = () => {
   const classes = makeStyles({
@@ -92,26 +92,17 @@ const Login = () => {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", minHeight: "100vh", minWidth: "100vh" }}>
-      <div style={{ display: "flex", width: "50%", justifyContent: "center", background: "#000000" }}>
+    <div className="page_container">
+      <div className="img_container">
         <img
           src="https://i.imgur.com/68CxQO4.jpg"
+          alt="logo_left"
           style={{ display: "flex", marginBottom: "25%", marginLeft: "20%", width: "80%", objectFit: "contain" }}
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 10,
-          width: "50%",
-          background: `radial-gradient(circle at center,#003300 0,black 70%)`,
-        }}
-      >
-        <img src="https://i.imgur.com/s3ekBEP.png" style={{ display: "flex", marginLeft: "1%" }}></img>
-        <div style={{ display: "flex", flexDirection: "column", borderRadius: "10%" }}>
+      <div className="right_container">
+        <img src="https://i.imgur.com/s3ekBEP.png" alt="logo_right" style={{ display: "flex", marginLeft: "1%" }}></img>
+        <div className="input_container">
           <h1 style={{ fontFamily: "Georgia", color: "#d5d5d5", textAlign: "center" }}>Login</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
@@ -165,7 +156,6 @@ const Login = () => {
             No account? Create One
           </Button>
         </div>
-        <div />
       </div>
     </div>
   );

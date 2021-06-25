@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
-import Login from "./Login";
-import Register from "./Register";
-import Menu from "./Menu";
-import Lobby from "./Lobby";
-import Game from "./Game";
+import Login from "./Containers/Login";
+import Register from "./Containers/Register";
+import Menu from "./Containers/Menu";
+import Lobby from "./Containers/Lobby";
+import Game from "./Containers/Game";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 

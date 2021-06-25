@@ -16,9 +16,9 @@ const Player = ({ className, state, name, cards, cash }) => {
     let imgs = [];
     cards.map((card) => {
       if (card.visible === false) {
-        imgs.push(require("../cards/back.jpeg").default);
+        return imgs.push(require("../cards/back.jpeg").default);
       } else {
-        imgs.push(require("../cards/" + (card.index % 52) + ".png").default);
+        return imgs.push(require("../cards/" + (card.index % 52) + ".png").default);
       }
     });
     return (

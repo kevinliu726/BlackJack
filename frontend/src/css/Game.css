@@ -1,3 +1,12 @@
+.game_container {
+  display: flex;
+  flex-direction: row;
+  background: radial-gradient(circle, #000000, #191819, #2a292a);
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
 .player {
   display: flex;
   position: absolute;
@@ -194,4 +203,10 @@
   cursor: pointer;
   border-color: rgb(178, 181, 181);
   color: rgb(178, 181, 181);
+}
+.table_img {
+  width: 80%;
+  height: 70%;
+  object-fit: cover;
+  margin-bottom: 5%;
 }

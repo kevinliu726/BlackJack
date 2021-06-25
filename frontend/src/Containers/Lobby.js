@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import Room from "./Room";
-import EnterPasswordModal from "./Components/EnterPasswordModal";
-import CreateRoomModal from "./Components/CreateRoomModal";
-import SearchModal from "./Components/SearchModal";
+import Room from "../Components/Room";
+import EnterPasswordModal from "../Components/Modal/EnterPasswordModal";
+import CreateRoomModal from "../Components/Modal/CreateRoomModal";
+import SearchModal from "../Components/Modal/SearchModal";
 import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Divider from "@material-ui/core/Divider";
 import { Button } from "@material-ui/core";
-import "./css/Lobby.css";
+import "../css/Lobby.css";
 const initRoomList = [
   {
     id: 1,

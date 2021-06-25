@@ -1,7 +1,6 @@
-import Player from "./Components/Player";
-import "./css/Game.css";
+import Player from "../Components/Player";
+import "../css/Game.css";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
@@ -194,19 +193,19 @@ const Game = ({
   let showAll = [];
   usePlayers.map((player) => {
     if (player.isBank) {
-      showAll.push(
+      return showAll.push(
         <Player className={"player dealer"} state={player.state} name={player.name} cards={player.cards}></Player>
       );
     } else {
       let index = ((player.index + 4 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
-        showAll.push(
+        return showAll.push(
           <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
             <div className={"sit_text"}>SIT</div>
           </div>
         );
       } else {
-        showAll.push(
+        return showAll.push(
           <Player
             className={"player player_" + index}
             state={player.state}
@@ -220,17 +219,7 @@ const Game = ({
     }
   });
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        background: `radial-gradient(circle, #000000, #191819, #2a292a)`,
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100vw",
-        height: "100vh",
-      }}
-    >
+    <div className="game_container">
       <div className="top_btn_container">
         {
           <button className="go_btn" id="leave_btn" onClick={() => leave()}>
@@ -293,10 +282,7 @@ const Game = ({
         }
       </div>
 
-      <img
-        src="https://i.imgur.com/oPXcEoE.png"
-        style={{ width: "80%", height: "70%", objectFit: "cover", marginBottom: "5%" }}
-      />
+      <img className="table_img" src="https://i.imgur.com/oPXcEoE.png" />
       {players.map((player, index) => {
         return showAll[index];
       })}

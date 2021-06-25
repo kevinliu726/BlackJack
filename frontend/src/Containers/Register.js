@@ -10,8 +10,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import "./css/Login_Register.css";
-import { REGISTER } from "./graphql/Mutation";
+import "../css/Login_Register.css";
+import { REGISTER } from "../graphql/Mutation";
 import { useMutation } from "@apollo/client";
 
 const Register = () => {
@@ -32,84 +32,64 @@ const Register = () => {
       },
     },
   })();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [values, setValues] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [usernameError, setUError] = useState(false);
   const [passwordError, setPError] = useState(false);
   const [confirmPasswordError, setCPError] = useState(false);
   const [matchError, setMError] = useState(false);
+  const [nameExistError, setNEError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [register, { data: registerData }] = useMutation(REGISTER, {
+  const [register] = useMutation(REGISTER, {
     onCompleted: (registerData) => {
       if (registerData && registerData.register) {
-        window.location.href = `/Menu/${username}`;
+        window.location.href = `/Menu/${values.username}`;
+      } else {
+        setNEError(true);
       }
     },
   });
-
-  const usernameOnChange = (event) => {
-    if (event.target.value === "") {
-      setUError(true);
-    } else {
-      setUError(false);
-    }
-    setUsername(event.target.value);
-  };
-  const passwordOnChange = (event) => {
-    if (event.target.value === "") {
-      setPError(true);
-    } else {
-      setPError(false);
-    }
-    setPassword(event.target.value);
-  };
-  const confirmPasswordOnChange = (event) => {
-    setMError(false);
-    if (event.target.value === "") {
-      setCPError(true);
-    } else {
-      setCPError(false);
-    }
-    setConfirmPassword(event.target.value);
+  const valuesOnChange = (event) => {
+    const { name, value } = event.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
   };
   const goToMenu = () => {
-    if (password !== "" && username !== "" && confirmPassword !== "") {
-      if (password !== confirmPassword) {
+    setUError(values.username === "");
+    setPError(values.password === "");
+    setCPError(values.confirmPassword === "");
+    setMError(false);
+    setNEError(false);
+    if (values.password !== "" && values.username !== "" && values.confirmPassword !== "") {
+      if (values.password !== values.confirmPassword) {
         setMError(true);
       } else {
+        let username = values.username;
+        let password = values.password;
         register({ variables: { username, password } });
       }
-    } else {
-      setUError(username === "");
-      setPError(password === "");
-      setCPError(password === "");
     }
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", minHeight: "100vh", minWidth: "100vh" }}>
-      <div style={{ display: "flex", width: "50%", justifyContent: "center", background: "#000000" }}>
+    <div className="page_container">
+      <div className="img_container">
         <img
           src="https://i.imgur.com/68CxQO4.jpg"
+          alt="logo_left"
           style={{ display: "flex", marginBottom: "25%", marginLeft: "20%", width: "80%", objectFit: "contain" }}
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 10,
-          width: "50%",
-          background: `radial-gradient(circle at center,#003300 0,black 70%)`,
-        }}
-      >
-        <img src="https://i.imgur.com/s3ekBEP.png" style={{ display: "flex", marginLeft: "1%" }}></img>
-        <div style={{ display: "flex", flexDirection: "column", borderRadius: "10%" }}>
+      <div className="right_container">
+        <img src="https://i.imgur.com/s3ekBEP.png" alt="logo_right" style={{ display: "flex", marginLeft: "1%" }}></img>
+        <div className="input_container">
           <h1 style={{ fontFamily: "Georgia", color: "lightgray", textAlign: "center" }}>Register</h1>
           <Divider variant="fullWidth" style={{ backgroundColor: "#d5d5d5", width: "100%", textAlign: "center" }} />
           <div style={{ height: 20 }} />
@@ -119,15 +99,14 @@ const Register = () => {
               id="outlined-adornment-username"
               type="text"
               autoComplete="off"
-              value={username}
-              error={usernameError}
-              onChange={usernameOnChange}
+              name="username"
+              value={values.username}
+              error={usernameError || nameExistError}
+              onChange={valuesOnChange}
               labelWidth={70}
             />
             {usernameError && <FormHelperText style={{ color: "red" }}>Username can't be empty</FormHelperText>}
-            {registerData && registerData.register === false && (
-              <FormHelperText style={{ color: "red" }}>The username is used by other user already.</FormHelperText>
-            )}
+            {nameExistError && <FormHelperText style={{ color: "red" }}>This username is taken</FormHelperText>}
           </FormControl>
           <FormControl className={classes.root} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -135,9 +114,10 @@ const Register = () => {
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
               autoComplete="off"
-              value={password}
+              name="password"
+              value={values.password}
               error={passwordError}
-              onChange={passwordOnChange}
+              onChange={valuesOnChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -159,9 +139,10 @@ const Register = () => {
               id="outlined-adornment-password2"
               type={showConfirmPassword ? "text" : "password"}
               autoComplete="off"
-              value={confirmPassword}
+              name="confirmPassword"
+              value={values.confirmPassword}
               error={confirmPasswordError || matchError}
-              onChange={confirmPasswordOnChange}
+              onChange={valuesOnChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -189,7 +170,6 @@ const Register = () => {
             Back To Login
           </Button>
         </div>
-        <div />
       </div>
     </div>
   );

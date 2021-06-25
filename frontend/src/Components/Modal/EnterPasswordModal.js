@@ -90,6 +90,7 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
         {passwordError && (
           <FormHelperText style={{ marginLeft: 8, color: "red" }}>Password can't be empty</FormHelperText>
         )}
+        {passwordWrongError && <FormHelperText style={{ marginLeft: 8, color: "red" }}>Wrong Password</FormHelperText>}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button onClick={handleCancel} style={{ color: "#c0c0c0" }}>

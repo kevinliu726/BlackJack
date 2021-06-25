@@ -11,6 +11,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import { makeStyles } from "@material-ui/core/styles";
 import { FormControl, FormControlLabel, FormLabel } from "@material-ui/core";
+import "../../css/Modal.css";
 
 const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
   const classes = makeStyles(() => ({
@@ -205,15 +206,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
         {crossError && (
           <FormHelperText style={{ marginLeft: 8, color: "red" }}>Lower bound exceed upper bound</FormHelperText>
         )}
-        <div
-          style={{
-            border: "solid",
-            borderColor: "#03a9f4",
-            borderWidth: 1.5,
-            borderRadius: 5,
-            margin: 8,
-          }}
-        >
+        <div className="deck_container">
           <FormControl className={classes.deck}>
             <FormLabel>Deck Number</FormLabel>
             <RadioGroup row name="bet" value={deckNumber} onChange={deckNumberOnChange}>
