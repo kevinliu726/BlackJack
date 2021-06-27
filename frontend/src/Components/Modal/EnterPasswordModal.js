@@ -10,7 +10,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
-const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
+const EnterPasswordModal = ({ open, handleClose, handleEnter, correctPassword }) => {
   const classes = makeStyles((theme) => ({
     dialog: {
       display: "flex",
@@ -65,11 +65,18 @@ const EnterPasswordModal = ({ open, handleClose, handleEnter }) => {
     if (password === "") {
       setPError(true);
     } else {
-      // check password Right;
-      //Right setPWError(false)
-      //handleEnter
-      //Wrong setPWError(wrong)
-      handleEnter();
+      console.log(correctPassword);
+      if(password === correctPassword){
+        // check password Right;
+        //Right setPWError(false)
+        //handleEnter
+        setPWError(false);
+        handleEnter();
+      }
+      else {
+        //Wrong setPWError(wrong)
+        setPWError(true);
+      }
     }
   };
   return (

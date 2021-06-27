@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Room from "../Components/Room";
 import EnterPasswordModal from "../Components/Modal/EnterPasswordModal";
 import CreateRoomModal from "../Components/Modal/CreateRoomModal";
@@ -7,7 +7,12 @@ import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Divider from "@material-ui/core/Divider";
 import { Button } from "@material-ui/core";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_LOBBY } from "../graphql/Query";
+import { SUBSCRIBE_LOBBY } from "../graphql/Subscription";
+import { CREATE_ROOM } from "../graphql/Mutation";
 import "../css/Lobby.css";
+import { create } from "jss";
 const initRoomList = [
   {
     id: 1,
@@ -50,7 +55,25 @@ const Lobby = ({
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
   const [openSearchRoom, setOpenSearchRoom] = useState(false);
-  const [roomList, setRoomList] = useState(initRoomList);
+  const [roomList, setRoomList] = useState([]);
+  const [correctPassword, setCorrectPassword] = useState("");
+
+  const [createRoom] = useMutation(CREATE_ROOM);
+  const {data, subscribeToMore} = useQuery(GET_LOBBY, {variables: {roomType: room_type}});
+  useEffect(() => {
+    subscribeToMore({
+      document: SUBSCRIBE_LOBBY,
+      variables: {roomType: room_type},
+      updateQuery: (prev, {subscriptionData}) => {
+        if(!subscriptionData.data) return prev
+        return {...prev, getLobby: [...subscriptionData.data.subscribeLobby]};
+      }
+    })
+  }, [subscribeToMore]);
+  useEffect(() => {
+    if(data) setRoomList(data.getLobby);
+  }, [data]);
+
   const goBackToMenu = () => {
     window.location.href = `/Menu/${username}`;
   };
@@ -78,21 +101,26 @@ const Lobby = ({
     window.location.href = `/Game/${room_type}/${enterRoomID}/${username}`;
   };
 
-  const handleCreate = (e) => {
+  const handleCreate = ({roomInfo}) => {
     setOpenCreateRoom(false);
     // createRoom(roomInfo: RoomInfo): Room
-    window.location.href = `/Game/${room_type}/${e}/${username}`;
+    roomInfo.host = username;
+    roomInfo.roomType = room_type;
+    console.log(roomInfo);
+    createRoom({variables: {roomInfo}});
+    // window.location.href = `/Game/${room_type}/${}/${username}`;
   };
 
   const handleSearch = () => {
     setOpenSearchRoom(false);
   };
 
-  const goToGame = (room_id) => {
+  const goToGame = (roomID, password) => {
     if (isPublic) {
-      window.location.href = `/Game/${room_type}/${room_id}/${username}`;
+      window.location.href = `/Game/${room_type}/${roomID}/${username}`;
     } else {
-      setEnterRoomID(room_id);
+      setEnterRoomID(roomID);
+      setCorrectPassword(password);
       handleOpenEnterPassword();
     }
   };
@@ -107,7 +135,7 @@ const Lobby = ({
             open={openCreateRoom}
             isPublic={isPublic}
             handleClose={handleCloseCreate}
-            handleEnter={() => handleCreate()}
+            handleEnter={handleCreate}
           />
           <SearchModal
             open={openSearchRoom}
@@ -127,18 +155,19 @@ const Lobby = ({
         <div className="lobby_cascade">
           <EnterPasswordModal
             open={openEnterPassword}
+            correctPassword={correctPassword}
             handleClose={handleClosePassword}
             handleEnter={() => handleEnter()}
           />
           {roomList.map((room) => (
             <Room
-              id={room.id}
-              name={room.name}
-              host={room.host}
-              playersNumber={room.playersNumber}
-              minBet={room.minBet}
-              maxBet={room.maxBet}
-              goToGame={() => goToGame(room.id)}
+              id={room.roomID}
+              name={room.roomInfo.name}
+              host={room.roomInfo.host}
+              playersNumber={room.roomInfo.playersNumber}
+              minBet={room.roomInfo.minBet}
+              maxBet={room.roomInfo.maxBet}
+              goToGame={() => goToGame(room.roomID, room.roomInfo.password)}
             />
           ))}
           {roomList.length === 0 && <div className="room_warning_text">NO ROOM EXISTS</div>}

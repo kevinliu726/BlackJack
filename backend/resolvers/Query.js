@@ -22,8 +22,7 @@ const Query = {
             .map(([roomID, room]) => room)
             .filter(r => r.roomInfo.roomType === roomType)
             .sort((a, b) => new Date(a.date) - new Date(b.date));
-    const sortRoomsInfo = [...sortRooms].map(r => r.roomInfo);
-    return sortRoomsInfo;
+    return sortRooms;
   },
   async enterRoom(parent, { roomID }, { rooms }, info) {
     return rooms.get(roomID);

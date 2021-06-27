@@ -12,4 +12,20 @@ const NAME_EXIST = gql`
   }
 `;
 
-export { LOG_IN, NAME_EXIST };
+const GET_LOBBY = gql`
+  query ($roomType: String){
+    getLobby(roomType: $roomType){
+      roomID
+      roomInfo{
+        name
+        password
+        host
+        playersNumber
+        minBet
+        maxBet
+      }
+    }
+  }
+`
+
+export { LOG_IN, NAME_EXIST, GET_LOBBY };

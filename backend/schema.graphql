@@ -1,7 +1,7 @@
 type Query {
     nameExist(name: String): Boolean
     isLogIn(name: String, password: String): Boolean
-    getLobby(roomType: String): [RoomInfo]
+    getLobby(roomType: String): [Room]
     enterRoom(roomID: ID): Room
 }
 

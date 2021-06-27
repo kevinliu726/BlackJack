@@ -6,4 +6,23 @@ const REGISTER = gql`
   }
 `;
 
-export { REGISTER };
+const CREATE_ROOM = gql`
+  mutation ($roomInfo: CreateRoomInfo){
+    createRoom(roomInfo: $roomInfo){
+      roomID
+      state
+      players{
+        name
+        index
+        state
+        canBet
+        canBattle
+        canHit
+        canStand
+        bet
+      }
+    }
+  }
+`
+
+export { REGISTER, CREATE_ROOM };

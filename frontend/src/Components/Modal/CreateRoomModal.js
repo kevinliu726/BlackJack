@@ -117,9 +117,9 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
     }
   };
   const handleCreate = () => {
-    if (roomName !== "" && password !== "" && lower > 0 && upper > 0 && lower <= upper) {
+    if (roomName !== "" && lower > 0 && upper > 0 && lower <= upper) {
       //send Data
-      handleEnter();
+      handleEnter({roomInfo: {name: roomName, password, minBet: parseInt(lower), maxBet: parseInt(upper), decksNumber: parseInt(deckNumber)}});
     } else {
       setRError(roomName === "");
       setPError(password === "");
@@ -221,7 +221,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
         <Button onClick={handleCancel} style={{ color: "#c0c0c0" }}>
           Cancel
         </Button>
-        <Button onClick={() => handleCreate()} style={{ color: "#d4af37" }}>
+        <Button onClick={handleCreate} style={{ color: "#d4af37" }}>
           Create
         </Button>
       </DialogActions>
