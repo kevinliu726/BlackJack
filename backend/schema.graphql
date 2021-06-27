@@ -14,7 +14,11 @@ type Mutation {
     hit(roomID: ID, index: Int): Room
     stand(roomID: ID, index: Int): Room
     battle(roomID: ID, playersIndex: [Int]): Room
+    away(roomID: ID, index: Int): Room
+    back(roomID: ID, index: Int): Room
+    leave(roomID: ID, index: Int): Room
 }
+
 
 type Subscription {
     subscribeLobby(roomType: String): [Room]

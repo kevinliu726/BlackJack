@@ -6,6 +6,7 @@ import Mutation from "./resolvers/Mutation.js";
 import Subscription from "./resolvers/Subscription.js";
 
 const pubSub = new PubSub();
+const rooms = new Map();
 
 const server = new GraphQLServer({
   typeDefs: "./schema.graphql",
@@ -16,6 +17,7 @@ const server = new GraphQLServer({
   },
   context: {
     db,
+    rooms,
     pubSub
   }
 })

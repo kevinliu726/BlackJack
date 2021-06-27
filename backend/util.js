@@ -1,3 +1,5 @@
+import db from "./db.js"
+
 const shuffle = (decksNumber) => {
     var deck = [];
     for(var i = 0; i < decksNumber * 52; ++i) deck[i] = i;
@@ -10,6 +12,7 @@ const shuffle = (decksNumber) => {
     }
     return deck;
 }
+
 
 const getNewPlayer = ({isBank, name, index, state}) => {
     return {
@@ -73,7 +76,7 @@ const getBattleState = (cards) => {
     else return {isNormal: true, times: 0, point};
 }
 
-const battle = async (bank, player) => {
+const battle = async (bank, player, roomID) => {
     const bankState = getBattleState(bank.cards);
     const playerState = getBattleState(player.cards);
     let playerResultTimes;
@@ -84,30 +87,47 @@ const battle = async (bank, player) => {
         else if(playerState.point > 21) playerResultTimes = -1;
         else playerResultTimes = (playerState.point > bankState.point) ? 1 : (playerState.point < bankState.point ? -1 : 0);
     }
+    // store the result to db
+    const battleHistory = await new db.BattleHistoryModel({
+        roomID,
+        date: new Date(),
+        bank: {
+            name: bank.name,
+            cards: bank.cards
+        },
+        player: {
+            name: player.name,
+            cards: player.cards
+        },
+        bet: player.bet,
+        resultTimes: playerResultTimes
+    }).save();
+    const roomHistory = await db.RoomHistoryModel.findOne({roomID}).exec();
+    roomHistory.battles.push(battleHistory._id);
+    await roomHistory.save();
+    // update player info
     player.canBattle = false;
     player.resultTimes = playerResultTimes;
     player.cash += player.bet + player.resultTimes * player.bet;
-    player.cards[0].visible = true;
     bank.cash -= player.resultTimes * player.bet;
-    await player.save();
-    await bank.save();
+    player.cards[0].visible = true;
+    // player.bet = 0;
 }
 
 const findBlackJack = async (room) => {
     if(room.players[11].canBlackJack){
         for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank)){
-            await battle(room.player[11], p);
+            await battle(room.player[11], p, roomID);
         }
     }
     else {
         for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank && p.canBlackJack)){
-            await battle(room.player[11], p);
+            await battle(room.player[11], p, roomID);
         }
     }
     if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").every(p => !p.canBattle)){
         room.state === "GAMEOVER";
     }
-    await room.save();
 }
 
 const canBlackJack = (cards) => {

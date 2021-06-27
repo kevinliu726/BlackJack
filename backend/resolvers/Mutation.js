@@ -6,93 +6,99 @@ const Mutation = {
         const {db} = context;
         const {name, password} = args;
         const user = await db.UserModel.findOne({name});
-        console.log("someone register.")
         if(user) return false;
-        const newUser = await new db.UserModel({name, password}).save();
+        const newUser = await new db.UserModel({name, password, history: []}).save();
         return true;
     },
-    async createRoom(parent, args, context, info){
-        const {db, pubSub} = context;
-        const {roomInfo} = args;
+    async createRoom(parent, {roomInfo}, {db, rooms, pubSub}, info){
         const {host} = roomInfo;
+        const roomID = uuidv4();
+        // create RoomHistory for bank
+        const user = await db.UserModel.findOne({name: host}).exec();
+        const roomHistory = await new db.RoomHistoryModel({roomID, date: new Date(), roomInfo, battles: []}).save();
+        user.history.push(roomHistory._id);
+        await user.save();
+        // create Room
         roomInfo.playersNumber = 1;
         const players = new Array(12).fill(null);
         for(var i = 0; i < 12; ++i){
-            if(i === 11) players[i] = (await new db.PlayerModel(util.getNewPlayer({isBank: true, name: host, index: i, state: "ACTIVE"})).save());
-            else players[i] = (await new db.PlayerModel(util.getNewPlayer({isBank: false, name: "", index: i, state: "UNSEATED"})).save());
+            if(i === 11) players[i] = util.getNewPlayer({isBank: true, name: host, index: i, state: "ACTIVE"});
+            else players[i] = util.getNewPlayer({isBank: false, name: "", index: i, state: "UNSEATED"});
         }
-        const room = await new db.RoomModel({
-            roomID: uuidv4(),
+        const room = {
+            roomID,
             roomInfo,
             players,
             state: "PAUSE",
             deck: util.shuffle(roomInfo.decksNumber),
-        }).save();
-        pubSub.publish(roomInfo.roomType, {subscribeLobby: await db.RoomModel.find({"roomInfo.roomType": roomInfo.roomType}).select("roomInfo")});
-        return await room.populate("players").execPopulate();
+            date: new Date()
+        };
+        rooms.set(roomID, room);
+        const sortRooms = [...rooms]
+            .map(([roomID, room]) => room)
+            .filter(r => r.roomInfo.roomType === roomInfo.roomType)
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+        pubSub.publish(roomInfo.roomType, {subscribeLobby: sortRooms});
+        return room;
     },
-    async chooseSeat(parent, {roomID, name, index}, {db, pubSub}, info){
-        const room = await db.RoomModel.findOne({roomID});
-        const seatPlayer = await db.PlayerModel.findById(room.players[index]);
-        if(seatPlayer.state !== "UNSEATED") return false;
-        await db.PlayerModel.deleteOne({_id: seatPlayer._id});
-        const newPlayer = await new db.PlayerModel(util.getNewPlayer({isBank: false, name, index, state: "ACTIVE"})).save();
-        room.players.set(index, newPlayer._id);
+    async chooseSeat(parent, {roomID, name, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
+        if(room.players[index].state !== "UNSEATED") return false;
+        // create RoomHistory
+        const user = await db.UserModel.findOne({name}).exec();
+        const roomHistory = await db.RoomHistoryModel.findOne({roomID}).exec();
+        user.history.push(roomHistory._id);
+        await user.save();
+        // add new player
+        room.players[index] = util.getNewPlayer({isBank: false, name, index, state: "ACTIVE"});
         room.roomInfo.playersNumber += 1;
-        await room.save();
-        await room.populate("players").execPopulate();
-        pubSub.publish(room.roomInfo.roomType, {subscribeLobby: await db.RoomModel.find({"roomInfo.roomType": room.roomInfo.roomType}).select("roomInfo")});
+        const sortRooms = [...rooms]
+            .map(([roomID, room]) => room)
+            .filter(r => r.roomInfo.roomType === room.roomInfo.roomType)
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+        pubSub.publish(room.roomInfo.roomType, {subscribeLobby: sortRooms});
         pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
         return true;
     },
-    async startGame(parent, {roomID}, {db, pubSub}, info){
-        const room = await db.RoomModel.findOne({roomID}).populate("players").exec();
-        for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank)){
-            p.canBet = true;
-            await p.save();
-        }
+    async startGame(parent, {roomID}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
+        room.players.filter(p => p.state === "ACTIVE" && !p.isBank).forEach(p => p.canBet = true);
         room.state = "PLAYING";
-        await room.save();
         pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
         return room;
     },
-    async setBet(parent, {roomID, bet, index}, {db, pubSub}, info){
-        const room = await db.RoomModel.findOne({roomID}).populate("players").exec();
+    async setBet(parent, {roomID, bet, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
         room.players[index].canBet = false;
         room.players[index].cash -= bet;
         room.players[index].bet = bet;
-        await room.players[index].save();
         if(room.players.filter(p => p.state === "ACTIVE").every(p => !p.canBet)) {
             // deliver cards
             for(const p of room.players.filter(p => p.state === "ACTIVE")){
                 p.cards = [{visible: false, number: util.getCardFromDeck(room)}, {visible: true, number: util.getCardFromDeck(room)}];
                 util.setCardsState(p);
-                await p.save();
             }
             // check player with blackJack
-            await util.findBlackJack(room);
+            util.findBlackJack(room);
             // find first player
             if(room.state !== "GAMEOVER"){
                 const firstPlayer = room.players.find(p => p.state === "ACTIVE" && !p.isBattled);
                 firstPlayer.state = "TURN";
-                await firstPlayer.save();
             }
         }
-        await room.save();
         pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
         return room;
     },
-    async hit(parent, {roomID, index}, {db, pubSub}, info){
-        const room = await db.RoomModel.findOne({roomID}).populate("players").exec();
+    async hit(parent, {roomID, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
         room.players[index].cards.push({visible: true, number: util.getCardFromDeck(room)});
         util.setCardsState(room.players[index]);
-        await room.players[index].save();
-        await room.save();
         pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
         return room;
     },
-    async stand(parent, {roomID, index}, {db, pubSub}, info){
-        const room = await db.RoomModel.findOne({roomID}).populate("players").exec();
+    async stand(parent, {roomID, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
+        // console.log(room.players[index].state);
         room.players[index].state = "ACTIVE";
         let next;
         for(next = index + 1; next < 12; ++next){
@@ -103,20 +109,35 @@ const Mutation = {
         if(next === 11){
             room.players[next].cards[0].visible = true;
         }
-        await room.players[next].save();
-        await room.players[index].save();
         pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
         return room;
     },
-    async battle(parent, {roomID, playersIndex}, {db, pubSub}, info){
-        const room = await db.RoomModel.findOne({roomID}).populate("players").exec();
+    async battle(parent, {roomID, playersIndex}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
         for(const i of playersIndex){
-            await util.battle(room.players[11], room.players[i]);
+            await util.battle(room.players[11], room.players[i], roomID);
         }
         if(room.players.filter(p => p && !p.isBank && p.state === "ACTIVE").every(p => p.isBattled)){
             room.state === "GAMEOVER";
         }
-        await room.save();
+        pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
+        return room;
+    },
+    async away(parent, {roomID, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
+        room.players[index].state = "AWAY";
+        pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
+        return room;
+    },
+    async back(parent, {roomID, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
+        room.players[index] = util.getNewPlayer({isBank: false, name: room.players[index].name, index, state: "ACTIVE"});
+        pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
+        return room;
+    },
+    async leave(parent, {roomID, index}, {db, rooms, pubSub}, info){
+        const room = rooms.get(roomID);
+        room.players[index] = util.getNewPlayer({isBank: false, name: "", index, state: "UNSEATED"});
         pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
         return room;
     }
