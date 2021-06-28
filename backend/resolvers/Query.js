@@ -24,7 +24,8 @@ const Query = {
             .sort((a, b) => new Date(a.date) - new Date(b.date));
     return sortRooms;
   },
-  async enterRoom(parent, { roomID }, { rooms }, info) {
+  async getRoom(parent, { roomID }, { rooms }, info) {
+    console.log(roomID);
     return rooms.get(roomID);
   },
   async getRoomHistory(parent, {name}, {db}, info){

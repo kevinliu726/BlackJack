@@ -2,7 +2,7 @@ type Query {
     nameExist(name: String): Boolean
     isLogIn(name: String, password: String): Boolean
     getLobby(roomType: String): [Room]
-    enterRoom(roomID: ID): Room
+    getRoom(roomID: ID): Room
     getRoomHistory(name: String): [RoomHistory]
     getBattleHistory(name: String, roomID: ID): [BattleHistory]
 }
@@ -11,7 +11,7 @@ type Mutation {
     register(name: String, password: String): Boolean
     createRoom(roomInfo: CreateRoomInfo): Room
     startGame(roomID: ID): Room
-    chooseSeat(roomID: ID, name: String, index: Int): Boolean
+    chooseSeat(roomID: ID, name: String, index: Int): Int
     setBet(roomID: ID, bet: Int, index: Int): Room
     hit(roomID: ID, index: Int): Room
     stand(roomID: ID, index: Int): Room

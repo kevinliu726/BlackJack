@@ -33,18 +33,18 @@ const Mutation = {
       deck: util.shuffle(roomInfo.decksNumber),
       date: new Date(),
     };
-    console.log(roomID);
-    rooms.set(roomID, room);
+    rooms.set(roomID.toString(), room);
     const sortRooms = [...rooms]
       .map(([roomID, room]) => room)
       .filter((r) => r.roomInfo.roomType === roomInfo.roomType)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     pubSub.publish(roomInfo.roomType, { subscribeLobby: sortRooms });
+    pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
     return room;
   },
   async chooseSeat(parent, { roomID, name, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    if (room.players[index].state !== "UNSEATED") return false;
+    if (room.players[index].state !== "UNSEATED") return -1;
     // create RoomHistory
     const user = await db.UserModel.findOne({ name }).exec();
     const roomHistory = await db.RoomHistoryModel.findOne({ roomID }).exec();
@@ -59,7 +59,7 @@ const Mutation = {
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     pubSub.publish(room.roomInfo.roomType, { subscribeLobby: sortRooms });
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
-    return true;
+    return index;
   },
   async startGame(parent, { roomID }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
