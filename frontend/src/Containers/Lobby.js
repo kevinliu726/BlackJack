@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Room from "../Components/Room";
 import EnterPasswordModal from "../Components/Modal/EnterPasswordModal";
 import CreateRoomModal from "../Components/Modal/CreateRoomModal";
-import SearchModal from "../Components/Modal/SearchModal";
-import SearchIcon from "@material-ui/icons/Search";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Divider from "@material-ui/core/Divider";
 import { Button } from "@material-ui/core";
@@ -13,72 +15,60 @@ import { SUBSCRIBE_LOBBY } from "../graphql/Subscription";
 import { CREATE_ROOM } from "../graphql/Mutation";
 import "../css/Lobby.css";
 import { create } from "jss";
-const initRoomList = [
-  {
-    id: 1,
-    roomType: "Public",
-    password: "",
-    name: "Test1",
-    host: "Kevin",
-    playersNumber: 12,
-    minBet: 20,
-    maxBet: 500,
-  },
-  {
-    id: 2,
-    roomType: "Public",
-    password: "",
-    name: "Test2",
-    host: "Kevin2",
-    playersNumber: 3,
-    minBet: 30,
-    maxBet: 512,
-  },
-  {
-    id: 3,
-    roomType: "Private",
-    password: "1234",
-    name: "Test3",
-    host: "Kevin3",
-    playersNumber: 3,
-    minBet: 30,
-    maxBet: 512,
-  },
-];
 const Lobby = ({
   match: {
     params: { username, room_type },
   },
 }) => {
+  const classes = makeStyles(() => ({
+    form: {
+      display: "flex",
+      flexWrap: "wrap",
+      marginRight: "4%",
+      width: "15%",
+      "& label": { color: "gray" },
+      "& label.Mui-focused": { color: "#c0c0c0" },
+      "& .MuiInputAdornment-root": { color: "#c0c0c0" },
+      "& .MuiIconButton-label": { color: "#c0c0c0" },
+      "& .MuiInputBase-input": { color: "#c0c0c0" },
+      "& .MuiOutlinedInput-root": {
+        "& fieldset": { borderColor: "transparent" },
+        "&:hover fieldset": { borderColor: "transparent" },
+        "&.Mui-focused fieldset": { borderColor: "transparent" },
+      },
+    },
+  }))();
   const isPublic = room_type === "Public" ? true : false;
   const [enterRoomID, setEnterRoomID] = useState("");
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
   const [openSearchRoom, setOpenSearchRoom] = useState(false);
+  const [roomListFilter, setRoomListFilter] = useState([]);
   const [roomList, setRoomList] = useState([]);
   const [correctPassword, setCorrectPassword] = useState("");
+  const [searchName, setSearchName] = useState("");
 
   const [createRoom] = useMutation(CREATE_ROOM);
-  const {data, subscribeToMore} = useQuery(GET_LOBBY, {variables: {roomType: room_type}});
+  const { data, subscribeToMore } = useQuery(GET_LOBBY, { variables: { roomType: room_type } });
   useEffect(() => {
     subscribeToMore({
       document: SUBSCRIBE_LOBBY,
-      variables: {roomType: room_type},
-      updateQuery: (prev, {subscriptionData}) => {
-        if(!subscriptionData.data) return prev
-        return {...prev, getLobby: [...subscriptionData.data.subscribeLobby]};
-      }
-    })
+      variables: { roomType: room_type },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        return { ...prev, getLobby: [...subscriptionData.data.subscribeLobby] };
+      },
+    });
   }, [subscribeToMore]);
   useEffect(() => {
-    if(data) setRoomList(data.getLobby);
+    if (data) {
+      setRoomList(data.getLobby);
+      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.contains(searchName)));
+    }
   }, [data]);
 
   const goBackToMenu = () => {
     window.location.href = `/Menu/${username}`;
-  };
-  const handleOpenSearch = () => {
-    setOpenSearchRoom(true);
   };
   const handleOpenCreate = () => {
     setOpenCreateRoom(true);
@@ -86,33 +76,29 @@ const Lobby = ({
   const handleOpenEnterPassword = () => {
     setOpenEnterPassword(true);
   };
-  const handleCloseSearch = () => {
-    setOpenSearchRoom(false);
-  };
   const handleCloseCreate = () => {
     setOpenCreateRoom(false);
   };
   const handleClosePassword = () => {
     setOpenEnterPassword(false);
   };
-
+  const searchNameOnChange = (event) => {
+    setSearchName(event.target.value);
+    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.contains(event.target.value)));
+  };
   const handleEnter = () => {
     setOpenEnterPassword(false);
     window.location.href = `/Game/${room_type}/${enterRoomID}/${username}`;
   };
 
-  const handleCreate = ({roomInfo}) => {
+  const handleCreate = ({ roomInfo }) => {
     setOpenCreateRoom(false);
     // createRoom(roomInfo: RoomInfo): Room
     roomInfo.host = username;
     roomInfo.roomType = room_type;
     console.log(roomInfo);
-    createRoom({variables: {roomInfo}});
+    createRoom({ variables: { roomInfo } });
     // window.location.href = `/Game/${room_type}/${}/${username}`;
-  };
-
-  const handleSearch = () => {
-    setOpenSearchRoom(false);
   };
 
   const goToGame = (roomID, password) => {
@@ -137,19 +123,21 @@ const Lobby = ({
             handleClose={handleCloseCreate}
             handleEnter={handleCreate}
           />
-          <SearchModal
-            open={openSearchRoom}
-            isPublic={isPublic}
-            handleClose={handleCloseSearch}
-            handleEnter={() => handleSearch()}
-          />
           <Button id="create_btn" onClick={() => handleOpenCreate()}>
             create
           </Button>
           <div className="lobby_tag">{room_type.toUpperCase()}</div>
-          <Button id="search_btn" onClick={() => handleOpenSearch()}>
-            <SearchIcon style={{ width: "100%", height: "100%" }} />
-          </Button>
+          <FormControl className={classes.form}>
+            <InputLabel htmlFor="search">Search</InputLabel>
+            <OutlinedInput
+              id="search"
+              type="text"
+              values={searchName}
+              onChange={searchNameOnChange}
+              autoComplete="off"
+              labelWidth={90}
+            />
+          </FormControl>
         </div>
         <Divider variant="fullWidth" style={{ backgroundColor: "gray", width: "73%", textAlign: "center" }} />
         <div className="lobby_cascade">
@@ -159,7 +147,7 @@ const Lobby = ({
             handleClose={handleClosePassword}
             handleEnter={() => handleEnter()}
           />
-          {roomList.map((room) => (
+          {roomListFilter.map((room) => (
             <Room
               id={room.roomID}
               name={room.roomInfo.name}
@@ -170,10 +158,10 @@ const Lobby = ({
               goToGame={() => goToGame(room.roomID, room.roomInfo.password)}
             />
           ))}
-          {roomList.length === 0 && <div className="room_warning_text">NO ROOM EXISTS</div>}
-          {roomList.length % 3 === 1 && <Room fake={true} />}
-          {roomList.length % 3 === 1 && <Room fake={true} />}
-          {roomList.length % 3 === 2 && <Room fake={true} />}
+          {roomListFilter.length === 0 && <div className="room_warning_text">NO ROOM EXISTS</div>}
+          {roomListFilter.length % 3 === 1 && <Room fake={true} />}
+          {roomListFilter.length % 3 === 1 && <Room fake={true} />}
+          {roomListFilter.length % 3 === 2 && <Room fake={true} />}
         </div>
       </div>
     </div>
