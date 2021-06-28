@@ -83,10 +83,10 @@ const Mutation = {
         util.setCardsState(p);
       }
       // check player with blackJack
-      util.findBlackJack(room);
+      await util.findBlackJack(room);
       // find first player
       if (room.state !== "GAMEOVER") {
-        const firstPlayer = room.players.find((p) => p.state === "ACTIVE" && !p.isBattled);
+        const firstPlayer = room.players.find((p) => p.state === "ACTIVE" && p.canBattle);
         firstPlayer.state = "TURN";
       }
     }
@@ -115,12 +115,20 @@ const Mutation = {
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
-  async battle(parent, { roomID, playersIndex }, { db, rooms, pubSub }, info) {
+  async chooseBattlePlayer(parent, {roomID, index}, {rooms, pubSub}, info){
     const room = rooms.get(roomID);
-    for (const i of playersIndex) {
-      await util.battle(room.players[11], room.players[i], roomID);
+    console.log("choose battle " + index);
+    room.players[index].isChosen = !room.players[index].isChosen;
+    pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
+    return room;
+  },
+  async battle(parent, { roomID }, { db, rooms, pubSub }, info) {
+    const room = rooms.get(roomID);
+    for (const p of room.players.filter(p => p.isChosen)) {
+      await util.battle(room.players[11], p, roomID);
+      p.isChosen = false;
     }
-    if (room.players.filter((p) => p && !p.isBank && p.state === "ACTIVE").every((p) => p.isBattled)) {
+    if (room.players.filter((p) => p && !p.isBank && p.state === "ACTIVE").every((p) => !p.canBattle)) {
       room.state === "GAMEOVER";
     }
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });

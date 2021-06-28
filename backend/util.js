@@ -24,6 +24,7 @@ const getNewPlayer = ({isBank, name, index, state}) => {
         canBet: false,
         canStand: false,
         canHit: false,
+        isChosen: false,
         cash: 0,
         bet: 0,
         cards: [],
