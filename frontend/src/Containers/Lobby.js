@@ -63,7 +63,7 @@ const Lobby = ({
   useEffect(() => {
     if (data) {
       setRoomList(data.getLobby);
-      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.contains(searchName)));
+      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.includes(searchName)));
     }
   }, [data]);
 
@@ -84,7 +84,7 @@ const Lobby = ({
   };
   const searchNameOnChange = (event) => {
     setSearchName(event.target.value);
-    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.contains(event.target.value)));
+    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.includes(event.target.value)));
   };
   const handleEnter = () => {
     setOpenEnterPassword(false);
