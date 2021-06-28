@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import Room from "../Components/Room";
 import EnterPasswordModal from "../Components/Modal/EnterPasswordModal";
 import CreateRoomModal from "../Components/Modal/CreateRoomModal";
@@ -53,7 +53,7 @@ const Lobby = ({
     },
   });
   const { data, subscribeToMore } = useQuery(GET_LOBBY, { variables: { roomType: room_type } });
-  useEffect(() => {
+  useLayoutEffect(() => {
     subscribeToMore({
       document: SUBSCRIBE_LOBBY,
       variables: { roomType: room_type },
@@ -63,7 +63,7 @@ const Lobby = ({
       },
     });
   }, [subscribeToMore]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (data) {
       setRoomList(data.getLobby);
       setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.includes(searchName)));

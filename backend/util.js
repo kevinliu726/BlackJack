@@ -118,7 +118,7 @@ const battle = async (bank, player, roomID) => {
 const findBlackJack = async (room) => {
     if(room.players[11].canBlackJack){
         for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank)){
-            await battle(room.player[11], p, roomID);
+            await battle(room.players[11], p, roomID);
         }
     }
     else {

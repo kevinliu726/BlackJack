@@ -3,123 +3,12 @@ import "../css/Game.css";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
-import { useEffect, useState } from "react";
-const players = [
-  {
-    name: "K1",
-    index: 0,
-    state: "ACTIVE",
-    isBank: false,
-    cash: -100,
-    cards: [
-      { visible: false, index: 1 },
-      { visible: true, index: 3 },
-      { visible: true, index: 2 },
-      { visible: true, index: 65 },
-      { visible: true, index: 22 },
-    ],
-  },
-  {
-    name: "K2",
-    index: 1,
-    state: "ACTIVE",
-    cash: 200,
-    isBank: false,
-    cards: [
-      { visible: false, index: 1 },
-      { visible: true, index: 3 },
-      { visible: true, index: 21 },
-      { visible: true, index: 88 },
-    ],
-  },
-  {
-    name: "K3",
-    index: 2,
-    state: "AWAY",
-    cash: 100,
-    isBank: false,
-    cards: [
-      { visible: false, index: 1 },
-      { visible: true, index: 3 },
-      { visible: true, index: 32 },
-    ],
-  },
-  {
-    name: "K4",
-    index: 3,
-    state: "ACTIVE",
-    cash: -100,
-    isBank: false,
-    cards: [
-      { visible: false, index: 1 },
-      { visible: true, index: 3 },
-    ],
-  },
-  {
-    name: "K5551",
-    index: 4,
-    state: "ACTIVE",
-    cash: -1030,
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "K1q",
-    index: 5,
-    cash: 10320,
-    state: "ACTIVE",
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "K1ee",
-    index: 6,
-    cash: 10320,
-    state: "ACTIVE",
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "Kwet1",
-    index: 7,
-    cash: 10320,
-    state: "ACTIVE",
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "K1we",
-    index: 8,
-    state: "UNSEATED",
-    cash: 320,
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "K1tt",
-    index: 9,
-    state: "ACTIVE",
-    cash: 10,
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "Kqwe1",
-    index: 10,
-    cash: -320,
-    state: "ACTIVE",
-    isBank: false,
-    cards: [],
-  },
-  {
-    name: "K221",
-    index: 11,
-    cash: 102,
-    state: "TURN",
-    isBank: true,
-    cards: [],
-  },
-];
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useQuery, useMutation, useSubscription } from "@apollo/client";
+import { GET_ROOM } from "../graphql/Query";
+import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
+import { CHOOSE_SEAT, HIT, STAND, START_GAME, SET_BET, CHOOSE_PLAYER, BATTLE } from "../graphql/Mutation";
+
 const Game = ({
   match: {
     params: { room_type, room_id, username },
@@ -147,72 +36,124 @@ const Game = ({
   }))();
   const [betNum, setBetNum] = useState(1);
   const [battleList, setBattleList] = useState([]);
-  const [usePlayers, setPlayers] = useState(players);
-  const [myIndex, setMyIndex] = useState(4);
+  const [players, setPlayers] = useState([]);
+  const [myIndex, setMyIndex] = useState(0);
+  const {data, loading, subscribeToMore} = useQuery(GET_ROOM, {variables: {roomID: room_id}});
+  const [chooseSeat] = useMutation(CHOOSE_SEAT);
+  const [hit] = useMutation(HIT);
+  const [stand] = useMutation(STAND);
+  const [startGame] = useMutation(START_GAME);
+  const [setBet] = useMutation(SET_BET);
+  const [choosePlayer] = useMutation(CHOOSE_PLAYER);
+  const [battle] = useMutation(BATTLE);
+
+  useLayoutEffect(() => {
+    subscribeToMore({
+      document: SUBSCRIBE_ROOM,
+      variables: {roomID: room_id},
+      updateQuery: (prev, {subscriptionData}) => {
+        if(!subscriptionData.data) return prev
+        return {...prev, getRoom: subscriptionData.data.subscribeRoom};
+      }
+    })
+  }, [subscribeToMore]);
+  useLayoutEffect(() => {
+    if(data && data.getRoom){
+      let index = -1;
+      for(var i = 0; i < 12; i++){
+        if(data.getRoom.players[i].name === username){
+          index = i;
+        }
+      }
+      setPlayers(data.getRoom.players);
+      setMyIndex(index);
+    }
+  }, [data]);
+
   const sitSpot = (index) => {
-    console.log(index);
-    setMyIndex(index);
+    chooseSeat({variables:{roomID: room_id, name: username, index}});
     // chooseSeat(roomID)
   };
-  const startGame = () => {
-    //startGame(room_id)
-  };
+  // const startGame = () => {
+  //   //startGame(room_id)
+  // };
   const endGame = () => {
     //endGame(room_id)
   };
-  const setBet = () => {
-    //setBet(room_id, bet, index)
-  };
+  // const setBet = () => {
+  //   //setBet(room_id, bet, index)
+  // };
   const addBattleList = (index) => {
     setBattleList([...battleList, index]);
   };
   const battleAll = () => {
     //battle(room_id, battleList)
   };
-  const hit = () => {
-    //hit(room_id,myIndex)
-  };
+  // const hit = () => {
+  //   //hit(room_id,myIndex)
+  // };
   const betNumOnChange = (event) => {
     setBetNum(event.target.value);
   };
 
   const away = () => {
-    const newPlayers = [...usePlayers];
+    const newPlayers = [...players];
     newPlayers[myIndex].state = "AWAY";
     setPlayers(newPlayers);
     //away()
   };
   const leave = () => {
-    const newPlayers = [...usePlayers];
+    const newPlayers = [...players];
     newPlayers[myIndex].state = "UNSEATED";
     setPlayers(newPlayers);
     //leave()
     window.location.href = `/Lobby/${room_type}/${username}`;
   };
 
-  let showAll = [];
-  usePlayers.map((player) => {
+  // let showAll = [];
+  const showAll = players.map((player) => {
     if (player.isBank) {
-      return showAll.push(
-        <Player className={"player dealer"} state={player.state} name={player.name} cards={player.cards}></Player>
+      return (
+        <Player
+          className={"player dealer"}
+          state={player.state}
+          username={username}
+          canBattle={false}
+          isChosen={false}
+          canClick={false}
+          name={player.name}
+          cards={player.cards}
+        />
       );
     } else {
-      let index = ((player.index + 4 - myIndex + 11) % 11) + 1;
+      let index = ((player.index + 5 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
-        return showAll.push(
-          <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
-            <div className={"sit_text"}>SIT</div>
-          </div>
-        );
+        // room.state === "PAUSE"
+        if(data && data.getRoom.state === "PAUSE"){
+          return (
+            <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
+              <div className={"sit_text"}>SIT</div>
+            </div>
+          );
+        }
+        else {
+          return (
+            <div className={"player player_" + index} />
+          );
+        }
       } else {
-        return showAll.push(
+        return (
           <Player
             className={"player player_" + index}
             state={player.state}
             name={player.name}
+            username={username}
+            canBattle={(player.canBattle && players[11].state === "TURN" && players[11].canStand) || player.canBet}
+            isChosen={player.isChosen}
+            canClick={myIndex === 11 && player.canBattle && players[11].canStand && players[11].state === "TURN"}
             cards={player.cards}
             cash={player.cash}
-            onClick={() => addBattleList(player.index)}
+            onClick={() => choosePlayer({variables: {roomID: room_id, index: player.index}})}
           ></Player>
         );
       }
@@ -232,7 +173,7 @@ const Game = ({
           </button>
         }
       </div>
-      <div className="btm_btn_container">
+      { myIndex >= 0 && <div className="btm_btn_container">
         {/*
         Player View in Game Bet + Number, Stand + Hit
         Dealer View in Game Stand + Catch, Cancel + Submit
@@ -240,9 +181,14 @@ const Game = ({
         Dealer View not in Game End + Start
         */}
         {
-          // <button className="btn" id="stand_btn">
-          //   STAND
-          // </button>
+          players[myIndex] && players[myIndex].state === "TURN" && players[myIndex].canStand &&
+          ((myIndex === 11 &&
+          <button className="btn" id="stand_btn" onClick={() => battle({variables: {roomID: room_id}})}>
+            BATTLE
+          </button>) ||
+          <button className="btn" id="stand_btn" onClick={() => stand({variables: {roomID: room_id, index: myIndex}})}>
+            STAND
+          </button>)
         }
         {
           // <button className="btn" id="catch_btn">
@@ -250,16 +196,19 @@ const Game = ({
           // </button>
         }
         {
-          // <button className="btn" id="hit_btn">
-          //   HIT
-          // </button>
+          players[myIndex] && players[myIndex].state === "TURN" && players[myIndex].canHit &&
+          <button className="btn" id="hit_btn" onClick={() => hit({variables: {roomID: room_id, index: myIndex}})}>
+            HIT
+          </button>
         }
         {
-          <button className="btn" id="bet_btn">
+          players[myIndex]  && players[myIndex].canBet &&
+          <button className="btn" id="bet_btn" onClick={() => setBet({variables: {roomID: room_id, index: myIndex, bet: parseInt(betNum)}})}>
             BET
           </button>
         }
         {
+          players[myIndex]  && players[myIndex].canBet &&
           <FormControl className={classes.form} variant="outlined">
             <OutlinedInput
               id="betNum"
@@ -276,15 +225,16 @@ const Game = ({
           // </button>
         }
         {
-          // <button className="btn" id="start_btn">
-          //   START
-          // </button>
+          players[myIndex] && players[myIndex].isBank && data && data.getRoom.state === "PAUSE" &&
+          <button className="btn" id="start_btn" onClick={() => startGame({variables: {roomID: room_id}})}>
+            START
+          </button>
         }
-      </div>
+      </div>}
 
       <img className="table_img" src="https://i.imgur.com/oPXcEoE.png" />
-      {players.map((player, index) => {
-        return showAll[index];
+      {showAll.map((player) => {
+        return player;
       })}
     </div>
   );

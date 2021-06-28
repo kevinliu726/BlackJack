@@ -14,6 +14,43 @@ const SUBSCRIBE_LOBBY = gql`
             }
         }
     }
-`
+`;
 
-export {SUBSCRIBE_LOBBY};
+const SUBSCRIBE_ROOM = gql`
+    subscription ($roomID: ID){
+        subscribeRoom(roomID: $roomID){
+            roomID
+            roomInfo{
+                roomType
+                password
+                name
+                host
+                decksNumber
+                playersNumber
+                minBet
+                maxBet
+            }
+            players{
+                name
+                index
+                state
+                isBank
+                canBattle
+                canBet
+                canStand
+                canHit
+                isChosen
+                cash
+                bet
+                cards {
+                    visible
+                    number
+                }
+                resultTimes
+            }
+            state
+        }
+    }
+`;
+
+export {SUBSCRIBE_LOBBY, SUBSCRIBE_ROOM};

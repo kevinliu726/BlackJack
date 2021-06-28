@@ -1,7 +1,7 @@
 import "../css/Player.css";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 
-const Player = ({ className, state, name, cards, cash }) => {
+const Player = ({ className, state, name, cards, cash, username, canBattle, isChosen, canClick, onClick }) => {
   var isWin = cash >= 0;
   var isDealer = className.includes("dealer");
   var info_name = "info_name";
@@ -15,15 +15,17 @@ const Player = ({ className, state, name, cards, cash }) => {
   if (state === "ACTIVE" || state === "TURN") {
     let imgs = [];
     cards.map((card) => {
-      if (card.visible === false) {
-        return imgs.push(require("../cards/back.jpeg").default);
+      if (card.visible === true || username === name) {
+        return imgs.push(require("../cards/" + (card.number % 52) + ".png").default);
       } else {
-        return imgs.push(require("../cards/" + (card.index % 52) + ".png").default);
+        return imgs.push(require("../cards/back.jpeg").default);
       }
     });
+    if(canBattle) state += (isChosen ? " CHOSEN" : " NOT_CHOSEN");
+    state += (canClick ? " canClick" : " canNotClick");
     return (
       <div className={className}>
-        <div className={state}>
+        <div className={state} onClick={onClick}>
           <div className="info_container">
             <div className={info_name}>{name}</div>
             {isWin && <div className={money_win}>{cash}</div>}

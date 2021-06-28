@@ -23,6 +23,57 @@ const CREATE_ROOM = gql`
       }
     }
   }
+`;
+
+const CHOOSE_SEAT = gql`
+  mutation ($roomID: ID, $name: String, $index: Int){
+    chooseSeat(roomID: $roomID, name: $name, index: $index)
+  }
+`;
+
+const HIT = gql`
+  mutation($roomID: ID, $index: Int){
+    hit(roomID: $roomID, index: $index){
+      roomID
+    }
+  }
+`
+const STAND = gql`
+  mutation($roomID: ID, $index: Int){
+    stand(roomID: $roomID, index: $index){
+      roomID
+    }
+  }
+`
+const SET_BET = gql`
+  mutation($roomID: ID, $bet: Int $index: Int){
+    setBet(roomID: $roomID, bet: $bet index: $index){
+      roomID
+    }
+  }
+`
+const START_GAME = gql`
+  mutation($roomID: ID){
+    startGame(roomID: $roomID){
+      roomID
+    }
+  }
 `
 
-export { REGISTER, CREATE_ROOM };
+const CHOOSE_PLAYER = gql`
+  mutation($roomID: ID, $index: Int){
+    chooseBattlePlayer(roomID: $roomID, index: $index){
+      roomID
+    }
+  }
+`
+
+const BATTLE = gql`
+  mutation($roomID: ID){
+    battle(roomID: $roomID){
+      roomID
+    }
+  }
+`
+
+export { REGISTER, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, START_GAME, CHOOSE_PLAYER, BATTLE };
