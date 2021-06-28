@@ -26,10 +26,9 @@ const Lobby = ({
       flexWrap: "wrap",
       marginRight: "4%",
       width: "15%",
-      "& label": { color: "gray" },
-      "& label.Mui-focused": { color: "#c0c0c0" },
-      "& .MuiInputAdornment-root": { color: "#c0c0c0" },
-      "& .MuiIconButton-label": { color: "#c0c0c0" },
+      "& .MuiInputLabel-formControl": { display: "flex", left: "auto", right: 0 },
+      "& label": { color: "#d4af37", fontFamily: "Georgia", fontWeight: "bold", fontSize: "17px" },
+      "& label.Mui-focused": { color: "#d4af37" },
       "& .MuiInputBase-input": { color: "#c0c0c0" },
       "& .MuiOutlinedInput-root": {
         "& fieldset": { borderColor: "transparent" },
@@ -42,7 +41,6 @@ const Lobby = ({
   const [enterRoomID, setEnterRoomID] = useState("");
   const [openEnterPassword, setOpenEnterPassword] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
-  const [openSearchRoom, setOpenSearchRoom] = useState(false);
   const [roomListFilter, setRoomListFilter] = useState([]);
   const [roomList, setRoomList] = useState([]);
   const [correctPassword, setCorrectPassword] = useState("");
@@ -63,12 +61,12 @@ const Lobby = ({
   useEffect(() => {
     if (data) {
       setRoomList(data.getLobby);
-      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.includes(searchName)));
+      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.contains(searchName)));
     }
   }, [data]);
 
   const goBackToMenu = () => {
-    window.location.href = `/Menu/${username}`;
+    window.location.href = `/Meu/${username}`;
   };
   const handleOpenCreate = () => {
     setOpenCreateRoom(true);
@@ -84,7 +82,7 @@ const Lobby = ({
   };
   const searchNameOnChange = (event) => {
     setSearchName(event.target.value);
-    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.includes(event.target.value)));
+    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.contains(event.target.value)));
   };
   const handleEnter = () => {
     setOpenEnterPassword(false);
@@ -128,7 +126,7 @@ const Lobby = ({
           </Button>
           <div className="lobby_tag">{room_type.toUpperCase()}</div>
           <FormControl className={classes.form}>
-            <InputLabel htmlFor="search">Search</InputLabel>
+            <InputLabel htmlFor="search">SEARCH</InputLabel>
             <OutlinedInput
               id="search"
               type="text"
