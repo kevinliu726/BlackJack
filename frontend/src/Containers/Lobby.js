@@ -57,6 +57,7 @@ const Lobby = ({
   const [openSearchRoom, setOpenSearchRoom] = useState(false);
   const [roomList, setRoomList] = useState([]);
   const [correctPassword, setCorrectPassword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const [createRoom] = useMutation(CREATE_ROOM);
   const {data, subscribeToMore} = useQuery(GET_LOBBY, {variables: {roomType: room_type}});
@@ -111,7 +112,8 @@ const Lobby = ({
     // window.location.href = `/Game/${room_type}/${}/${username}`;
   };
 
-  const handleSearch = () => {
+  const handleSearch = ({searchName}) => {
+    setSearchKeyword(searchName);
     setOpenSearchRoom(false);
   };
 
@@ -141,7 +143,7 @@ const Lobby = ({
             open={openSearchRoom}
             isPublic={isPublic}
             handleClose={handleCloseSearch}
-            handleEnter={() => handleSearch()}
+            handleEnter={handleSearch}
           />
           <Button id="create_btn" onClick={() => handleOpenCreate()}>
             create

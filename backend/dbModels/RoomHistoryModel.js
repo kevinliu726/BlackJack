@@ -10,7 +10,6 @@ const RoomHistorySchema = new Schema({
         name: String,
         host: String,
         decksNumber: Number,
-        playersNumber: Number,
         minBet: Number,
         maxBet: Number,
     },

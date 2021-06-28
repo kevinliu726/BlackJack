@@ -59,11 +59,7 @@ const SearchModal = ({ open, handleClose, handleEnter }) => {
     handleClose();
   };
   const checkBeforeEnter = () => {
-    if (searchName === "") {
-      setSNError(true);
-    } else {
-      handleEnter();
-    }
+    handleEnter({searchName});
   };
   return (
     <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">

@@ -3,6 +3,8 @@ type Query {
     isLogIn(name: String, password: String): Boolean
     getLobby(roomType: String): [Room]
     enterRoom(roomID: ID): Room
+    getRoomHistory(name: String): [RoomHistory]
+    getBattleHistory(name: String, roomID: ID): [BattleHistory]
 }
 
 type Mutation {
@@ -72,4 +74,22 @@ type Player {
 type Card {
     visible: Boolean
     number: Int
+}
+
+type RoomHistory {
+    roomID: ID
+    roomInfo: RoomInfo
+}
+
+type BattleHistory {
+    roomID: ID
+    bet: Int,
+    resultTimes: Int,
+    bank: BattleInfo
+    player: BattleInfo
+}
+
+type BattleInfo {
+    name: String,
+    cards: [Card]
 }

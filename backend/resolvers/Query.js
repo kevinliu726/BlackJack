@@ -27,6 +27,14 @@ const Query = {
   async enterRoom(parent, { roomID }, { rooms }, info) {
     return rooms.get(roomID);
   },
+  async getRoomHistory(parent, {name}, {db}, info){
+    const user = await db.UserModel.findOne({name}).populate("history");
+    return user.history.sort((a, b) => new Date(a.date) - new Date(b.data));
+  },
+  async getBattleHistory(parent, {name, roomID}, {db}, info){
+    const battles = await db.BattleHistoryModel.find({roomID, $or: [{"bank.name": name}, {"player.name": name}]});
+    return battles.sort((a, b) => new Date(a.date) - new Date(b.date));
+  }
 };
 
 export default Query;

@@ -47,7 +47,7 @@ const Mutation = {
         // create RoomHistory
         const user = await db.UserModel.findOne({name}).exec();
         const roomHistory = await db.RoomHistoryModel.findOne({roomID}).exec();
-        user.history.push(roomHistory._id);
+        if(!user.history.includes(roomHistory._id)) user.history.push(roomHistory._id);
         await user.save();
         // add new player
         room.players[index] = util.getNewPlayer({isBank: false, name, index, state: "ACTIVE"});
