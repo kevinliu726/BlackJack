@@ -14,7 +14,6 @@ import { GET_LOBBY } from "../graphql/Query";
 import { SUBSCRIBE_LOBBY } from "../graphql/Subscription";
 import { CREATE_ROOM } from "../graphql/Mutation";
 import "../css/Lobby.css";
-import { create } from "jss";
 const Lobby = ({
   match: {
     params: { username, room_type },
@@ -46,7 +45,13 @@ const Lobby = ({
   const [correctPassword, setCorrectPassword] = useState("");
   const [searchName, setSearchName] = useState("");
 
-  const [createRoom] = useMutation(CREATE_ROOM);
+  const [createRoom] = useMutation(CREATE_ROOM, {
+    onCompleted: (createRoomData) => {
+      if (createRoomData && createRoomData.createRoom) {
+        window.location.href = `/Game/${room_type}/${createRoomData.createRoom.roomID}/${username}`;
+      }
+    },
+  });
   const { data, subscribeToMore } = useQuery(GET_LOBBY, { variables: { roomType: room_type } });
   useEffect(() => {
     subscribeToMore({
@@ -61,12 +66,12 @@ const Lobby = ({
   useEffect(() => {
     if (data) {
       setRoomList(data.getLobby);
-      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.contains(searchName)));
+      setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.includes(searchName)));
     }
   }, [data]);
 
   const goBackToMenu = () => {
-    window.location.href = `/Meu/${username}`;
+    window.location.href = `/Menu/${username}`;
   };
   const handleOpenCreate = () => {
     setOpenCreateRoom(true);
@@ -82,7 +87,7 @@ const Lobby = ({
   };
   const searchNameOnChange = (event) => {
     setSearchName(event.target.value);
-    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.contains(event.target.value)));
+    setRoomListFilter(roomList.filter((room) => room.roomInfo.name.includes(event.target.value)));
   };
   const handleEnter = () => {
     setOpenEnterPassword(false);
@@ -91,7 +96,6 @@ const Lobby = ({
 
   const handleCreate = ({ roomInfo }) => {
     setOpenCreateRoom(false);
-    // createRoom(roomInfo: RoomInfo): Room
     roomInfo.host = username;
     roomInfo.roomType = room_type;
     console.log(roomInfo);

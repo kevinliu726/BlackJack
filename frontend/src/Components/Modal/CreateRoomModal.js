@@ -84,7 +84,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
   const [deckNumber, setNumber] = useState("1");
   const [lower, setLower] = useState(1);
   const [lowerError, setLError] = useState(false);
-  const [upper, setUpper] = useState(Number.MAX_SAFE_INTEGER);
+  const [upper, setUpper] = useState(2147483647);
   const [upperError, setUError] = useState(false);
   const [crossError, setCError] = useState(false);
   const deckNumberOnChange = (event) => {
@@ -113,13 +113,21 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
     if (event.target.value !== "") {
       setUpper(event.target.value);
     } else {
-      setUpper(Number.MAX_SAFE_INTEGER);
+      setUpper(2147483647);
     }
   };
   const handleCreate = () => {
     if (roomName !== "" && lower > 0 && upper > 0 && lower <= upper) {
       //send Data
-      handleEnter({roomInfo: {name: roomName, password, minBet: parseInt(lower), maxBet: parseInt(upper), decksNumber: parseInt(deckNumber)}});
+      handleEnter({
+        roomInfo: {
+          name: roomName,
+          password,
+          minBet: parseInt(lower),
+          maxBet: parseInt(upper),
+          decksNumber: parseInt(deckNumber),
+        },
+      });
     } else {
       setRError(roomName === "");
       setPError(password === "");
@@ -133,7 +141,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
     setPassword("");
     setNumber("1");
     setLower(1);
-    setUpper(Number.MAX_SAFE_INTEGER);
+    setUpper(2147483647);
     setRError(false);
     setPError(false);
     setLError(false);
