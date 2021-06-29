@@ -2,10 +2,10 @@ import "../css/HistoryModal.css";
 
 const HistoryMatch = ({ username, bank, player, bet, resultTimes }) => {
   const bankImgs = bank.cards.map((card) => {
-    return require("../cards/" + (card.index % 52) + ".png").default;
+    return require("../cards/" + (card.number % 52) + ".png").default;
   });
   const playerImgs = player.cards.map((card) => {
-    return require("../cards/" + (card.index % 52) + ".png").default;
+    return require("../cards/" + (card.number % 52) + ".png").default;
   });
   if (username === bank.name) {
     return (
