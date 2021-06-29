@@ -11,7 +11,6 @@ import { useQuery, useLazyQuery } from "@apollo/client";
 import { GET_BATTLE_HISTORY, GET_ROOM_HISTORY } from "../../graphql/Query";
 
 const getReadableDate = (date) => {
-  console.log(date);
   var mm = (date.getMonth() + 1 < 9 ? "0" : "") + (date.getMonth() + 1); // getMonth() is zero-based
   var dd = (date.getDate() < 9 ? "0" : "") + date.getDate();
   var hm = (date.getHours() < 9 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 9 ? "0" : "") + date.getMinutes();

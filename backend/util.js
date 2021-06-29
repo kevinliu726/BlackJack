@@ -64,7 +64,7 @@ const getBattlePoint = (cards) => {
     const sum = getPossibleSum(cards);
     const unBombed = sum.filter(x => x <= 21);
     const bombed = sum.filter(x => x > 21);
-    if(unBombed.length > 0) return Math.max(...unBombed);
+    if(unBombed.length > 0 && Math.max(...unBombed) > 14) return Math.max(...unBombed);
     else return Math.min(...bombed);
 }
 
@@ -144,7 +144,12 @@ const canHit = (cards) => {
 }
 
 const canStand = (cards) => {
-    return Math.max(...getPossibleSum(cards)) >= 15;
+    const sum = getPossibleSum(cards);
+    const unBombed = sum.filter(x => x <= 21);
+    const bombed = sum.filter(x => x > 21);
+    if(cards.length === 5) return true;
+    if(unBombed.length === 0) return true;
+    return Math.max(...unBombed) >= 15;
 }
 
 const setCardsState = (player) => {

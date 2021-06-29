@@ -12,12 +12,12 @@ const RulesModal = ({ open, handleClose }) => {
       background: "#615c5c",
       color: "#c0c0c0",
       borderRadius: "20px",
-      width: "30%",
+      width: "50%",
       height: "70%",
     },
     dialogContent: {
       display: "flex",
-      flexDirection: "row",
+      flexDirection: "column",
       width: "80%",
       alignSelf: "center",
       justifyContent: "center",
@@ -47,10 +47,8 @@ const RulesModal = ({ open, handleClose }) => {
   return (
     <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogContent className={classes.dialogContent}>
-        <div style={{ width: "100vw" }}>
-          <img src="https://www.chuangkit.com/yy-folder/img/ctp5.jpg" style={{ width: "100%" }}></img>
-          <img src="https://www.chuangkit.com/yy-folder/img/ctp5.jpg" style={{ width: "100%" }}></img>
-        </div>
+        <span>sss</span>
+        <span>fff</span>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button onClick={handleClose} style={{ color: "#03a9f4" }}>
