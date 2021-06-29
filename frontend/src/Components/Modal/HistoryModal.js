@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import HistoryRoom from "../HistoryRoom";
 import HistoryMatch from "../HistoryMatch";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { GET_BATTLE_HISTORY, GET_ROOM_HISTORY } from "../../graphql/Query";
 
 const getReadableDate = (date) => {
@@ -52,14 +52,7 @@ const HistoryModal = ({ open, username, handleClose }) => {
     },
   }))();
   const { data: roomHistory } = useQuery(GET_ROOM_HISTORY, { variables: { name: username } });
-  // const { data: battleHistory } = useQuery(GET_BATTLE_HISTORY, {
-  //   onCompleted: (battleData) => {
-  //     if (battleData) {
-  //       setBattleData(battleData.battleHistory);
-  //     }
-  //     setShowRoom(false);
-  //   },
-  // });
+  const [getBattleHistory, {data: battleHistory}] = useLazyQuery(GET_BATTLE_HISTORY);
   const [battleData, setBattleData] = useState([]);
   const [showRoom, setShowRoom] = useState(true);
   const handleCloseHistory = () => {
@@ -67,12 +60,12 @@ const HistoryModal = ({ open, username, handleClose }) => {
     handleClose();
   };
   const goIntoDetail = (room_id) => {
-    // battleHistory({
-    //   variables: {
-    //     username,
-    //     room_id,
-    //   },
-    // });
+    getBattleHistory({
+      variables: {
+        name: username,
+        roomID: room_id,
+      },
+    });
     setShowRoom(false);
   };
   const handleBack = () => {
@@ -114,7 +107,7 @@ const HistoryModal = ({ open, username, handleClose }) => {
               overflow: "scroll",
             }}
           >
-            {battleData.map((match) => {
+            {battleHistory && battleHistory.getBattleHistory.map((match) => {
               return (
                 <HistoryMatch
                   username={username}
