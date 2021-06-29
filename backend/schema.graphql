@@ -15,6 +15,7 @@ type Mutation {
     endGame(roomID: ID): Room
     chooseSeat(roomID: ID, name: String, index: Int, originalIndex: Int): Int
     setBet(roomID: ID, bet: Float, index: Int): Room
+    dealCards(roomID: ID): Room
     hit(roomID: ID, index: Int): Room
     stand(roomID: ID, index: Int): Room
     chooseBattlePlayer(roomID: ID, index: Int): Room

@@ -58,6 +58,15 @@ const SET_BET = gql`
     }
   }
 `
+
+const DEAL_CARDS = gql`
+  mutation($roomID: ID){
+    dealCards(roomID: $roomID){
+      roomID
+    }
+  }
+`
+
 const START_GAME = gql`
   mutation($roomID: ID){
     startGame(roomID: $roomID){
@@ -122,4 +131,4 @@ const LEAVE = gql`
   }
 `
 
-export { REGISTER, SET_PASSWORD, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, START_GAME, CHOOSE_PLAYER, BATTLE, BATTLE_ALL, END_GAME, AWAY, BACK, LEAVE };
+export { REGISTER, SET_PASSWORD, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, DEAL_CARDS, START_GAME, CHOOSE_PLAYER, BATTLE, BATTLE_ALL, END_GAME, AWAY, BACK, LEAVE };
