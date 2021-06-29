@@ -14,9 +14,10 @@ const getReadableDate = (date) => {
   console.log(date);
   var mm = (date.getMonth() + 1 < 9 ? "0" : "") + (date.getMonth() + 1); // getMonth() is zero-based
   var dd = (date.getDate() < 9 ? "0" : "") + date.getDate();
-  var hm = (date.getHours() < 9 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 9 ? "0" : "") + date.getMinutes();
+  var hm =
+    (date.getHours() < 9 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 9 ? "0" : "") + date.getMinutes();
 
-  return [date.getFullYear(), mm, dd, hm].join('-'); 
+  return [date.getFullYear(), mm, dd, hm].join("-");
 };
 
 const HistoryModal = ({ open, username, handleClose }) => {
@@ -52,8 +53,7 @@ const HistoryModal = ({ open, username, handleClose }) => {
     },
   }))();
   const { data: roomHistory } = useQuery(GET_ROOM_HISTORY, { variables: { name: username } });
-  const [getBattleHistory, {data: battleHistory}] = useLazyQuery(GET_BATTLE_HISTORY);
-  const [battleData, setBattleData] = useState([]);
+  const [getBattleHistory, { data: battleHistory }] = useLazyQuery(GET_BATTLE_HISTORY);
   const [showRoom, setShowRoom] = useState(true);
   const handleCloseHistory = () => {
     setShowRoom(true);
@@ -107,17 +107,18 @@ const HistoryModal = ({ open, username, handleClose }) => {
               overflow: "scroll",
             }}
           >
-            {battleHistory && battleHistory.getBattleHistory.map((match) => {
-              return (
-                <HistoryMatch
-                  username={username}
-                  bank={match.bank}
-                  player={match.player}
-                  bet={match.bet}
-                  resultTimes={match.resultTimes}
-                />
-              );
-            })}
+            {battleHistory &&
+              battleHistory.getBattleHistory.map((match) => {
+                return (
+                  <HistoryMatch
+                    username={username}
+                    bank={match.bank}
+                    player={match.player}
+                    bet={match.bet}
+                    resultTimes={match.resultTimes}
+                  />
+                );
+              })}
           </div>
         )}
       </DialogContent>
