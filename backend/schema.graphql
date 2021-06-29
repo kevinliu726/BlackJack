@@ -84,6 +84,7 @@ type Card {
 type RoomHistory {
     roomID: ID
     roomInfo: RoomInfo
+    date: String
 }
 
 type BattleHistory {

@@ -10,6 +10,15 @@ import HistoryMatch from "../HistoryMatch";
 import { useQuery } from "@apollo/client";
 import { GET_BATTLE_HISTORY, GET_ROOM_HISTORY } from "../../graphql/Query";
 
+const getReadableDate = (date) => {
+  console.log(date);
+  var mm = (date.getMonth() + 1 < 9 ? "0" : "") + (date.getMonth() + 1); // getMonth() is zero-based
+  var dd = (date.getDate() < 9 ? "0" : "") + date.getDate();
+  var hm = (date.getHours() < 9 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 9 ? "0" : "") + date.getMinutes();
+
+  return [date.getFullYear(), mm, dd, hm].join('-'); 
+};
+
 const HistoryModal = ({ open, username, handleClose }) => {
   const classes = makeStyles(() => ({
     dialog: {
@@ -42,29 +51,28 @@ const HistoryModal = ({ open, username, handleClose }) => {
       justifyContent: "space-between",
     },
   }))();
-  const { roomHistory } = useQuery(GET_ROOM_HISTORY, { variables: { name: username } });
-  console.log(roomHistory);
-  const { battleHistory } = useQuery(GET_BATTLE_HISTORY, {
-    onCompleted: (battleData) => {
-      if (battleData) {
-        setBattleData(battleData.battleHistory);
-      }
-      setShowRoom(false);
-    },
-  });
-  const [battleData, setBattleData] = useState({});
+  const { data: roomHistory } = useQuery(GET_ROOM_HISTORY, { variables: { name: username } });
+  // const { data: battleHistory } = useQuery(GET_BATTLE_HISTORY, {
+  //   onCompleted: (battleData) => {
+  //     if (battleData) {
+  //       setBattleData(battleData.battleHistory);
+  //     }
+  //     setShowRoom(false);
+  //   },
+  // });
+  const [battleData, setBattleData] = useState([]);
   const [showRoom, setShowRoom] = useState(true);
   const handleCloseHistory = () => {
     setShowRoom(true);
     handleClose();
   };
   const goIntoDetail = (room_id) => {
-    battleHistory({
-      variables: {
-        username,
-        room_id,
-      },
-    });
+    // battleHistory({
+    //   variables: {
+    //     username,
+    //     room_id,
+    //   },
+    // });
     setShowRoom(false);
   };
   const handleBack = () => {
@@ -84,12 +92,12 @@ const HistoryModal = ({ open, username, handleClose }) => {
               overflow: "scroll",
             }}
           >
-            {roomHistory.map((room) => {
+            {roomHistory.getRoomHistory.map((room) => {
               return (
                 <HistoryRoom
                   room_name={room.roomInfo.name}
                   host={room.roomInfo.host}
-                  date={room.date}
+                  date={getReadableDate(new Date(parseInt(room.date)))}
                   goIntoDetail={() => goIntoDetail(room.roomID)}
                 />
               );
