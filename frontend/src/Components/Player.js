@@ -1,7 +1,22 @@
 import "../css/Player.css";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 
-const Player = ({ className, state, name, cards, cash, bet, username, isBank, flash, canBattle, isChosen, canClick, onClick, resultTimes }) => {
+const Player = ({
+  className,
+  state,
+  name,
+  cards,
+  cash,
+  bet,
+  username,
+  isBank,
+  flash,
+  canBattle,
+  isChosen,
+  canClick,
+  onClick,
+  resultTimes,
+}) => {
   var isWin = cash >= 0;
   var isDealer = className.includes("dealer");
   var info_name = "info_name";
@@ -14,23 +29,26 @@ const Player = ({ className, state, name, cards, cash, bet, username, isBank, fl
     money_loss = "info_money_lose_dealer";
   }
   if (state === "ACTIVE" || state === "TURN") {
-    let imgs = [];
-    cards.map((card) => {
+    const imgs = cards.map((card) => {
       if (card.visible === true || username === name) {
-        return imgs.push(require("../cards/" + (card.number % 52) + ".png").default);
+        return require("../cards/" + (card.number % 52) + ".png").default;
       } else {
-        return imgs.push(require("../cards/back.jpeg").default);
+        return require("../cards/back.jpeg").default;
       }
     });
-    if(flash) state += (isChosen ? " CHOSEN" : " NOT_CHOSEN");
-    state += (canClick ? " canClick" : " canNotClick");
+    if (flash) state += isChosen ? " CHOSEN" : " NOT_CHOSEN";
+    state += canClick ? " canClick" : " canNotClick";
     return (
       <div className={className}>
         <div className={state} onClick={onClick}>
           <div className="info_container">
             <div className={info_name}>{name}</div>
             {!isBank && canBattle && <div className="info_bet">{bet > 0 && bet}</div>}
-            {!canBattle && <div className={resultClass}>{bet} / {resultTimes} x</div>}
+            {!canBattle && (
+              <div className={resultClass}>
+                {bet} / {resultTimes} x
+              </div>
+            )}
             {isWin && <div className={money_win}>{cash}</div>}
             {!isWin && <div className={money_loss}>{cash}</div>}
           </div>

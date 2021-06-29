@@ -60,6 +60,7 @@ const Login = () => {
     },
   });
   const [isLogIn] = useLazyQuery(LOG_IN, {
+    fetchPolicy: "network-only",
     onCompleted: (data) => {
       if (data && data.isLogIn) {
         window.location.href = `/Menu/${values.username}`;

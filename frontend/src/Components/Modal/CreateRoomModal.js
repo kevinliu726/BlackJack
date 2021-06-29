@@ -118,7 +118,6 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
   };
   const handleCreate = () => {
     if (roomName !== "" && lower > 0 && upper > 0 && lower <= upper) {
-      //send Data
       handleEnter({
         roomInfo: {
           name: roomName,
@@ -151,7 +150,9 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
   };
   return (
     <Dialog classes={{ paper: classes.dialog }} open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Create Room</DialogTitle>
+      <DialogTitle className={classes.dialogTitle} id="form-dialog-title">
+        Create Room
+      </DialogTitle>
       <DialogContent>
         <FormControl className={classes.text} variant="outlined">
           <InputLabel htmlFor="room">Room Name</InputLabel>

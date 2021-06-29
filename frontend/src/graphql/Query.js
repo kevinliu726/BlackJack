@@ -13,10 +13,10 @@ const NAME_EXIST = gql`
 `;
 
 const GET_LOBBY = gql`
-  query ($roomType: String){
-    getLobby(roomType: $roomType){
+  query ($roomType: String) {
+    getLobby(roomType: $roomType) {
       roomID
-      roomInfo{
+      roomInfo {
         name
         password
         host
@@ -29,10 +29,10 @@ const GET_LOBBY = gql`
 `;
 
 const GET_ROOM = gql`
-  query ($roomID: ID){
-    getRoom(roomID: $roomID){
+  query ($roomID: ID) {
+    getRoom(roomID: $roomID) {
       roomID
-      roomInfo{
+      roomInfo {
         roomType
         password
         name
@@ -42,7 +42,7 @@ const GET_ROOM = gql`
         minBet
         maxBet
       }
-      players{
+      players {
         name
         index
         state
@@ -55,8 +55,8 @@ const GET_ROOM = gql`
         cash
         bet
         cards {
-            visible
-            number
+          visible
+          number
         }
         resultTimes
       }
@@ -65,4 +65,44 @@ const GET_ROOM = gql`
   }
 `;
 
-export { LOG_IN, NAME_EXIST, GET_LOBBY, GET_ROOM };
+const GET_ROOM_HISTORY = gql`
+  query ($name: String) {
+    getRoomHistory(name: $name) {
+      roomID
+      roomInfo {
+        name
+        password
+        host
+        playersNumber
+        minBet
+        maxBet
+      }
+      date
+    }
+  }
+`;
+
+const GET_BATTLE_HISTORY = gql`
+  query ($name: String, $roomID: String) {
+    getRoomHistory(name: $name, roomID: $roomID) {
+      roomID
+      bank {
+        name
+        cards {
+          visible
+          number
+        }
+      }
+      player {
+        name
+        cards {
+          visible
+          number
+        }
+      }
+      bet
+      resultTimes
+    }
+  }
+`;
+export { LOG_IN, NAME_EXIST, GET_LOBBY, GET_ROOM, GET_ROOM_HISTORY, GET_BATTLE_HISTORY };
