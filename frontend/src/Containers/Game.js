@@ -1,5 +1,11 @@
 import Player from "../Components/Player";
 import "../css/Game.css";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Divider from "@material-ui/core/Divider";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
 import { FormHelperText } from "@material-ui/core";
@@ -16,6 +22,27 @@ const Game = ({
   },
 }) => {
   const classes = makeStyles(() => ({
+    dialog: {
+      display: "flex",
+      background: "black",
+      color: "#c0c0c0",
+      borderRadius: "20px",
+    },
+    dialogTitle: {
+      display: "flex",
+      paddingBottom: "0px",
+    },
+    dialogContent: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+    },
+    dialogActions: {
+      display: "flex",
+      width: "90%",
+      alignSelf: "center",
+      justifyContent: "space-between",
+    },
     form: {
       display: "flex",
       flexWrap: "wrap",
@@ -137,6 +164,25 @@ const Game = ({
   });
   return (
     <div className="game_container">
+      {
+        <Dialog classes={{ paper: classes.dialog }} open={data && data.getRoom.state === "DEAD"} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
+            Room closed
+          </DialogTitle>
+          <Divider style={{ backgroundColor: "#d5d5d5", width: "80%", alignSelf: "center" }} />
+          <DialogContent className={classes.dialogContent}>
+            The bank left the room, and the room is closed.
+          </DialogContent>
+          <DialogActions className={classes.dialogActions}>
+            <Button color="secondary" onClick={() => {
+              leave({variables: {roomID: room_id, index: myIndex}})
+              window.location.href = `/Lobby/${room_type}/${username}`;
+            }}>
+              Leave
+            </Button>
+          </DialogActions>
+        </Dialog>
+      }
       <div className="top_btn_container">
         {
           (myIndex < 0 || (data && data.getRoom.state === "PAUSE")) &&
@@ -235,7 +281,8 @@ const Game = ({
           </button>
         }
         {
-          players[myIndex] && players[myIndex].isBank && data && data.getRoom.state === "PAUSE" &&
+          players[myIndex] && players[myIndex].isBank && data && 
+          data.getRoom.state === "PAUSE" && players.filter(p => !p.isBank && p.state === "ACTIVE").length > 0 &&
           <button className="btn" id="start_btn" onClick={() => startGame({variables: {roomID: room_id}})}>
             START
           </button>

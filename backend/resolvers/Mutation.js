@@ -187,7 +187,7 @@ const Mutation = {
     room.players[index] = util.getNewPlayer({ isBank: false, name: "", index, state: "UNSEATED" });
     room.roomInfo.playersNumber -= 1;
     if(index === 11) room.state = "DEAD"
-    if(room.roomInfo.playersNumber === 0) room.delete(roomID);
+    if(room.roomInfo.playersNumber === 0) rooms.delete(roomID);
     const sortRooms = [...rooms]
       .map(([roomID, room]) => room)
       .filter((r) => r.roomInfo.roomType === room.roomInfo.roomType && r.state !== "DEAD")
