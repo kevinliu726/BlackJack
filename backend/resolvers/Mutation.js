@@ -142,7 +142,9 @@ const Mutation = {
     for (next = index + 1; next < 12; ++next) {
       if (room.players[next].state === "ACTIVE" && room.players[next].canBattle) break;
     }
-    room.players[next].state = "TURN";
+    if (next < 12) {
+      room.players[next].state = "TURN";
+    }
     if (next === 11) {
       room.players[next].cards[0].visible = true;
     }
