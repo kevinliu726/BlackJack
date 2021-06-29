@@ -125,11 +125,6 @@ const Game = ({
     setBetError(false);
   };
 
-  if (players[myIndex] && players[myIndex].canBet) {
-    setTimeout(function () {
-      alert("Hello");
-    }, 3000);
-  }
   const showAll = players.map((player) => {
     if (player.isBank) {
       return (
