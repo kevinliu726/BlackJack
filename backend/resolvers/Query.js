@@ -29,14 +29,9 @@ const Query = {
     return rooms.get(roomID);
   },
   async getRoomHistory(parent, { name }, { db }, info) {
-<<<<<<< HEAD
-    const user = await db.UserModel.findOne({ name }).populate("history");
-    console.log("gotcha");
-=======
     console.log(name);
     const user = await db.UserModel.findOne({ name }).populate("history");
     console.log(name);
->>>>>>> d6d08636e031ba19c05ea98b1e1a2265a19f6a8f
     return user.history.sort((a, b) => new Date(a.date) - new Date(b.data));
   },
   async getBattleHistory(parent, { name, roomID }, { db }, info) {
