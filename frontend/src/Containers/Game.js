@@ -118,21 +118,18 @@ const Game = ({
   }, [data]);
 
   const sitSpot = (index) => {
-    if (
-      players.filter((player) => {
-        return player.name === username;
-      }).length > 0
-    ) {
-      return;
-    } else {
-      chooseSeat({ variables: { roomID: room_id, name: username, index, originalIndex: myIndex } });
-    }
+    chooseSeat({ variables: { roomID: room_id, name: username, index, originalIndex: myIndex } });
   };
   const betNumOnChange = (event) => {
     setBetNum(event.target.value);
     setBetError(false);
   };
 
+  if (players[myIndex] && players[myIndex].canBet) {
+    setTimeout(function () {
+      alert("Hello");
+    }, 3000);
+  }
   const showAll = players.map((player) => {
     if (player.isBank) {
       return (
@@ -153,16 +150,22 @@ const Game = ({
         />
       );
     } else {
-      let index = ((player.index + 5 - myIndex + 11) % 11) + 1;
+      let index =
+        myIndex === 11 ? ((player.index + 5 - myIndex + 11) % 11) + 1 : ((player.index + 4 - myIndex + 11) % 11) + 1;
+      console.log("Index: " + index);
+      console.log("Player: " + player.index);
       if (player.state === "UNSEATED") {
         if (data && data.getRoom.state === "PAUSE" && myIndex !== 11) {
           return (
             <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
+              <div style={{ display: "flex", position: "absolute", fontSize: "24px", top: "8px", left: "8px" }}>
+                {((player.index + 5) % 11) + 1}
+              </div>
               <div className={"sit_text"}>SIT</div>
             </div>
           );
         } else {
-          return <div className={"player player_" + index} />;
+          return <div className={"player player_" + index + " " + "UNSEATED_DVIEW"} />;
         }
       } else {
         return (
@@ -279,11 +282,6 @@ const Game = ({
                 STAND
               </button>
             ))}
-          {
-            // <button className="btn" id="catch_btn">
-            //   CATCH
-            // </button>
-          }
           {players[myIndex] && players[myIndex].state === "TURN" && players[myIndex].canHit && (
             <button
               className="btn"

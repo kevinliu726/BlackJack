@@ -46,7 +46,7 @@ const Player = ({
             {!isBank && canBattle && <div className="info_bet">{bet > 0 && bet}</div>}
             {!canBattle && (
               <div className={resultClass}>
-                {bet} / {resultTimes} x
+                {bet} x {resultTimes}
               </div>
             )}
             {isWin && <div className={money_win}>{cash}</div>}
