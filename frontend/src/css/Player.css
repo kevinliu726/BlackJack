@@ -94,6 +94,30 @@
   font-weight: bold;
   font-size: 30px;
 }
+.info_bet {
+  width: 50%;
+  text-align: right;
+  font-family: Georgia;
+  font-weight: bold;
+  color: goldenrod;
+  font-size: 20px;
+}
+.info_result_lose {
+  width: 50%;
+  text-align: right;
+  font-family: Georgia;
+  font-weight: bold;
+  color: red;
+  font-size: 20px;
+}
+.info_result_win {
+  width: 50%;
+  text-align: right;
+  font-family: Georgia;
+  font-weight: bold;
+  color: goldenrod;
+  font-size: 20px;
+}
 .info_money_lose {
   width: 50%;
   text-align: right;

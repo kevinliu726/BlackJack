@@ -98,6 +98,7 @@ const Game = ({
           index = i;
         }
       }
+      if(data.getRoom.state === "PAUSE") setBetNum("");
       setPlayers(data.getRoom.players);
       setMyIndex(index);
     }
@@ -120,11 +121,15 @@ const Game = ({
           className={"player dealer"}
           state={player.state}
           username={username}
-          canBattle={false}
+          flash={false}
           isChosen={false}
           canClick={false}
           name={player.name}
           cash={player.cash}
+          bet={betNum}
+          canBattle={player.canBattle}
+          isBank={player.isBank}
+          resultTimes={player.resultTimes}
           cards={player.cards}
         />
       );
@@ -151,11 +156,15 @@ const Game = ({
             state={player.state}
             name={player.name}
             username={username}
-            canBattle={(player.canBattle && players[11].state === "TURN" && players[11].canStand) || player.canBet}
+            flash={(player.canBattle && players[11].state === "TURN" && players[11].canStand) || player.canBet}
             isChosen={player.isChosen}
             canClick={myIndex === 11 && player.canBattle && players[11].canStand && players[11].state === "TURN"}
             cards={player.cards}
             cash={player.cash}
+            bet={player.bet}
+            resultTimes={player.resultTimes}
+            canBattle={player.canBattle}
+            isBank={player.isBank}
             onClick={() => choosePlayer({variables: {roomID: room_id, index: player.index}})}
           ></Player>
         );

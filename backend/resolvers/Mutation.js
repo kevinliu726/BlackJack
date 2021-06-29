@@ -85,6 +85,7 @@ const Mutation = {
     for(const p of room.players){
       p.cards = [];
       p.canBattle = true;
+      p.bet = 0;
     }
     room.players[11].state = "ACTIVE";
     room.state = "PAUSE";

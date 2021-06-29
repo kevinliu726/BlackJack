@@ -1,12 +1,13 @@
 import "../css/Player.css";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 
-const Player = ({ className, state, name, cards, cash, username, canBattle, isChosen, canClick, onClick }) => {
+const Player = ({ className, state, name, cards, cash, bet, username, isBank, flash, canBattle, isChosen, canClick, onClick, resultTimes }) => {
   var isWin = cash >= 0;
   var isDealer = className.includes("dealer");
   var info_name = "info_name";
   var money_win = "info_money_win";
   var money_loss = "info_money_lose";
+  var resultClass = resultTimes >= 0 ? "info_result_win" : "info_result_lose";
   if (isDealer) {
     info_name = "info_name_dealer";
     money_win = "info_money_win_dealer";
@@ -21,13 +22,15 @@ const Player = ({ className, state, name, cards, cash, username, canBattle, isCh
         return imgs.push(require("../cards/back.jpeg").default);
       }
     });
-    if(canBattle) state += (isChosen ? " CHOSEN" : " NOT_CHOSEN");
+    if(flash) state += (isChosen ? " CHOSEN" : " NOT_CHOSEN");
     state += (canClick ? " canClick" : " canNotClick");
     return (
       <div className={className}>
         <div className={state} onClick={onClick}>
           <div className="info_container">
             <div className={info_name}>{name}</div>
+            {!isBank && canBattle && <div className="info_bet">{bet > 0 && bet}</div>}
+            {!canBattle && <div className={resultClass}>{bet} / {resultTimes} x</div>}
             {isWin && <div className={money_win}>{cash}</div>}
             {!isWin && <div className={money_loss}>{cash}</div>}
           </div>
