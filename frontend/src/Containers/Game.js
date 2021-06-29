@@ -2,12 +2,13 @@ import Player from "../Components/Player";
 import "../css/Game.css";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
+import { FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
 import { GET_ROOM } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
-import { CHOOSE_SEAT, HIT, STAND, START_GAME, SET_BET, CHOOSE_PLAYER, BATTLE, END_GAME, AWAY, BACK, LEAVE } from "../graphql/Mutation";
+import { CHOOSE_SEAT, HIT, STAND, START_GAME, SET_BET, CHOOSE_PLAYER, BATTLE, BATTLE_ALL, END_GAME, AWAY, BACK, LEAVE } from "../graphql/Mutation";
 
 const Game = ({
   match: {
@@ -34,8 +35,8 @@ const Game = ({
       },
     },
   }))();
-  const [betNum, setBetNum] = useState(1);
-  const [battleList, setBattleList] = useState([]);
+  const [betNum, setBetNum] = useState("");
+  const [betError, setBetError] = useState(false);
   const [players, setPlayers] = useState([]);
   const [myIndex, setMyIndex] = useState(-1);
   const {data, loading, subscribeToMore} = useQuery(GET_ROOM, {variables: {roomID: room_id}});
@@ -46,6 +47,7 @@ const Game = ({
   const [setBet] = useMutation(SET_BET);
   const [choosePlayer] = useMutation(CHOOSE_PLAYER);
   const [battle] = useMutation(BATTLE);
+  const [battleAll] = useMutation(BATTLE_ALL);
   const [endGame] = useMutation(END_GAME);
   const [away] = useMutation(AWAY);
   const [back] = useMutation(BACK);
@@ -80,6 +82,7 @@ const Game = ({
   };
   const betNumOnChange = (event) => {
     setBetNum(event.target.value);
+    setBetError(false);
   };
 
   // let showAll = [];
@@ -94,6 +97,7 @@ const Game = ({
           isChosen={false}
           canClick={false}
           name={player.name}
+          cash={player.cash}
           cards={player.cards}
         />
       );
@@ -169,9 +173,16 @@ const Game = ({
         {
           players[myIndex] && players[myIndex].state === "TURN" && players[myIndex].canStand &&
           ((myIndex === 11 &&
-          <button className="btn" id="stand_btn" onClick={() => battle({variables: {roomID: room_id}})}>
-            BATTLE
-          </button>) ||
+            <>
+              <button className="btn" id="stand_btn" onClick={() => battle({variables: {roomID: room_id}})}>
+                BATTLE
+              </button>
+              <button className="btn" id="stand_btn" onClick={() => battleAll({variables: {roomID: room_id}})}>
+                BATTLE ALL
+              </button>
+            </>
+
+          ) ||
           <button className="btn" id="stand_btn" onClick={() => stand({variables: {roomID: room_id, index: myIndex}})}>
             STAND
           </button>)
@@ -189,9 +200,19 @@ const Game = ({
         }
         {
           players[myIndex]  && players[myIndex].canBet &&
-          <button className="btn" id="bet_btn" onClick={() => setBet({variables: {roomID: room_id, index: myIndex, bet: parseInt(betNum)}})}>
+          <button className="btn" id="bet_btn" onClick={() => {
+            const bet = parseFloat(betNum);
+            console.log(bet);
+            if(!bet || bet < data.getRoom.roomInfo.minBet || bet > data.getRoom.roomInfo.maxBet){
+              setBetError(true);
+              setBetNum("");
+              return;
+            }
+            setBet({variables: {roomID: room_id, index: myIndex, bet}})
+          }}>
             BET
           </button>
+
         }
         {
           players[myIndex]  && players[myIndex].canBet &&
@@ -199,10 +220,12 @@ const Game = ({
             <OutlinedInput
               id="betNum"
               type="number"
+              value={betNum}
               onChange={betNumOnChange}
               autoComplete="off"
-              placeholder="min - max"
+              placeholder={data.getRoom.roomInfo.minBet + " - " + data.getRoom.roomInfo.maxBet}
             />
+            {betError && <FormHelperText style={{ color: "red" }}>Out of range!!</FormHelperText>}
           </FormControl>
         }
         {

@@ -39,7 +39,7 @@ const SettingModal = ({ open, handleClose, handleEnter }) => {
       if (password !== confirmPassword) {
         setMError(true);
       } else {
-        handleEnter();
+        handleEnter(password);
       }
     } else {
       setPError(password === "");

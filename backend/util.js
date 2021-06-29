@@ -14,7 +14,7 @@ const shuffle = (decksNumber) => {
 }
 
 
-const getNewPlayer = ({isBank, name, index, state}) => {
+const getNewPlayer = ({isBank, name, index, state, cash}) => {
     return {
         name,
         index,
@@ -25,7 +25,7 @@ const getNewPlayer = ({isBank, name, index, state}) => {
         canStand: false,
         canHit: false,
         isChosen: false,
-        cash: 0,
+        cash,
         bet: 0,
         cards: [],
         resultTimes: 0,

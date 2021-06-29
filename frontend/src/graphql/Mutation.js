@@ -6,6 +6,12 @@ const REGISTER = gql`
   }
 `;
 
+const SET_PASSWORD = gql`
+  mutation($name: String, $password: String){
+    setPassword(name: $name, password: $password)
+  }
+`
+
 const CREATE_ROOM = gql`
   mutation ($roomInfo: CreateRoomInfo){
     createRoom(roomInfo: $roomInfo){
@@ -46,7 +52,7 @@ const STAND = gql`
   }
 `
 const SET_BET = gql`
-  mutation($roomID: ID, $bet: Int $index: Int){
+  mutation($roomID: ID, $bet: Float, $index: Int){
     setBet(roomID: $roomID, bet: $bet index: $index){
       roomID
     }
@@ -71,6 +77,14 @@ const CHOOSE_PLAYER = gql`
 const BATTLE = gql`
   mutation($roomID: ID){
     battle(roomID: $roomID){
+      roomID
+    }
+  }
+`
+
+const BATTLE_ALL = gql`
+  mutation($roomID: ID){
+    battleAll(roomID: $roomID){
       roomID
     }
   }
@@ -108,4 +122,4 @@ const LEAVE = gql`
   }
 `
 
-export { REGISTER, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, START_GAME, CHOOSE_PLAYER, BATTLE, END_GAME, AWAY, BACK, LEAVE };
+export { REGISTER, SET_PASSWORD, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, START_GAME, CHOOSE_PLAYER, BATTLE, BATTLE_ALL, END_GAME, AWAY, BACK, LEAVE };

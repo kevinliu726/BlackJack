@@ -4,6 +4,8 @@ import HistoryModal from "../Components/Modal/HistoryModal";
 import RulesModal from "../Components/Modal/RulesModal";
 import Button from "@material-ui/core/Button";
 import "../css/Menu.css";
+import { useMutation } from "@apollo/client";
+import { SET_PASSWORD } from "../graphql/Mutation";
 
 const Menu = ({
   match: {
@@ -13,6 +15,7 @@ const Menu = ({
   const [openSetting, setOpenSetting] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [openRules, setOpenRules] = useState(false);
+  const [setPassword] = useMutation(SET_PASSWORD);
   const handleOpenSetting = () => {
     setOpenSetting(true);
   };
@@ -32,8 +35,9 @@ const Menu = ({
   const handleCloseRules = () => {
     setOpenRules(false);
   };
-  const handleSubmit = () => {
+  const handleSubmit = (password) => {
     // Submit Change Password
+    setPassword({variables: {name: username, password}})
     setOpenSetting(false);
   };
   const logout = () => {
@@ -65,7 +69,7 @@ const Menu = ({
           <Button id="rules" variant="contained" onClick={() => handleOpenRules()}>
             Rules
           </Button>
-          <SettingModal open={openSetting} handleClose={handleCloseSetting} handleEnter={() => handleSubmit} />
+          <SettingModal open={openSetting} handleClose={handleCloseSetting} handleEnter={handleSubmit} />
           <HistoryModal open={openHistory} handleClose={handleCloseHistory} />
           <RulesModal open={openRules} handleClose={handleCloseRules} />
         </div>
