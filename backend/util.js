@@ -73,6 +73,7 @@ const getBattleState = (cards) => {
     if(cards.length === 3 && cards.every(c => (c.number % 52) % 3 === 6)) return {isNormal: false, times: 7, point};
     else if(cards.length === 5 && point < 21) return {isNormal: false, times: 3, point};
     else if(cards.length === 5 && point === 21) return {isNormal: false, times: 5, point};
+    else if(cards.length === 5 && point > 21) return {isNormal: false, times: -3, point};
     else if(point === 21) return {isNormal: false, times: 2, point};
     else return {isNormal: true, times: 0, point};
 }
@@ -81,7 +82,8 @@ const battle = async (bank, player, roomID) => {
     const bankState = getBattleState(bank.cards);
     const playerState = getBattleState(player.cards);
     let playerResultTimes;
-    if(!bankState.isNormal || !playerState.isNormal) playerResultTimes = playerState.times - bankState.times;
+    if(bankState.point > 21 && playerState.point > 21) playerResultTimes = 0;
+    else if(!bankState.isNormal || !playerState.isNormal) playerResultTimes = playerState.times - bankState.times;
     else {
         if(bankState.point > 21 && playerState.point > 21) playerResultTimes = 0;
         else if(bankState.point > 21) playerResultTimes = 1;
@@ -123,11 +125,13 @@ const findBlackJack = async (room) => {
     }
     else {
         for(const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank && p.canBlackJack)){
-            await battle(room.player[11], p, roomID);
+            await battle(room.players[11], p, roomID);
         }
     }
     if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").every(p => !p.canBattle)){
         room.state === "GAMEOVER";
+        room.players[11].canStand = false;
+        room.players[11].canHit = false;
     }
 }
 

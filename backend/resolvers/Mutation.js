@@ -42,7 +42,7 @@ const Mutation = {
     pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
     return room;
   },
-  async chooseSeat(parent, { roomID, name, index }, { db, rooms, pubSub }, info) {
+  async chooseSeat(parent, { roomID, name, index, originalIndex }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
     if (room.players[index].state !== "UNSEATED") return -1;
     // create RoomHistory
@@ -52,7 +52,8 @@ const Mutation = {
     await user.save();
     // add new player
     room.players[index] = util.getNewPlayer({ isBank: false, name, index, state: "ACTIVE" });
-    room.roomInfo.playersNumber += 1;
+    if(originalIndex >= 0) room.players[originalIndex] = util.getNewPlayer({ isBank: false, name: "", index: originalIndex, state: "UNSEATED" });
+    else room.roomInfo.playersNumber += 1;
     const sortRooms = [...rooms]
       .map(([roomID, room]) => room)
       .filter((r) => r.roomInfo.roomType === room.roomInfo.roomType)
@@ -65,6 +66,17 @@ const Mutation = {
     const room = rooms.get(roomID);
     room.players.filter((p) => p.state === "ACTIVE" && !p.isBank).forEach((p) => (p.canBet = true));
     room.state = "PLAYING";
+    pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
+    return room;
+  },
+  async endGame(parent, {roomID}, {rooms, pubSub}, info){
+    const room = rooms.get(roomID);
+    for(const p of room.players){
+      p.cards = [];
+      p.canBattle = true;
+    }
+    room.players[11].state = "ACTIVE";
+    room.state = "PAUSE";
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
@@ -102,7 +114,6 @@ const Mutation = {
   },
   async stand(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    // console.log(room.players[index].state);
     room.players[index].state = "ACTIVE";
     let next;
     for (next = index + 1; next < 12; ++next) {
@@ -117,7 +128,6 @@ const Mutation = {
   },
   async chooseBattlePlayer(parent, {roomID, index}, {rooms, pubSub}, info){
     const room = rooms.get(roomID);
-    console.log("choose battle " + index);
     room.players[index].isChosen = !room.players[index].isChosen;
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
@@ -129,7 +139,9 @@ const Mutation = {
       p.isChosen = false;
     }
     if (room.players.filter((p) => p && !p.isBank && p.state === "ACTIVE").every((p) => !p.canBattle)) {
-      room.state === "GAMEOVER";
+      room.state = "GAMEOVER";
+      room.players[11].canStand = false;
+      room.players[11].canHit = false;
     }
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
@@ -148,7 +160,14 @@ const Mutation = {
   },
   async leave(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
+    if(index < 0) return room;
     room.players[index] = util.getNewPlayer({ isBank: false, name: "", index, state: "UNSEATED" });
+    room.roomInfo.playersNumber -= 1;
+    const sortRooms = [...rooms]
+      .map(([roomID, room]) => room)
+      .filter((r) => r.roomInfo.roomType === room.roomInfo.roomType)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    pubSub.publish(room.roomInfo.roomType, { subscribeLobby: sortRooms });
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },

@@ -26,8 +26,8 @@ const CREATE_ROOM = gql`
 `;
 
 const CHOOSE_SEAT = gql`
-  mutation ($roomID: ID, $name: String, $index: Int){
-    chooseSeat(roomID: $roomID, name: $name, index: $index)
+  mutation ($roomID: ID, $name: String, $index: Int, $originalIndex: Int){
+    chooseSeat(roomID: $roomID, name: $name, index: $index, originalIndex: $originalIndex)
   }
 `;
 
@@ -76,4 +76,36 @@ const BATTLE = gql`
   }
 `
 
-export { REGISTER, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, START_GAME, CHOOSE_PLAYER, BATTLE };
+const END_GAME = gql`
+  mutation($roomID: ID){
+    endGame(roomID: $roomID){
+      roomID
+    }
+  }
+`
+
+const AWAY = gql`
+  mutation($roomID: ID, $index: Int){
+    away(roomID: $roomID, index: $index){
+      roomID
+    }
+  }
+`
+
+const BACK = gql`
+  mutation($roomID: ID, $index: Int){
+    back(roomID: $roomID, index: $index){
+      roomID
+    }
+  }
+`
+
+const LEAVE = gql`
+  mutation($roomID: ID, $index: Int){
+    leave(roomID: $roomID, index: $index){
+      roomID
+    }
+  }
+`
+
+export { REGISTER, CREATE_ROOM, CHOOSE_SEAT, HIT, STAND, SET_BET, START_GAME, CHOOSE_PLAYER, BATTLE, END_GAME, AWAY, BACK, LEAVE };

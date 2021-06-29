@@ -7,7 +7,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
 import { GET_ROOM } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
-import { CHOOSE_SEAT, HIT, STAND, START_GAME, SET_BET, CHOOSE_PLAYER, BATTLE } from "../graphql/Mutation";
+import { CHOOSE_SEAT, HIT, STAND, START_GAME, SET_BET, CHOOSE_PLAYER, BATTLE, END_GAME, AWAY, BACK, LEAVE } from "../graphql/Mutation";
 
 const Game = ({
   match: {
@@ -37,7 +37,7 @@ const Game = ({
   const [betNum, setBetNum] = useState(1);
   const [battleList, setBattleList] = useState([]);
   const [players, setPlayers] = useState([]);
-  const [myIndex, setMyIndex] = useState(0);
+  const [myIndex, setMyIndex] = useState(-1);
   const {data, loading, subscribeToMore} = useQuery(GET_ROOM, {variables: {roomID: room_id}});
   const [chooseSeat] = useMutation(CHOOSE_SEAT);
   const [hit] = useMutation(HIT);
@@ -46,6 +46,10 @@ const Game = ({
   const [setBet] = useMutation(SET_BET);
   const [choosePlayer] = useMutation(CHOOSE_PLAYER);
   const [battle] = useMutation(BATTLE);
+  const [endGame] = useMutation(END_GAME);
+  const [away] = useMutation(AWAY);
+  const [back] = useMutation(BACK);
+  const [leave] = useMutation(LEAVE);
 
   useLayoutEffect(() => {
     subscribeToMore({
@@ -71,43 +75,11 @@ const Game = ({
   }, [data]);
 
   const sitSpot = (index) => {
-    chooseSeat({variables:{roomID: room_id, name: username, index}});
+    chooseSeat({variables:{roomID: room_id, name: username, index, originalIndex: myIndex}});
     // chooseSeat(roomID)
   };
-  // const startGame = () => {
-  //   //startGame(room_id)
-  // };
-  const endGame = () => {
-    //endGame(room_id)
-  };
-  // const setBet = () => {
-  //   //setBet(room_id, bet, index)
-  // };
-  const addBattleList = (index) => {
-    setBattleList([...battleList, index]);
-  };
-  const battleAll = () => {
-    //battle(room_id, battleList)
-  };
-  // const hit = () => {
-  //   //hit(room_id,myIndex)
-  // };
   const betNumOnChange = (event) => {
     setBetNum(event.target.value);
-  };
-
-  const away = () => {
-    const newPlayers = [...players];
-    newPlayers[myIndex].state = "AWAY";
-    setPlayers(newPlayers);
-    //away()
-  };
-  const leave = () => {
-    const newPlayers = [...players];
-    newPlayers[myIndex].state = "UNSEATED";
-    setPlayers(newPlayers);
-    //leave()
-    window.location.href = `/Lobby/${room_type}/${username}`;
   };
 
   // let showAll = [];
@@ -129,7 +101,7 @@ const Game = ({
       let index = ((player.index + 5 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
         // room.state === "PAUSE"
-        if(data && data.getRoom.state === "PAUSE"){
+        if(data && data.getRoom.state === "PAUSE" && myIndex !== 11){
           return (
             <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
               <div className={"sit_text"}>SIT</div>
@@ -163,14 +135,28 @@ const Game = ({
     <div className="game_container">
       <div className="top_btn_container">
         {
-          <button className="go_btn" id="leave_btn" onClick={() => leave()}>
+          (myIndex < 0 || (data && data.getRoom.state === "PAUSE")) &&
+          <button className="go_btn" id="leave_btn" onClick={() => {
+            leave({variables: {roomID: room_id, index: myIndex}})
+            window.location.href = `/Lobby/${room_type}/${username}`;
+          }}>
             LEAVE
           </button>
         }
         {
-          <button className="go_btn" id="away_btn" onClick={() => away()}>
-            AWAY
-          </button>
+          data && data.getRoom.state === "PAUSE" && myIndex >= 0 && myIndex < 11 &&
+          ((players[myIndex].state === "ACTIVE" && 
+            <button className="go_btn" id="away_btn" onClick={() => away({variables: {roomID: room_id, index: myIndex}})}>
+              AWAY
+            </button>
+            ) || 
+            (players[myIndex].state === "AWAY" && 
+            <button className="go_btn" id="away_btn" onClick={() => back({variables: {roomID: room_id, index: myIndex}})}>
+              BACK
+            </button>
+            )
+          )
+          
         }
       </div>
       { myIndex >= 0 && <div className="btm_btn_container">
@@ -220,9 +206,10 @@ const Game = ({
           </FormControl>
         }
         {
-          // <button className="btn" id="end_btn">
-          //   END
-          // </button>
+          myIndex === 11 && data && data.getRoom.state === "GAMEOVER" &&
+          <button className="btn" id="end_btn" onClick={() => endGame({variables: {roomID: room_id}})}>
+            END
+          </button>
         }
         {
           players[myIndex] && players[myIndex].isBank && data && data.getRoom.state === "PAUSE" &&
