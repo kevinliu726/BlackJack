@@ -11,7 +11,7 @@ const HistoryMatch = ({ username, bank, player, bet, resultTimes }) => {
     return (
       <div className="history_match_box">
         <div className="history_match_info">
-          <div style={{ fontSize: "24px" }}> {player.name}</div>
+          <div style={{ marginLeft: "4%", fontSize: "24px" }}> {player.name}</div>
           <div className="hcards">
             {playerImgs.map((img) => (
               <img className="hcard" src={img} alt="cards"></img>
