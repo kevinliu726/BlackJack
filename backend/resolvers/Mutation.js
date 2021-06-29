@@ -86,10 +86,10 @@ const Mutation = {
   },
   async startGame(parent, { roomID }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    // room.players.filter((p) => p.state === "ACTIVE" && !p.isBank).forEach((p) => (p.canBet = true));
-    room.state = "PLAYING";
-    const firstPlayer = room.players.find((p) => p.state === "ACTIVE" && !p.isBank);
-    firstPlayer.canBet = true;
+    room.players.filter((p) => p.state === "ACTIVE" && !p.isBank).forEach((p) => (p.canBet = true));
+    room.state = "BETTING";
+    // const firstPlayer = room.players.find((p) => p.state === "ACTIVE" && !p.isBank);
+    // firstPlayer.canBet = true;
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
@@ -110,30 +110,25 @@ const Mutation = {
     room.players[index].canBet = false;
     room.players[index].cash -= bet;
     room.players[index].bet = bet;
-    var i = index + 1;
-    for(; i < 12; ++i){
-      if(room.players[i].state === "ACTIVE"){
-        room.players[i].canBet = true;
-        break;
-      }
+    pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
+    return room;
+  },
+  async dealCards(parent, {roomID}, {pubSub, rooms}, info){
+    const room = rooms.get(roomID);
+    room.state = "PLAYING";
+    for (const p of room.players.filter((p) => p.state === "ACTIVE")) {
+      p.cards = [
+        { visible: false, number: util.getCardFromDeck(room) },
+        { visible: true, number: util.getCardFromDeck(room) },
+      ];
+      util.setCardsState(p);
     }
-    if (i === 11) {
-        room.players[i].canBet = false;
-        // deliver cards
-      for (const p of room.players.filter((p) => p.state === "ACTIVE")) {
-        p.cards = [
-          { visible: false, number: util.getCardFromDeck(room) },
-          { visible: true, number: util.getCardFromDeck(room) },
-        ];
-        util.setCardsState(p);
-      }
-      // check player with blackJack
-      await util.findBlackJack(room);
-      // find first player
-      if (room.state !== "GAMEOVER") {
-        const firstPlayer = room.players.find((p) => p.state === "ACTIVE" && p.canBattle);
-        firstPlayer.state = "TURN";
-      }
+    // check player with blackJack
+    await util.findBlackJack(room);
+    // find first player
+    if (room.state !== "GAMEOVER") {
+      const firstPlayer = room.players.find((p) => p.state === "ACTIVE" && p.canBattle);
+      firstPlayer.state = "TURN";
     }
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;

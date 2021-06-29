@@ -21,6 +21,7 @@ import {
   START_GAME,
   CHOOSE_PLAYER,
   SET_BET,
+  DEAL_CARDS,
   BATTLE,
   BATTLE_ALL,
   END_GAME,
@@ -94,6 +95,7 @@ const Game = ({
   const [away] = useMutation(AWAY);
   const [back] = useMutation(BACK);
   const [leave] = useMutation(LEAVE);
+  const [dealCards] = useMutation(DEAL_CARDS);
 
   useLayoutEffect(() => {
     subscribeToMore({
@@ -186,93 +188,93 @@ const Game = ({
     }
   });
 
-  if (
-    firstAppear &&
-    players[myIndex] &&
-    players[myIndex].isBank &&
-    data &&
-    data.getRoom.state === "PAUSE" &&
-    players.filter((p) => !p.isBank && p.state === "ACTIVE").length > 0
-  ) {
-    for (let i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    setTO(
-      setTimeout(() => {
-        startGame({ variables: { roomID: room_id } });
-      }, 9000)
-    );
-    setFA(false);
-  } else if (firstAppear && players[myIndex] && players[myIndex].canBet) {
-    for (let i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    let minBet = data.getRoom.roomInfo.minBet;
-    setTO(
-      setTimeout(() => {
-        setBet({ variables: { roomID: room_id, index: myIndex, minBet } });
-      }, 15000)
-    );
-    setFA(false);
-  } else if (
-    firstAppear &&
-    players[myIndex] &&
-    players[myIndex].state === "TURN" &&
-    players[myIndex].canStand &&
-    myIndex !== 11
-  ) {
-    for (let i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    setTO(
-      setTimeout(() => {
-        stand({ variables: { roomID: room_id, index: myIndex } });
-      }, 15000)
-    );
-    setFA(false);
-  } else if (
-    firstAppear &&
-    players[myIndex] &&
-    players[myIndex].state === "TURN" &&
-    players[myIndex].canStand &&
-    myIndex === 11
-  ) {
-    for (let i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    setTO(
-      setTimeout(() => {
-        battleAll({ variables: { roomID: room_id } });
-      }, 15000)
-    );
-    setFA(false);
-  } else if (
-    firstAppear &&
-    players[myIndex] &&
-    players[myIndex].state === "TURN" &&
-    !players[myIndex].canStand &&
-    players[myIndex].canHit
-  ) {
-    for (let i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    setTO(
-      setTimeout(() => {
-        hit({ variables: { roomID: room_id, index: myIndex } });
-      }, 15000)
-    );
-    setFA(false);
-  } else if (firstAppear && myIndex === 11 && data && data.getRoom.state === "GAMEOVER") {
-    for (let i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    setTO(
-      setTimeout(() => {
-        endGame({ variables: { roomID: room_id } });
-      }, 15000)
-    );
-    setFA(false);
-  }
+  // if (
+  //   firstAppear &&
+  //   players[myIndex] &&
+  //   players[myIndex].isBank &&
+  //   data &&
+  //   data.getRoom.state === "PAUSE" &&
+  //   players.filter((p) => !p.isBank && p.state === "ACTIVE").length > 0
+  // ) {
+  //   for (let i = 0; i < timeouts.length; i++) {
+  //     clearTimeout(timeouts[i]);
+  //   }
+  //   setTO(
+  //     setTimeout(() => {
+  //       startGame({ variables: { roomID: room_id } });
+  //     }, 9000)
+  //   );
+  //   setFA(false);
+  // } else if (firstAppear && players[myIndex] && players[myIndex].canBet) {
+  //   for (let i = 0; i < timeouts.length; i++) {
+  //     clearTimeout(timeouts[i]);
+  //   }
+  //   let minBet = data.getRoom.roomInfo.minBet;
+  //   setTO(
+  //     setTimeout(() => {
+  //       setBet({ variables: { roomID: room_id, index: myIndex, minBet } });
+  //     }, 15000)
+  //   );
+  //   setFA(false);
+  // } else if (
+  //   firstAppear &&
+  //   players[myIndex] &&
+  //   players[myIndex].state === "TURN" &&
+  //   players[myIndex].canStand &&
+  //   myIndex !== 11
+  // ) {
+  //   for (let i = 0; i < timeouts.length; i++) {
+  //     clearTimeout(timeouts[i]);
+  //   }
+  //   setTO(
+  //     setTimeout(() => {
+  //       stand({ variables: { roomID: room_id, index: myIndex } });
+  //     }, 15000)
+  //   );
+  //   setFA(false);
+  // } else if (
+  //   firstAppear &&
+  //   players[myIndex] &&
+  //   players[myIndex].state === "TURN" &&
+  //   players[myIndex].canStand &&
+  //   myIndex === 11
+  // ) {
+  //   for (let i = 0; i < timeouts.length; i++) {
+  //     clearTimeout(timeouts[i]);
+  //   }
+  //   setTO(
+  //     setTimeout(() => {
+  //       battleAll({ variables: { roomID: room_id } });
+  //     }, 15000)
+  //   );
+  //   setFA(false);
+  // } else if (
+  //   firstAppear &&
+  //   players[myIndex] &&
+  //   players[myIndex].state === "TURN" &&
+  //   !players[myIndex].canStand &&
+  //   players[myIndex].canHit
+  // ) {
+  //   for (let i = 0; i < timeouts.length; i++) {
+  //     clearTimeout(timeouts[i]);
+  //   }
+  //   setTO(
+  //     setTimeout(() => {
+  //       hit({ variables: { roomID: room_id, index: myIndex } });
+  //     }, 15000)
+  //   );
+  //   setFA(false);
+  // } else if (firstAppear && myIndex === 11 && data && data.getRoom.state === "GAMEOVER") {
+  //   for (let i = 0; i < timeouts.length; i++) {
+  //     clearTimeout(timeouts[i]);
+  //   }
+  //   setTO(
+  //     setTimeout(() => {
+  //       endGame({ variables: { roomID: room_id } });
+  //     }, 15000)
+  //   );
+  //   setFA(false);
+  // }
   return (
     <div className="game_container">
       {
@@ -414,6 +416,17 @@ const Game = ({
                 START
               </button>
             )}
+          {
+            players[myIndex] &&
+            players[myIndex].isBank &&
+            data &&
+            data.getRoom.state === "BETTING" &&
+            players.filter(p => !p.isBank && p.state === "ACTIVE").every(p => !p.canBet) && (
+              <button className="btn" id="start_btn" onClick={() => dealCards({ variables: { roomID: room_id } })}>
+                DEAL CARDS
+              </button>
+            )
+          }
         </div>
       )}
 
