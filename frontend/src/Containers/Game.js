@@ -79,6 +79,8 @@ const Game = ({
   const [betError, setBetError] = useState(false);
   const [players, setPlayers] = useState([]);
   const [myIndex, setMyIndex] = useState(-1);
+  const [firstAppear, setFA] = useState(true);
+  const [timeouts, setTO] = useState([]);
   const { data, loading, subscribeToMore } = useQuery(GET_ROOM, { variables: { roomID: room_id } });
   const [chooseSeat] = useMutation(CHOOSE_SEAT);
   const [hit] = useMutation(HIT);
@@ -114,6 +116,7 @@ const Game = ({
       if (data.getRoom.state === "PAUSE") setBetNum("");
       setPlayers(data.getRoom.players);
       setMyIndex(index);
+      setFA(true);
     }
   }, [data]);
 
@@ -146,15 +149,13 @@ const Game = ({
       );
     } else {
       let index =
-        myIndex === 11 ? ((player.index + 5 - myIndex + 11) % 11) + 1 : ((player.index + 4 - myIndex + 11) % 11) + 1;
-      console.log("Index: " + index);
-      console.log("Player: " + player.index);
+        myIndex === 11 ? ((player.index + 6 - myIndex + 11) % 11) + 1 : ((player.index + 5 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
         if (data && data.getRoom.state === "PAUSE" && myIndex !== 11) {
           return (
             <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
               <div style={{ display: "flex", position: "absolute", fontSize: "24px", top: "8px", left: "8px" }}>
-                {((player.index + 5) % 11) + 1}
+                {((player.index + 6) % 11) + 1}
               </div>
               <div className={"sit_text"}>SIT</div>
             </div>
@@ -184,6 +185,94 @@ const Game = ({
       }
     }
   });
+
+  if (
+    firstAppear &&
+    players[myIndex] &&
+    players[myIndex].isBank &&
+    data &&
+    data.getRoom.state === "PAUSE" &&
+    players.filter((p) => !p.isBank && p.state === "ACTIVE").length > 0
+  ) {
+    for (let i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    setTO(
+      setTimeout(() => {
+        startGame({ variables: { roomID: room_id } });
+      }, 9000)
+    );
+    setFA(false);
+  } else if (firstAppear && players[myIndex] && players[myIndex].canBet) {
+    for (let i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    let minBet = data.getRoom.roomInfo.minBet;
+    setTO(
+      setTimeout(() => {
+        setBet({ variables: { roomID: room_id, index: myIndex, minBet } });
+      }, 15000)
+    );
+    setFA(false);
+  } else if (
+    firstAppear &&
+    players[myIndex] &&
+    players[myIndex].state === "TURN" &&
+    players[myIndex].canStand &&
+    myIndex !== 11
+  ) {
+    for (let i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    setTO(
+      setTimeout(() => {
+        stand({ variables: { roomID: room_id, index: myIndex } });
+      }, 15000)
+    );
+    setFA(false);
+  } else if (
+    firstAppear &&
+    players[myIndex] &&
+    players[myIndex].state === "TURN" &&
+    players[myIndex].canStand &&
+    myIndex === 11
+  ) {
+    for (let i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    setTO(
+      setTimeout(() => {
+        battleAll({ variables: { roomID: room_id } });
+      }, 15000)
+    );
+    setFA(false);
+  } else if (
+    firstAppear &&
+    players[myIndex] &&
+    players[myIndex].state === "TURN" &&
+    !players[myIndex].canStand &&
+    players[myIndex].canHit
+  ) {
+    for (let i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    setTO(
+      setTimeout(() => {
+        hit({ variables: { roomID: room_id, index: myIndex } });
+      }, 15000)
+    );
+    setFA(false);
+  } else if (firstAppear && myIndex === 11 && data && data.getRoom.state === "GAMEOVER") {
+    for (let i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    setTO(
+      setTimeout(() => {
+        endGame({ variables: { roomID: room_id } });
+      }, 15000)
+    );
+    setFA(false);
+  }
   return (
     <div className="game_container">
       {
@@ -217,6 +306,7 @@ const Game = ({
           <button
             className="go_btn"
             id="leave_btn"
+            vis
             onClick={() => {
               leave({ variables: { roomID: room_id, index: myIndex } });
               window.location.href = `/Lobby/${room_type}/${username}`;
@@ -250,12 +340,6 @@ const Game = ({
       </div>
       {myIndex >= 0 && (
         <div className="btm_btn_container">
-          {/*
-        Player View in Game Bet + Number, Stand + Hit
-        Dealer View in Game Stand + Catch, Cancel + Submit
-        Player View not in Game Leave + Away
-        Dealer View not in Game End + Start
-        */}
           {players[myIndex] &&
             players[myIndex].state === "TURN" &&
             players[myIndex].canStand &&
@@ -292,7 +376,6 @@ const Game = ({
               id="bet_btn"
               onClick={() => {
                 const bet = parseFloat(betNum);
-                console.log(bet);
                 if (!bet || bet < data.getRoom.roomInfo.minBet || bet > data.getRoom.roomInfo.maxBet) {
                   setBetError(true);
                   setBetNum("");
