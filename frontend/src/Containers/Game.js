@@ -118,9 +118,15 @@ const Game = ({
   }, [data]);
 
   const sitSpot = (index) => {
-    chooseSeat({ variables: { roomID: room_id, name: username, index, originalIndex: myIndex } });
-
-    // chooseSeat(roomID)
+    if (
+      players.filter((player) => {
+        return player.name === username;
+      }).length > 0
+    ) {
+      return;
+    } else {
+      chooseSeat({ variables: { roomID: room_id, name: username, index, originalIndex: myIndex } });
+    }
   };
   const betNumOnChange = (event) => {
     setBetNum(event.target.value);
