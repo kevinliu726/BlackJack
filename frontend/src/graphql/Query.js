@@ -84,7 +84,7 @@ const GET_ROOM_HISTORY = gql`
 
 const GET_BATTLE_HISTORY = gql`
   query ($name: String, $roomID: String) {
-    getRoomHistory(name: $name, roomID: $roomID) {
+    getBattleHistory(name: $name, roomID: $roomID) {
       roomID
       bank {
         name

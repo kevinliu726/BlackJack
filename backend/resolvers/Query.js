@@ -19,23 +19,25 @@ const Query = {
     const { roomType } = args;
     const { rooms } = context;
     const sortRooms = [...rooms]
-            .map(([roomID, room]) => room)
-            .filter(r => r.roomInfo.roomType === roomType)
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
+      .map(([roomID, room]) => room)
+      .filter((r) => r.roomInfo.roomType === roomType)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
     return sortRooms;
   },
   async getRoom(parent, { roomID }, { rooms }, info) {
     console.log(roomID);
     return rooms.get(roomID);
   },
-  async getRoomHistory(parent, {name}, {db}, info){
-    const user = await db.UserModel.findOne({name}).populate("history");
+  async getRoomHistory(parent, { name }, { db }, info) {
+    console.log(user);
+    const user = await db.UserModel.findOne({ name }).populate("history");
+    console.log(user);
     return user.history.sort((a, b) => new Date(a.date) - new Date(b.data));
   },
-  async getBattleHistory(parent, {name, roomID}, {db}, info){
-    const battles = await db.BattleHistoryModel.find({roomID, $or: [{"bank.name": name}, {"player.name": name}]});
+  async getBattleHistory(parent, { name, roomID }, { db }, info) {
+    const battles = await db.BattleHistoryModel.find({ roomID, $or: [{ "bank.name": name }, { "player.name": name }] });
     return battles.sort((a, b) => new Date(a.date) - new Date(b.date));
-  }
+  },
 };
 
 export default Query;

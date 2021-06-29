@@ -37,7 +37,7 @@ const Menu = ({
   };
   const handleSubmit = (password) => {
     // Submit Change Password
-    setPassword({variables: {name: username, password}})
+    setPassword({ variables: { name: username, password } });
     setOpenSetting(false);
   };
   const logout = () => {
@@ -70,7 +70,7 @@ const Menu = ({
             Rules
           </Button>
           <SettingModal open={openSetting} handleClose={handleCloseSetting} handleEnter={handleSubmit} />
-          <HistoryModal open={openHistory} handleClose={handleCloseHistory} />
+          <HistoryModal username={username} open={openHistory} handleClose={handleCloseHistory} />
           <RulesModal open={openRules} handleClose={handleCloseRules} />
         </div>
         <Button id="logout" variant="contained" onClick={logout}>
