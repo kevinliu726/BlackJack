@@ -11,6 +11,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useLayoutEffect, useState } from "react";
+import { useBeforeunload } from "react-beforeunload";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
 import { GET_ROOM } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
@@ -97,6 +98,17 @@ const Game = ({
   const [leave] = useMutation(LEAVE);
   const [dealCards] = useMutation(DEAL_CARDS);
 
+  function handleCloseWindow(e){
+    // e.preventDefault();
+    leave({variables: {roomID: room_id, index: myIndex}});
+    return  "gotcha";
+  }
+
+  useBeforeunload((event) => {
+    // event.preventDefault();
+    leave({variables: {roomID: room_id, index: myIndex}});
+    window.location.href = `/Lobby/${room_type}/${username}`;
+  });
   useLayoutEffect(() => {
     subscribeToMore({
       document: SUBSCRIBE_ROOM,
