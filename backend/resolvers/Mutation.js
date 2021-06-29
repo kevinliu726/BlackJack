@@ -10,8 +10,8 @@ const Mutation = {
     const newUser = await new db.UserModel({ name, password, history: [] }).save();
     return true;
   },
-  async setPassword(parent, {name, password}, {db}, info){
-    const user = await db.UserModel.findOne({name});
+  async setPassword(parent, { name, password }, { db }, info) {
+    const user = await db.UserModel.findOne({ name });
     user.password = password;
     await user.save();
     return true;
@@ -45,7 +45,7 @@ const Mutation = {
       .filter((r) => r.roomInfo.roomType === roomInfo.roomType)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     pubSub.publish(roomInfo.roomType, { subscribeLobby: sortRooms });
-    pubSub.publish(`room_${roomID}`, {subscribeRoom: room});
+    pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
   async chooseSeat(parent, { roomID, name, index, originalIndex }, { db, rooms, pubSub }, info) {
@@ -57,11 +57,22 @@ const Mutation = {
     if (!user.history.includes(roomHistory._id)) user.history.push(roomHistory._id);
     await user.save();
     // add new player
-    if(originalIndex >= 0){
-      room.players[index] = util.getNewPlayer({ isBank: false, name, index, state: "ACTIVE", cash: room.players[originalIndex].cash });
-      room.players[originalIndex] = util.getNewPlayer({ isBank: false, name: "", index: originalIndex, state: "UNSEATED", cash: 0 });
-    }
-    else{
+    if (originalIndex >= 0) {
+      room.players[index] = util.getNewPlayer({
+        isBank: false,
+        name,
+        index,
+        state: "ACTIVE",
+        cash: room.players[originalIndex].cash,
+      });
+      room.players[originalIndex] = util.getNewPlayer({
+        isBank: false,
+        name: "",
+        index: originalIndex,
+        state: "UNSEATED",
+        cash: 0,
+      });
+    } else {
       room.players[index] = util.getNewPlayer({ isBank: false, name, index, state: "ACTIVE", cash: 0 });
       room.roomInfo.playersNumber += 1;
     }
@@ -80,9 +91,9 @@ const Mutation = {
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
-  async endGame(parent, {roomID}, {rooms, pubSub}, info){
+  async endGame(parent, { roomID }, { rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    for(const p of room.players){
+    for (const p of room.players) {
       p.cards = [];
       p.canBattle = true;
       p.bet = 0;
@@ -138,7 +149,7 @@ const Mutation = {
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
-  async chooseBattlePlayer(parent, {roomID, index}, {rooms, pubSub}, info){
+  async chooseBattlePlayer(parent, { roomID, index }, { rooms, pubSub }, info) {
     const room = rooms.get(roomID);
     room.players[index].isChosen = !room.players[index].isChosen;
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
@@ -146,7 +157,7 @@ const Mutation = {
   },
   async battle(parent, { roomID }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    for (const p of room.players.filter(p => p.isChosen)) {
+    for (const p of room.players.filter((p) => p.isChosen)) {
       await util.battle(room.players[11], p, roomID);
       p.isChosen = false;
     }
@@ -158,9 +169,9 @@ const Mutation = {
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
-  async battleAll(parent, {roomID}, {rooms, pubSub}, info){
+  async battleAll(parent, { roomID }, { rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    for (const p of room.players.filter(p => p.state === "ACTIVE" && !p.isBank && p.canBattle)) {
+    for (const p of room.players.filter((p) => p.state === "ACTIVE" && !p.isBank && p.canBattle)) {
       await util.battle(room.players[11], p, roomID);
       p.isChosen = false;
     }
@@ -184,11 +195,11 @@ const Mutation = {
   },
   async leave(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    if(index < 0) return room;
+    if (index < 0) return room;
     room.players[index] = util.getNewPlayer({ isBank: false, name: "", index, state: "UNSEATED" });
     room.roomInfo.playersNumber -= 1;
-    if(index === 11) room.state = "DEAD"
-    if(room.roomInfo.playersNumber === 0) rooms.delete(roomID);
+    if (index === 11) room.state = "DEAD";
+    if (room.roomInfo.playersNumber === 0) rooms.delete(roomID);
     const sortRooms = [...rooms]
       .map(([roomID, room]) => room)
       .filter((r) => r.roomInfo.roomType === room.roomInfo.roomType && r.state !== "DEAD")
