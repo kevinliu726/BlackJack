@@ -200,6 +200,7 @@ const Game = ({
     }
   });
 
+  if(data) console.log(data.getRoom.roomInfo.playersNumber);
   // if (
   //   firstAppear &&
   //   players[myIndex] &&
@@ -322,7 +323,7 @@ const Game = ({
             id="leave_btn"
             vis
             onClick={() => {
-              leave({ variables: { roomID: room_id, index: myIndex } });
+              // leave({ variables: { roomID: room_id, index: myIndex } });
               window.location.href = `/Lobby/${room_type}/${username}`;
             }}
           >

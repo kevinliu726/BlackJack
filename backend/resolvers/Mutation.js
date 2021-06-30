@@ -196,14 +196,31 @@ const Mutation = {
   },
   async back(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    room.players[index] = util.getNewPlayer({ isBank: false, name: room.players[index].name, index, state: "ACTIVE" });
+    room.players[index] = util.getNewPlayer({ isBank: false, name: room.players[index].name, index, state: "ACTIVE", cash: room.players[index].cash });
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
   async leave(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
+    if(!room) return null;
     if (index < 0) return room;
-    room.players[index] = util.getNewPlayer({ isBank: false, name: "", index, state: "UNSEATED" });
+    if(room.players[index].state === "TURN"){
+      let next = index + 1;
+      for (; next < 12; ++next) {
+        if (room.players[next].state === "ACTIVE" && room.players[next].canBattle) break;
+      }
+      if (next < 12) {
+        room.players[next].state = "TURN";
+      }
+      if (next === 11) {
+        room.players[next].cards[0].visible = true;
+      }
+    }
+    room.players[index] = util.getNewPlayer({ isBank: false, name: "", index, state: "UNSEATED", cash: 0 });
+    if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").length === 0){
+      room.state = "PAUSE";
+      room.players[11] = util.getNewPlayer({ isBank: true, name: room.players[11].name, index: 11, state: "ACTIVE", cash: room.players[11].cash });
+    }
     room.roomInfo.playersNumber -= 1;
     if (index === 11) room.state = "DEAD";
     if (room.roomInfo.playersNumber === 0) rooms.delete(roomID);
