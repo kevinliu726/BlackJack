@@ -117,7 +117,7 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
     }
   };
   const handleCreate = () => {
-    if (roomName !== "" && lower > 0 && upper > 0 && lower <= upper) {
+    if (roomName !== "" && parseInt(lower) > 0 && parseInt(upper) > 0 && parseInt(lower) <= parseInt(upper)) {
       handleEnter({
         roomInfo: {
           name: roomName,
@@ -130,9 +130,9 @@ const CreateRoomModal = ({ open, isPublic, handleClose, handleEnter }) => {
     } else {
       setRError(roomName === "");
       setPError(password === "");
-      setLError(lower <= 0);
-      setUError(upper <= 0);
-      setCError(lower > upper);
+      setLError(parseInt(lower) <= 0);
+      setUError(parseInt(upper) <= 0);
+      setCError(parseInt(lower) > parseInt(upper));
     }
   };
   const handleCancel = () => {
