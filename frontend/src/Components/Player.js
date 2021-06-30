@@ -67,7 +67,10 @@ const Player = ({
           <DirectionsWalkIcon style={{ display: "flex", height: "50%", width: "100%" }}></DirectionsWalkIcon>
           <span>AWAY</span>
         </div>
-        <div className="away">{name}</div>
+        <div className="away_info">
+          <div>{name}</div>
+          <div>{cash}</div>
+        </div>
       </div>
     );
   }
