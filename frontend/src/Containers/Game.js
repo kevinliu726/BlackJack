@@ -226,7 +226,7 @@ const Game = ({
         </Dialog>
       }
       <div className="top_btn_container">
-        {(myIndex < 0 || (data && data.getRoom.state === "PAUSE")) && (
+        {(myIndex < 0 || (data && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) )) && (
           <button
             className="go_btn"
             id="leave_btn"
