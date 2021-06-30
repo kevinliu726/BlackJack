@@ -5,6 +5,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import "../../css/RulesModal.css";
 
 const RulesModal = ({ open, handleClose }) => {
   const classes = makeStyles(() => ({
@@ -122,6 +123,104 @@ const RulesModal = ({ open, handleClose }) => {
               </ul>
             </li>
           </ol>
+          <div style={{ fontSize: "20px", fontWeight: "bold" }}>Examples</div>
+          <div className="rules_match_box">
+            <div className="rules_match_info">
+              <div style={{ fontSize: "22px", marginBottom: "8px" }}>Result: TIE</div>
+              <div style={{ fontSize: "18px" }}> Bank</div>
+              <div className="rcards">
+                <img className="rcardFirst" src={require("../../cards/1.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/3.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/5.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/0.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/10.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px" }}>Exploded, Bonus: -3 times</div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Player</div>
+              <div className="rcards other">
+                <img className="rcard" src={require("../../cards/9.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/2.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/12.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}>Exploded, Bonus: 0 times</div>
+            </div>
+          </div>
+          <div className="rules_match_box">
+            <div className="rules_match_info">
+              <div style={{ fontSize: "22px", marginBottom: "8px" }}>Result: Player loses 2 times of bet</div>
+              <div style={{ fontSize: "18px" }}> Bank</div>
+              <div className="rcards">
+                <img className="rcardFirst" src={require("../../cards/5.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/6.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/7.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px" }}> Bonus: 2 times</div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Player</div>
+              <div className="rcards other">
+                <img className="rcard" src={require("../../cards/9.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/11.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Bonus: 0 times</div>
+            </div>
+          </div>
+          <div className="rules_match_box">
+            <div className="rules_match_info">
+              <div style={{ fontSize: "22px", marginBottom: "8px" }}>Result: Player wins 1 time of bet</div>
+              <div style={{ fontSize: "18px" }}> Bank</div>
+              <div className="rcards">
+                <img className="rcardFirst" src={require("../../cards/1.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/8.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/10.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px" }}> Bonus: 2 times</div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Player</div>
+              <div className="rcards other">
+                <img className="rcard" src={require("../../cards/0.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/1.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/5.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/3.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/18.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Bonus: 3 times</div>
+            </div>
+          </div>
+          <div className="rules_match_box">
+            <div className="rules_match_info">
+              <div style={{ fontSize: "22px", marginBottom: "8px" }}>Result: Player loses 1 time of bet.</div>
+              <div style={{ fontSize: "18px" }}> Bank</div>
+              <div className="rcards">
+                <img className="rcardFirst" src={require("../../cards/1.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/3.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/10.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px" }}> Bonus: 0 times</div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Player</div>
+              <div className="rcards other">
+                <img className="rcard" src={require("../../cards/9.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/4.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Bonus: 0 times</div>
+            </div>
+          </div>
+          <div className="rules_match_box">
+            <div className="rules_match_info">
+              <div style={{ fontSize: "22px", marginBottom: "8px" }}>Result: TIE</div>
+              <div style={{ fontSize: "18px" }}> Bank</div>
+              <div className="rcards">
+                <img className="rcardFirst" src={require("../../cards/2.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/4.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/9.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px" }}> Bonus: 0 times</div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Player</div>
+              <div className="rcards other">
+                <img className="rcard" src={require("../../cards/6.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/8.png").default} alt="cards"></img>
+                <img className="rcard" src={require("../../cards/1.png").default} alt="cards"></img>
+              </div>
+              <div style={{ fontSize: "18px", textAlign: "end" }}> Bonus: 0 times</div>
+            </div>
+          </div>
         </>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>

@@ -9,6 +9,7 @@ import HistoryRoom from "../HistoryRoom";
 import HistoryMatch from "../HistoryMatch";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { GET_BATTLE_HISTORY, GET_ROOM_HISTORY } from "../../graphql/Query";
+import "../../css/HistoryModal.css";
 
 const getReadableDate = (date) => {
   var mm = (date.getMonth() + 1 < 9 ? "0" : "") + (date.getMonth() + 1); // getMonth() is zero-based

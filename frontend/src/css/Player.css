@@ -19,7 +19,7 @@
   width: 100%;
   border-width: 2px;
   border-radius: 15px;
-  border-color: white ;
+  border-color: white;
 }
 
 .AWAY {
@@ -27,7 +27,7 @@
   flex-direction: row;
   border-radius: 15px;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: center;
   background: rgb(172, 169, 169);
 }
 
@@ -36,13 +36,18 @@
 }
 
 .NOT_CHOSEN {
-  
   animation: blink 1s linear infinite;
 }
 
 @keyframes blink {
-  from {border: dashed;border-color: red;}
-  to {border: solid;border-color: red;}
+  from {
+    border: dashed;
+    border-color: red;
+  }
+  to {
+    border: solid;
+    border-color: red;
+  }
 }
 
 .canClick {
@@ -50,7 +55,7 @@
 }
 
 .canNotClick {
-  pointer-events:none
+  pointer-events: none;
 }
 
 .cards {
@@ -160,10 +165,12 @@
   font-weight: bold;
   font-size: 24px;
 }
-.away {
+.away_info {
   display: flex;
+  flex-direction: column;
   width: 30%;
   height: 100%;
+  justify-content: center;
   align-items: center;
   font-family: Georgia;
   font-weight: bold;
