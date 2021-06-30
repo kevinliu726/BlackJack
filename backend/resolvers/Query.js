@@ -3,7 +3,6 @@ const Query = {
     const { db } = context;
     const { name } = args;
     const exist = await db.UserModel.findOne({ name });
-    console.log("someone query nameExist");
     if (exist) return true;
     else return false;
   },
@@ -11,7 +10,6 @@ const Query = {
     const { db } = context;
     const { name, password } = args;
     const exist = await db.UserModel.findOne({ name });
-    console.log("someoe query log in");
     if (exist) return exist.password === password;
     else return false;
   },
@@ -25,13 +23,10 @@ const Query = {
     return sortRooms;
   },
   async getRoom(parent, { roomID }, { rooms }, info) {
-    console.log(roomID);
     return rooms.get(roomID);
   },
   async getRoomHistory(parent, { name }, { db }, info) {
-    console.log(name);
     const user = await db.UserModel.findOne({ name }).populate("history");
-    console.log(name);
     return user.history.sort((a, b) => new Date(a.date) - new Date(b.data));
   },
   async getBattleHistory(parent, { name, roomID }, { db }, info) {

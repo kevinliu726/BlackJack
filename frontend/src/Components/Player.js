@@ -28,7 +28,6 @@ const Player = ({
     money_win = "info_money_win_dealer";
     money_loss = "info_money_lose_dealer";
   }
-  console.log(cash);
   if (state === "ACTIVE" || state === "TURN") {
     const imgs = cards.map((card) => {
       if (card.visible === true || username === name) {

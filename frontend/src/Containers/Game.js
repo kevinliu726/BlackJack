@@ -401,7 +401,7 @@ const Game = ({
             >
               BET
             </button>
-          )}``
+          )}
           {players[myIndex] && players[myIndex].canBet && (
             <FormControl className={classes.form} variant="outlined">
               <OutlinedInput
