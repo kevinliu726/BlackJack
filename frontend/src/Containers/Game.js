@@ -36,6 +36,11 @@ const Game = ({
     params: { room_type, room_id, username },
   },
 }) => {
+  const authenticatedName = localStorage.getItem("NAME");
+  if(authenticatedName !== username){
+    localStorage.setItem("NAME", null);
+    window.location.href = "/";
+  }
   const classes = makeStyles(() => ({
     dialog: {
       display: "flex",
@@ -103,7 +108,6 @@ const Game = ({
     leave({ variables: { roomID: room_id, index: myIndex } });
     return "gotcha";
   }
-
   useBeforeunload((event) => {
     // event.preventDefault();
     leave({ variables: { roomID: room_id, index: myIndex } });
@@ -289,7 +293,7 @@ const Game = ({
   //   );
   //   setFA(false);
   // }
-  return (
+  return authenticatedName !== username ? <></> : (
     <div className="game_container">
       {
         <Dialog
@@ -332,10 +336,10 @@ const Game = ({
           </button>
         )}
         {data &&
-          data.getRoom.state === "PAUSE" &&
+          // data.getRoom.state === "PAUSE" &&
           myIndex >= 0 &&
           myIndex < 11 &&
-          ((players[myIndex].state === "ACTIVE" && (
+          ((players[myIndex].state === "ACTIVE" && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
             <button
               className="go_btn"
               id="away_btn"
@@ -344,7 +348,7 @@ const Game = ({
               AWAY
             </button>
           )) ||
-            (players[myIndex].state === "AWAY" && (
+            (players[myIndex].state === "AWAY" && data.getRoom.state === "PAUSE" && (
               <button
                 className="go_btn"
                 id="away_btn"

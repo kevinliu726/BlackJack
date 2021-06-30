@@ -12,12 +12,11 @@ const Menu = ({
     params: { username },
   },
 }) => {
-  useEffect(() => {
-    const authenticatedName = localStorage.getItem("NAME");
-    if(authenticatedName !== username){
-      window.location.href = "/";
-    }
-  }, [])
+  const authenticatedName = localStorage.getItem("NAME");
+  if(authenticatedName !== username){
+    localStorage.setItem("NAME", null);
+    window.location.href = "/";
+  }
   const [openSetting, setOpenSetting] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [openRules, setOpenRules] = useState(false);
@@ -57,7 +56,7 @@ const Menu = ({
     }
   };
 
-  return (
+  return authenticatedName !== username ? <></> : (
     <div className="menu">
       <Button id="left_btn" variant="contained" onClick={() => goToLobby(true)}>
         Public

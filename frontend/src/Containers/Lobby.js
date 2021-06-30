@@ -19,6 +19,11 @@ const Lobby = ({
     params: { username, room_type },
   },
 }) => {
+  const authenticatedName = localStorage.getItem("NAME");
+  if(authenticatedName !== username){
+    localStorage.setItem("NAME", null);
+    window.location.href = "/";
+  }
   const classes = makeStyles(() => ({
     form: {
       display: "flex",
@@ -69,13 +74,6 @@ const Lobby = ({
       setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.includes(searchName)));
     }
   }, [data]);
-  
-  useEffect(() => {
-    const authenticatedName = localStorage.getItem("NAME");
-    if(authenticatedName !== username){
-      window.location.href = "/";
-    }
-  }, [])
 
   const goBackToMenu = () => {
     window.location.href = `/Menu/${username}`;
@@ -119,7 +117,7 @@ const Lobby = ({
       handleOpenEnterPassword();
     }
   };
-  return (
+  return authenticatedName !== username ? <></> : (
     <div style={{ position: "relative" }}>
       <Button id="back_btn" onClick={() => goBackToMenu()}>
         <ArrowBackIcon style={{ width: "100%", height: "100%" }}></ArrowBackIcon>
