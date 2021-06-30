@@ -10,9 +10,9 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
 import { FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
-import { useQuery, useMutation, useSubscription } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { GET_ROOM } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
 import {
@@ -37,7 +37,7 @@ const Game = ({
   },
 }) => {
   const authenticatedName = localStorage.getItem("NAME");
-  if(authenticatedName !== username){
+  if (authenticatedName !== username) {
     localStorage.setItem("NAME", null);
     window.location.href = "/";
   }
@@ -86,9 +86,7 @@ const Game = ({
   const [betError, setBetError] = useState(false);
   const [players, setPlayers] = useState([]);
   const [myIndex, setMyIndex] = useState(-1);
-  const [firstAppear, setFA] = useState(true);
-  const [timeouts, setTO] = useState([]);
-  const { data, loading, subscribeToMore } = useQuery(GET_ROOM, { variables: { roomID: room_id } });
+  const { data, subscribeToMore } = useQuery(GET_ROOM, { variables: { roomID: room_id } });
   const [chooseSeat] = useMutation(CHOOSE_SEAT);
   const [hit] = useMutation(HIT);
   const [stand] = useMutation(STAND);
@@ -103,13 +101,7 @@ const Game = ({
   const [leave] = useMutation(LEAVE);
   const [dealCards] = useMutation(DEAL_CARDS);
 
-  function handleCloseWindow(e) {
-    // e.preventDefault();
-    leave({ variables: { roomID: room_id, index: myIndex } });
-    return "gotcha";
-  }
   useBeforeunload((event) => {
-    // event.preventDefault();
     leave({ variables: { roomID: room_id, index: myIndex } });
     window.location.href = `/Lobby/${room_type}/${username}`;
   });
@@ -134,7 +126,6 @@ const Game = ({
       if (data.getRoom.state === "PAUSE") setBetNum("");
       setPlayers(data.getRoom.players);
       setMyIndex(index);
-      setFA(true);
     }
   }, [data]);
 
@@ -204,96 +195,9 @@ const Game = ({
     }
   });
 
-  // if (data) console.log(data.getRoom.roomInfo.playersNumber);
-  // if (
-  //   firstAppear &&
-  //   players[myIndex] &&
-  //   players[myIndex].isBank &&
-  //   data &&
-  //   data.getRoom.state === "PAUSE" &&
-  //   players.filter((p) => !p.isBank && p.state === "ACTIVE").length > 0
-  // ) {
-  //   for (let i = 0; i < timeouts.length; i++) {
-  //     clearTimeout(timeouts[i]);
-  //   }
-  //   setTO(
-  //     setTimeout(() => {
-  //       startGame({ variables: { roomID: room_id } });
-  //     }, 9000)
-  //   );
-  //   setFA(false);
-  // } else if (firstAppear && players[myIndex] && players[myIndex].canBet) {
-  //   for (let i = 0; i < timeouts.length; i++) {
-  //     clearTimeout(timeouts[i]);
-  //   }
-  //   let minBet = data.getRoom.roomInfo.minBet;
-  //   console.log("Damn " + minBet);
-  //   setTO(
-  //     setTimeout(() => {
-  //       setBet({ variables: { roomID: room_id, index: myIndex, bet: minBet } });
-  //     }, 15000)
-  //   );
-  //   setFA(false);
-  // } else if (
-  //   firstAppear &&
-  //   players[myIndex] &&
-  //   players[myIndex].state === "TURN" &&
-  //   players[myIndex].canStand &&
-  //   myIndex !== 11
-  // ) {
-  //   for (let i = 0; i < timeouts.length; i++) {
-  //     clearTimeout(timeouts[i]);
-  //   }
-  //   setTO(
-  //     setTimeout(() => {
-  //       stand({ variables: { roomID: room_id, index: myIndex } });
-  //     }, 15000)
-  //   );
-  //   setFA(false);
-  // } else if (
-  //   firstAppear &&
-  //   players[myIndex] &&
-  //   players[myIndex].state === "TURN" &&
-  //   players[myIndex].canStand &&
-  //   myIndex === 11
-  // ) {
-  //   for (let i = 0; i < timeouts.length; i++) {
-  //     clearTimeout(timeouts[i]);
-  //   }
-  //   setTO(
-  //     setTimeout(() => {
-  //       battleAll({ variables: { roomID: room_id } });
-  //     }, 15000)
-  //   );
-  //   setFA(false);
-  // } else if (
-  //   firstAppear &&
-  //   players[myIndex] &&
-  //   players[myIndex].state === "TURN" &&
-  //   !players[myIndex].canStand &&
-  //   players[myIndex].canHit
-  // ) {
-  //   for (let i = 0; i < timeouts.length; i++) {
-  //     clearTimeout(timeouts[i]);
-  //   }
-  //   setTO(
-  //     setTimeout(() => {
-  //       hit({ variables: { roomID: room_id, index: myIndex } });
-  //     }, 15000)
-  //   );
-  //   setFA(false);
-  // } else if (firstAppear && myIndex === 11 && data && data.getRoom.state === "GAMEOVER") {
-  //   for (let i = 0; i < timeouts.length; i++) {
-  //     clearTimeout(timeouts[i]);
-  //   }
-  //   setTO(
-  //     setTimeout(() => {
-  //       endGame({ variables: { roomID: room_id } });
-  //     }, 15000)
-  //   );
-  //   setFA(false);
-  // }
-  return authenticatedName !== username ? <></> : (
+  return authenticatedName !== username ? (
+    <></>
+  ) : (
     <div className="game_container">
       {
         <Dialog
@@ -454,7 +358,7 @@ const Game = ({
         </>
       )}
 
-      <img className="table_img" src="https://i.imgur.com/oPXcEoE.png" />
+      <img className="table_img" src="https://i.imgur.com/oPXcEoE.png" alt="table" />
       {showAll.map((player) => {
         return player;
       })}

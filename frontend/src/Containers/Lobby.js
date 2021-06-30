@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import Room from "../Components/Room";
 import EnterPasswordModal from "../Components/Modal/EnterPasswordModal";
 import CreateRoomModal from "../Components/Modal/CreateRoomModal";
@@ -20,7 +20,7 @@ const Lobby = ({
   },
 }) => {
   const authenticatedName = localStorage.getItem("NAME");
-  if(authenticatedName !== username){
+  if (authenticatedName !== username) {
     localStorage.setItem("NAME", null);
     window.location.href = "/";
   }
@@ -105,7 +105,6 @@ const Lobby = ({
     roomInfo.roomType = room_type;
     console.log(roomInfo);
     createRoom({ variables: { roomInfo } });
-    // window.location.href = `/Game/${room_type}/${}/${username}`;
   };
 
   const goToGame = (roomID, password) => {
@@ -117,7 +116,9 @@ const Lobby = ({
       handleOpenEnterPassword();
     }
   };
-  return authenticatedName !== username ? <></> : (
+  return authenticatedName !== username ? (
+    <></>
+  ) : (
     <div style={{ position: "relative" }}>
       <Button id="back_btn" onClick={() => goBackToMenu()}>
         <ArrowBackIcon style={{ width: "100%", height: "100%" }}></ArrowBackIcon>

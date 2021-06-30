@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SettingModal from "../Components/Modal/SettingModal";
 import HistoryModal from "../Components/Modal/HistoryModal";
 import RulesModal from "../Components/Modal/RulesModal";
@@ -13,7 +13,7 @@ const Menu = ({
   },
 }) => {
   const authenticatedName = localStorage.getItem("NAME");
-  if(authenticatedName !== username){
+  if (authenticatedName !== username) {
     localStorage.setItem("NAME", null);
     window.location.href = "/";
   }
@@ -56,7 +56,9 @@ const Menu = ({
     }
   };
 
-  return authenticatedName !== username ? <></> : (
+  return authenticatedName !== username ? (
+    <></>
+  ) : (
     <div className="menu">
       <Button id="left_btn" variant="contained" onClick={() => goToLobby(true)}>
         Public
