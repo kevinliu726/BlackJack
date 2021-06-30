@@ -98,15 +98,15 @@ const Game = ({
   const [leave] = useMutation(LEAVE);
   const [dealCards] = useMutation(DEAL_CARDS);
 
-  function handleCloseWindow(e){
+  function handleCloseWindow(e) {
     // e.preventDefault();
-    leave({variables: {roomID: room_id, index: myIndex}});
-    return  "gotcha";
+    leave({ variables: { roomID: room_id, index: myIndex } });
+    return "gotcha";
   }
 
   useBeforeunload((event) => {
     // event.preventDefault();
-    leave({variables: {roomID: room_id, index: myIndex}});
+    leave({ variables: { roomID: room_id, index: myIndex } });
     window.location.href = `/Lobby/${room_type}/${username}`;
   });
   useLayoutEffect(() => {
@@ -200,7 +200,7 @@ const Game = ({
     }
   });
 
-  if(data) console.log(data.getRoom.roomInfo.playersNumber);
+  // if (data) console.log(data.getRoom.roomInfo.playersNumber);
   // if (
   //   firstAppear &&
   //   players[myIndex] &&
@@ -223,9 +223,10 @@ const Game = ({
   //     clearTimeout(timeouts[i]);
   //   }
   //   let minBet = data.getRoom.roomInfo.minBet;
+  //   console.log("Damn " + minBet);
   //   setTO(
   //     setTimeout(() => {
-  //       setBet({ variables: { roomID: room_id, index: myIndex, minBet } });
+  //       setBet({ variables: { roomID: room_id, index: myIndex, bet: minBet } });
   //     }, 15000)
   //   );
   //   setFA(false);
@@ -354,93 +355,99 @@ const Game = ({
             )))}
       </div>
       {myIndex >= 0 && (
-        <div className="btm_btn_container">
-          {players[myIndex] &&
-            players[myIndex].state === "TURN" &&
-            players[myIndex].canStand &&
-            ((myIndex === 11 && (
-              <>
-                <button className="btn" id="stand_btn" onClick={() => battle({ variables: { roomID: room_id } })}>
-                  BATTLE
+        <>
+          {players[myIndex] && players[myIndex].canBet && betError && (
+            <FormHelperText
+              style={{ color: "red", display: "flex", position: "absolute", right: "7.5%", bottom: "13.5%" }}
+            >
+              Out of range!!
+            </FormHelperText>
+          )}
+          <div className="btm_btn_container">
+            {players[myIndex] &&
+              players[myIndex].state === "TURN" &&
+              players[myIndex].canStand &&
+              ((myIndex === 11 && (
+                <>
+                  <button className="btn" id="stand_btn" onClick={() => battle({ variables: { roomID: room_id } })}>
+                    BATTLE
+                  </button>
+                  <button className="btn" id="stand_btn" onClick={() => battleAll({ variables: { roomID: room_id } })}>
+                    BATTLE ALL
+                  </button>
+                </>
+              )) || (
+                <button
+                  className="btn"
+                  id="stand_btn"
+                  onClick={() => stand({ variables: { roomID: room_id, index: myIndex } })}
+                >
+                  STAND
                 </button>
-                <button className="btn" id="stand_btn" onClick={() => battleAll({ variables: { roomID: room_id } })}>
-                  BATTLE ALL
-                </button>
-              </>
-            )) || (
+              ))}
+            {players[myIndex] && players[myIndex].state === "TURN" && players[myIndex].canHit && (
               <button
                 className="btn"
-                id="stand_btn"
-                onClick={() => stand({ variables: { roomID: room_id, index: myIndex } })}
+                id="hit_btn"
+                onClick={() => hit({ variables: { roomID: room_id, index: myIndex } })}
               >
-                STAND
-              </button>
-            ))}
-          {players[myIndex] && players[myIndex].state === "TURN" && players[myIndex].canHit && (
-            <button
-              className="btn"
-              id="hit_btn"
-              onClick={() => hit({ variables: { roomID: room_id, index: myIndex } })}
-            >
-              HIT
-            </button>
-          )}
-          {players[myIndex] && players[myIndex].canBet && (
-            <button
-              className="btn"
-              id="bet_btn"
-              onClick={() => {
-                const bet = parseFloat(betNum);
-                if (!bet || bet < data.getRoom.roomInfo.minBet || bet > data.getRoom.roomInfo.maxBet) {
-                  setBetError(true);
-                  setBetNum("");
-                  return;
-                }
-                setBet({ variables: { roomID: room_id, index: myIndex, bet } });
-              }}
-            >
-              BET
-            </button>
-          )}
-          {players[myIndex] && players[myIndex].canBet && (
-            <FormControl className={classes.form} variant="outlined">
-              <OutlinedInput
-                id="betNum"
-                type="number"
-                value={betNum}
-                onChange={betNumOnChange}
-                autoComplete="off"
-                placeholder={data.getRoom.roomInfo.minBet + " - " + data.getRoom.roomInfo.maxBet}
-              />
-              {betError && <FormHelperText style={{ color: "red" }}>Out of range!!</FormHelperText>}
-            </FormControl>
-          )}
-          {myIndex === 11 && data && data.getRoom.state === "GAMEOVER" && (
-            <button className="btn" id="end_btn" onClick={() => endGame({ variables: { roomID: room_id } })}>
-              END
-            </button>
-          )}
-          {players[myIndex] &&
-            players[myIndex].isBank &&
-            data &&
-            data.getRoom.state === "PAUSE" &&
-            players.filter((p) => !p.isBank && p.state === "ACTIVE").length > 0 && (
-              <button className="btn" id="start_btn" onClick={() => startGame({ variables: { roomID: room_id } })}>
-                START
+                HIT
               </button>
             )}
-          {
-            players[myIndex] &&
-            players[myIndex].isBank &&
-            data &&
-            data.getRoom.state === "BETTING" &&
-            players.filter(p => !p.isBank && p.state === "ACTIVE").every(p => !p.canBet) && (
-              <button className="btn" id="start_btn" onClick={() => dealCards({ variables: { roomID: room_id } })}>
-                DEAL CARDS
+            {players[myIndex] && players[myIndex].canBet && (
+              <button
+                className="btn"
+                id="bet_btn"
+                onClick={() => {
+                  const bet = parseFloat(betNum);
+                  if (!bet || bet < data.getRoom.roomInfo.minBet || bet > data.getRoom.roomInfo.maxBet) {
+                    setBetError(true);
+                    setBetNum("");
+                    return;
+                  }
+                  setBet({ variables: { roomID: room_id, index: myIndex, bet } });
+                }}
+              >
+                BET
               </button>
-            )
-          }
-        </div>
+            )}
+            {players[myIndex] && players[myIndex].canBet && (
+              <FormControl className={classes.form} variant="outlined">
+                <OutlinedInput
+                  id="betNum"
+                  type="number"
+                  value={betNum}
+                  onChange={betNumOnChange}
+                  autoComplete="off"
+                  placeholder={data.getRoom.roomInfo.minBet + " - " + data.getRoom.roomInfo.maxBet}
+                />
+              </FormControl>
+            )}
+            {myIndex === 11 && data && data.getRoom.state === "GAMEOVER" && (
+              <button className="btn" id="end_btn" onClick={() => endGame({ variables: { roomID: room_id } })}>
+                END
+              </button>
+            )}
+            {players[myIndex] &&
+              players[myIndex].isBank &&
+              data &&
+              data.getRoom.state === "PAUSE" &&
+              players.filter((p) => !p.isBank && p.state === "ACTIVE").length > 0 && (
+                <button className="btn" id="start_btn" onClick={() => startGame({ variables: { roomID: room_id } })}>
+                  START
+                </button>
+              )}
+            {players[myIndex] &&
+              players[myIndex].isBank &&
+              data &&
+              data.getRoom.state === "BETTING" &&
+              players.filter((p) => !p.isBank && p.state === "ACTIVE").every((p) => !p.canBet) && (
+                <button className="btn" id="start_btn" onClick={() => dealCards({ variables: { roomID: room_id } })}>
+                  DEAL CARDS
+                </button>
+              )}
+          </div>
+        </>
       )}
 
       <img className="table_img" src="https://i.imgur.com/oPXcEoE.png" />
