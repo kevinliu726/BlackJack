@@ -7,6 +7,7 @@ import Subscription from "./resolvers/Subscription.js";
 
 const pubSub = new PubSub();
 const rooms = new Map();
+const port = process.env.PORT | 8080;
 
 const server = new GraphQLServer({
   typeDefs: "./schema.graphql",
@@ -24,7 +25,7 @@ const server = new GraphQLServer({
 
 mongo.connect();
 
-server.start({port: 8080}, () => {
-    console.log("The server is up on port 8080.");
+server.start({port}, () => {
+    console.log("The server is up on port " + port + ".");
 })
 
