@@ -48,6 +48,7 @@ const Register = () => {
   const [register] = useMutation(REGISTER, {
     onCompleted: (registerData) => {
       if (registerData && registerData.register) {
+        localStorage.setItem("NAME", values.username);
         window.location.href = `/Menu/${values.username}`;
       } else {
         setNEError(true);

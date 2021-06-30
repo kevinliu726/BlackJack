@@ -5,6 +5,7 @@ import Register from "./Containers/Register";
 import Menu from "./Containers/Menu";
 import Lobby from "./Containers/Lobby";
 import Game from "./Containers/Game";
+import PrivateRoute from "./Containers/PrivateRoute";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 

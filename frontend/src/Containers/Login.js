@@ -14,6 +14,7 @@ import "../css/Login_Register.css";
 import { LOG_IN, NAME_EXIST } from "../graphql/Query";
 import { useLazyQuery } from "@apollo/client";
 const Login = () => {
+  console.log(localStorage.getItem("NAME"));
   const classes = makeStyles({
     root: {
       display: "flex",
@@ -63,6 +64,7 @@ const Login = () => {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
       if (data && data.isLogIn) {
+        localStorage.setItem("NAME", values.username);
         window.location.href = `/Menu/${values.username}`;
       } else {
         setMError(true);

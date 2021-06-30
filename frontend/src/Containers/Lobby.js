@@ -69,6 +69,13 @@ const Lobby = ({
       setRoomListFilter(data.getLobby.filter((room) => room.roomInfo.name.includes(searchName)));
     }
   }, [data]);
+  
+  useEffect(() => {
+    const authenticatedName = localStorage.getItem("NAME");
+    if(authenticatedName !== username){
+      window.location.href = "/";
+    }
+  }, [])
 
   const goBackToMenu = () => {
     window.location.href = `/Menu/${username}`;
