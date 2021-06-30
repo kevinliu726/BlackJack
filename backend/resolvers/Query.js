@@ -20,7 +20,7 @@ const Query = {
     const { rooms } = context;
     const sortRooms = [...rooms]
       .map(([roomID, room]) => room)
-      .filter((r) => r.roomInfo.roomType === roomType)
+      .filter((r) => r.roomInfo.roomType === roomType && r.state !== "DEAD")
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     return sortRooms;
   },

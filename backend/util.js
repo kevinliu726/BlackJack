@@ -62,6 +62,10 @@ const getBattlePoint = (cards) => {
     const sum = getPossibleSum(cards);
     const unBombed = sum.filter(x => x <= 21);
     const bombed = sum.filter(x => x > 21);
+    if(cards.length === 5){
+      if(unBombed.length > 0) return Math.max(...unBombed);
+      else return Math.min(...bombed);
+    }
     if(unBombed.length > 0 && Math.max(...unBombed) > 14) return Math.max(...unBombed);
     else return Math.min(...bombed);
 }
@@ -126,7 +130,7 @@ const findBlackJack = async (room) => {
     }
   }
   if (room.players.filter((p) => !p.isBank && p.state === "ACTIVE").every((p) => !p.canBattle)) {
-    room.state === "GAMEOVER";
+    room.state = "GAMEOVER";
     room.players[11].canStand = false;
     room.players[11].canHit = false;
   }

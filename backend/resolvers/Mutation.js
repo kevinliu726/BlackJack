@@ -106,6 +106,7 @@ const Mutation = {
     return room;
   },
   async setBet(parent, { roomID, bet, index }, { db, rooms, pubSub }, info) {
+    console.log(bet);
     const room = rooms.get(roomID);
     room.players[index].canBet = false;
     room.players[index].cash -= bet;
@@ -202,8 +203,26 @@ const Mutation = {
   },
   async leave(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
+    if(!room) return null;
     if (index < 0) return room;
+    if(room.players[index].state === "TURN"){
+      let next = index + 1;
+      for (; next < 12; ++next) {
+        if (room.players[next].state === "ACTIVE" && room.players[next].canBattle) break;
+      }
+      if (next < 12) {
+        room.players[next].state = "TURN";
+      }
+      if (next === 11) {
+        room.players[next].cards[0].visible = true;
+      }
+    }
     room.players[index] = util.getNewPlayer({ isBank: false, name: "", index, state: "UNSEATED" });
+    if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").length === 0){
+      room.state = "GAMEOVER";
+      room.players[11].canStand = false;
+      room.players[11].canHit = false;
+    }
     room.roomInfo.playersNumber -= 1;
     if (index === 11) room.state = "DEAD";
     if (room.roomInfo.playersNumber === 0) rooms.delete(roomID);
