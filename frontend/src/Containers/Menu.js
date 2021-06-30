@@ -46,6 +46,7 @@ const Menu = ({
     setOpenSetting(false);
   };
   const logout = () => {
+    localStorage.setItem("NAME", null);
     window.location.href = "/Login";
   };
   const goToLobby = (isPublic) => {
