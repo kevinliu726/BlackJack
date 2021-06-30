@@ -70,7 +70,7 @@ const RulesModal = ({ open, handleClose }) => {
               <td>
                 <img
                   src={require("../../cards/0.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
               </td>
@@ -80,13 +80,13 @@ const RulesModal = ({ open, handleClose }) => {
               <td>
                 <img
                   src={require("../../cards/1.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
                 <span style={{ fontSize: "20px" }}> ... </span>
                 <img
                   src={require("../../cards/8.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
               </td>
@@ -96,22 +96,22 @@ const RulesModal = ({ open, handleClose }) => {
               <td>
                 <img
                   src={require("../../cards/9.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
                 <img
                   src={require("../../cards/10.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
                 <img
                   src={require("../../cards/11.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
                 <img
                   src={require("../../cards/12.png").default}
-                  style={{ width: "50px", height: "50px", borderRadius: "10px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "18px" }}
                   alt="cards"
                 ></img>
               </td>

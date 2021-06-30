@@ -33,7 +33,7 @@ const Player = ({
       if (card.visible === true || username === name) {
         return require("../cards/" + (card.number % 52) + ".png").default;
       } else {
-        return require("../cards/back.jpeg").default;
+        return require("../cards/back.png").default;
       }
     });
     if (flash) state += isChosen ? " CHOSEN" : " NOT_CHOSEN";
