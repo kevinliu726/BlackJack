@@ -336,10 +336,10 @@ const Game = ({
           </button>
         )}
         {data &&
-          data.getRoom.state === "PAUSE" &&
+          // data.getRoom.state === "PAUSE" &&
           myIndex >= 0 &&
           myIndex < 11 &&
-          ((players[myIndex].state === "ACTIVE" && (
+          ((players[myIndex].state === "ACTIVE" && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
             <button
               className="go_btn"
               id="away_btn"
@@ -348,7 +348,7 @@ const Game = ({
               AWAY
             </button>
           )) ||
-            (players[myIndex].state === "AWAY" && (
+            (players[myIndex].state === "AWAY" && data.getRoom.state === "PAUSE" && (
               <button
                 className="go_btn"
                 id="away_btn"
