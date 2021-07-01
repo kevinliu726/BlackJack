@@ -93,13 +93,13 @@
 }
 .info_name_dealer {
   display: flex;
-  width: 50%;
+  width: 30%;
   font-family: Georgia;
   font-weight: bold;
   font-size: 30px;
 }
 .info_bet {
-  width: 50%;
+  width: 40%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
@@ -107,7 +107,7 @@
   font-size: 20px;
 }
 .info_result_lose {
-  width: 50%;
+  width: 40%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
@@ -115,7 +115,7 @@
   font-size: 20px;
 }
 .info_result_win {
-  width: 50%;
+  width: 40%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
@@ -123,7 +123,7 @@
   font-size: 20px;
 }
 .info_money_lose {
-  width: 50%;
+  width: 30%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
@@ -131,7 +131,7 @@
   font-size: 20px;
 }
 .info_money_lose_dealer {
-  width: 50%;
+  width: 30%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
@@ -139,7 +139,7 @@
   font-size: 30px;
 }
 .info_money_win {
-  width: 50%;
+  width: 30%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
@@ -147,7 +147,7 @@
   font-size: 20px;
 }
 .info_money_win_dealer {
-  width: 50%;
+  width: 30%;
   text-align: right;
   font-family: Georgia;
   font-weight: bold;
