@@ -36,7 +36,7 @@ const Game = ({
   match: {
     params: { room_type, room_id, username },
   },
-  history
+  history,
 }) => {
   const classes = makeStyles(() => ({
     dialog: {
@@ -102,7 +102,7 @@ const Game = ({
   useBeforeunload((event) => {
     leave({ variables: { roomID: room_id, index: myIndex } });
     // window.location.href = `/Lobby/${room_type}/${username}`;
-    history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
+    history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
   });
   // useEffect(() => {
   //   history.listen((newLocation, action) => {
@@ -165,13 +165,13 @@ const Game = ({
       );
     } else {
       let index =
-        myIndex === 11 ? ((player.index + 6 - myIndex + 11) % 11) + 1 : ((player.index + 5 - myIndex + 11) % 11) + 1;
+        myIndex === 11 || myIndex === -1 ? (player.index % 11) + 1 : ((player.index + 5 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
         if (data && data.getRoom.state === "PAUSE" && myIndex !== 11) {
           return (
             <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
               <div style={{ display: "flex", position: "absolute", fontSize: "24px", top: "8px", left: "8px" }}>
-                {((player.index) % 11) + 1}
+                {(player.index % 11) + 1}
               </div>
               <div className={"sit_text"}>SIT</div>
             </div>
@@ -202,7 +202,7 @@ const Game = ({
     }
   });
   return false && (!location.state || location.state.loginName !== username) ? (
-    <Redirect to={{pathname: "/Login", state:{action: "illegal"}}}/>
+    <Redirect to={{ pathname: "/Login", state: { action: "illegal" } }} />
   ) : (
     <div className="game_container">
       {
@@ -224,7 +224,7 @@ const Game = ({
               onClick={() => {
                 // leave({ variables: { roomID: room_id, index: myIndex } });
                 // window.location.href = `/Lobby/${room_type}/${username}`;
-                history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
+                history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
               }}
             >
               Leave
@@ -233,7 +233,7 @@ const Game = ({
         </Dialog>
       }
       <div className="top_btn_container">
-        {(myIndex < 0 || (data && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) )) && (
+        {(myIndex < 0 || (data && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle))) && (
           <button
             className="go_btn"
             id="leave_btn"
@@ -241,7 +241,7 @@ const Game = ({
             onClick={() => {
               // leave({ variables: { roomID: room_id, index: myIndex } });
               // window.location.href = `/Lobby/${room_type}/${username}`;
-              history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
+              history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
             }}
           >
             LEAVE
@@ -251,15 +251,16 @@ const Game = ({
           // data.getRoom.state === "PAUSE" &&
           myIndex >= 0 &&
           myIndex < 11 &&
-          (((players[myIndex].state === "ACTIVE" || players[myIndex].state === "BACK") && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
-            <button
-              className="go_btn"
-              id="away_btn"
-              onClick={() => away({ variables: { roomID: room_id, index: myIndex } })}
-            >
-              AWAY
-            </button>
-          )) ||
+          (((players[myIndex].state === "ACTIVE" || players[myIndex].state === "BACK") &&
+            (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
+              <button
+                className="go_btn"
+                id="away_btn"
+                onClick={() => away({ variables: { roomID: room_id, index: myIndex } })}
+              >
+                AWAY
+              </button>
+            )) ||
             (players[myIndex].state === "AWAY" && (
               <button
                 className="go_btn"
