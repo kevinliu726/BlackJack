@@ -110,6 +110,12 @@ const battle = async (bank, player, roomID) => {
   const roomHistory = await db.RoomHistoryModel.findOne({ roomID }).exec();
   roomHistory.battles.push(battleHistory._id);
   await roomHistory.save();
+  const dbBank = await db.UserModel.findOne({name: bank.name}).exec();
+  if(!dbBank.history.includes(roomHistory._id)) dbBank.history.push(roomHistory._id);
+  await dbBank.save();
+  const dbPlayer = await db.UserModel.findOneAndDelete({name: player.name}).exec();
+  if(!dbPlayer.history.includes(roomHistory._id)) dbPlayer.history.push(roomHistory._id);
+  await dbPlayer.save();
   // update player info
   player.canBattle = false;
   player.resultTimes = playerResultTimes;
