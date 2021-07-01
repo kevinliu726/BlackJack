@@ -171,7 +171,7 @@ const Game = ({
           return (
             <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
               <div style={{ display: "flex", position: "absolute", fontSize: "24px", top: "8px", left: "8px" }}>
-                {((player.index + 6) % 11) + 1}
+                {((player.index) % 11) + 1}
               </div>
               <div className={"sit_text"}>SIT</div>
             </div>
@@ -251,7 +251,7 @@ const Game = ({
           // data.getRoom.state === "PAUSE" &&
           myIndex >= 0 &&
           myIndex < 11 &&
-          ((players[myIndex].state === "ACTIVE" && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
+          (((players[myIndex].state === "ACTIVE" || players[myIndex].state === "BACK") && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
             <button
               className="go_btn"
               id="away_btn"
@@ -260,7 +260,7 @@ const Game = ({
               AWAY
             </button>
           )) ||
-            (players[myIndex].state === "AWAY" && data.getRoom.state === "PAUSE" && (
+            (players[myIndex].state === "AWAY" && (
               <button
                 className="go_btn"
                 id="away_btn"

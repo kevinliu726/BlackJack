@@ -93,6 +93,7 @@ const Mutation = {
       p.cards = [];
       p.canBattle = true;
       p.bet = 0;
+      if(p.state === "BACK") p.state = "ACTIVE";
     }
     room.players[11].state = "ACTIVE";
     room.state = "PAUSE";
@@ -190,7 +191,12 @@ const Mutation = {
   },
   async back(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    room.players[index] = util.getNewPlayer({ isBank: false, name: room.players[index].name, index, state: "ACTIVE", cash: room.players[index].cash });
+    if(room.state === "PAUSE"){
+      room.players[index] = util.getNewPlayer({ isBank: false, name: room.players[index].name, index, state: "ACTIVE", cash: room.players[index].cash });
+    }
+    else {
+      room.players[index].state = "BACK";
+    }
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
