@@ -107,7 +107,8 @@ const Game = ({
   // useEffect(() => {
   //   history.listen((newLocation, action) => {
   //     if(action !== "PUSH"){
-  //             history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
+  //       leave({ variables: { roomID: room_id, index: myIndex } });
+  //       // history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
   //     }
   //   })
   // });
@@ -221,7 +222,7 @@ const Game = ({
             <Button
               color="secondary"
               onClick={() => {
-                leave({ variables: { roomID: room_id, index: myIndex } });
+                // leave({ variables: { roomID: room_id, index: myIndex } });
                 // window.location.href = `/Lobby/${room_type}/${username}`;
                 history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
               }}
@@ -238,7 +239,7 @@ const Game = ({
             id="leave_btn"
             vis
             onClick={() => {
-              leave({ variables: { roomID: room_id, index: myIndex } });
+              // leave({ variables: { roomID: room_id, index: myIndex } });
               // window.location.href = `/Lobby/${room_type}/${username}`;
               history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
             }}

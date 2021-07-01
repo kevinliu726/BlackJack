@@ -20,10 +20,7 @@ const Mutation = {
     const { host } = roomInfo;
     const roomID = uuidv4();
     // create RoomHistory for bank
-    const user = await db.UserModel.findOne({ name: host }).exec();
     const roomHistory = await new db.RoomHistoryModel({ roomID, date: new Date(), roomInfo, battles: [] }).save();
-    user.history.push(roomHistory._id);
-    await user.save();
     // create Room
     roomInfo.playersNumber = 1;
     const players = new Array(12).fill(null);
@@ -52,10 +49,7 @@ const Mutation = {
     const room = rooms.get(roomID);
     if (room.players[index].state !== "UNSEATED") return -1;
     // create RoomHistory
-    const user = await db.UserModel.findOne({ name }).exec();
     const roomHistory = await db.RoomHistoryModel.findOne({ roomID }).exec();
-    if (!user.history.includes(roomHistory._id)) user.history.push(roomHistory._id);
-    await user.save();
     // add new player
     if (originalIndex >= 0) {
       room.players[index] = util.getNewPlayer({

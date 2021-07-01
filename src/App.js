@@ -8,11 +8,11 @@ import Game from "./Containers/Game";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {createBrowserHistory} from "history";
 
-const history = createBrowserHistory({forceRefresh: true});
+const history = createBrowserHistory();
 
 function App() {
   return (
-    <Router history={history}>
+    <Router history={history} forceRefresh={true}>
       <Switch>
         <Route path="/" exact component={Login} />
         <Route path="/Login" exact component={Login} />
