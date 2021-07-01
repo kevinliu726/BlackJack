@@ -1,7 +1,7 @@
 import express from "express";
 import { importSchema } from "graphql-import";
 import { ApolloServer } from "apollo-server-express";
-import {PubSub} from "apollo-server-express";
+import { PubSub } from "apollo-server-express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
@@ -18,7 +18,7 @@ import mongo from "./backend/mongo.js";
 // import apiRoute from "./backend/route/api.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8080;
 
 const typeDefs = importSchema("./backend/schema.graphql");
 const pubsub = new PubSub();
@@ -38,16 +38,16 @@ const rooms = new Map();
 const server = new ApolloServer({
   typeDefs,
   resolvers: {
-      Query,
-      Mutation,
-      Subscription
+    Query,
+    Mutation,
+    Subscription,
   },
   context: {
     db,
     rooms,
-    pubSub
-  }
-})
+    pubSub,
+  },
+});
 
 server.applyMiddleware({ app });
 const httpServer = http.createServer(app);
@@ -56,6 +56,6 @@ server.installSubscriptionHandlers(httpServer);
 mongo.connect();
 
 httpServer.listen(port, () => {
-    console.log(`🚀 Server Ready at ${port}! 🚀`);
-    console.log(`Graphql Port at ${port}${server.subscriptionsPath}`);
-  });
+  console.log(`🚀 Server Ready at ${port}! 🚀`);
+  console.log(`Graphql Port at ${port}${server.subscriptionsPath}`);
+});
