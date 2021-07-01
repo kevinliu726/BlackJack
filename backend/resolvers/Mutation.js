@@ -225,7 +225,7 @@ const Mutation = {
           room.players[next].cards[0].visible = true;
         }
       }
-      if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").length === 0){
+      if(room.players.filter(p => !p.isBank && (p.state === "ACTIVE" || p.state === "TURN")).length === 0){
         room.state = "PAUSE";
         room.players[11] = util.getNewPlayer({ isBank: true, name: room.players[11].name, index: 11, state: "ACTIVE", cash: room.players[11].cash });
       }

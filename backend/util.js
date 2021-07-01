@@ -121,6 +121,7 @@ const battle = async (bank, player, roomID) => {
 
 const findBlackJack = async (room) => {
   if (room.players[11].canBlackJack) {
+    room.players[11].cards[0].visible = true;
     for (const p of room.players.filter((p) => p.state === "ACTIVE" && !p.isBank)) {
       await battle(room.players[11], p, room.roomID);
     }
@@ -131,6 +132,7 @@ const findBlackJack = async (room) => {
   }
   if (room.players.filter((p) => !p.isBank && p.state === "ACTIVE").every((p) => !p.canBattle)) {
     room.state = "GAMEOVER";
+    room.players[11].cards[0].visible = true;
     room.players[11].canStand = false;
     room.players[11].canHit = false;
   }
