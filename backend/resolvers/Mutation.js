@@ -20,10 +20,7 @@ const Mutation = {
     const { host } = roomInfo;
     const roomID = uuidv4();
     // create RoomHistory for bank
-    const user = await db.UserModel.findOne({ name: host }).exec();
     const roomHistory = await new db.RoomHistoryModel({ roomID, date: new Date(), roomInfo, battles: [] }).save();
-    user.history.push(roomHistory._id);
-    await user.save();
     // create Room
     roomInfo.playersNumber = 1;
     const players = new Array(12).fill(null);
@@ -52,10 +49,7 @@ const Mutation = {
     const room = rooms.get(roomID);
     if (room.players[index].state !== "UNSEATED") return -1;
     // create RoomHistory
-    const user = await db.UserModel.findOne({ name }).exec();
     const roomHistory = await db.RoomHistoryModel.findOne({ roomID }).exec();
-    if (!user.history.includes(roomHistory._id)) user.history.push(roomHistory._id);
-    await user.save();
     // add new player
     if (originalIndex >= 0) {
       room.players[index] = util.getNewPlayer({
@@ -99,6 +93,7 @@ const Mutation = {
       p.cards = [];
       p.canBattle = true;
       p.bet = 0;
+      if(p.state === "BACK") p.state = "ACTIVE";
     }
     room.players[11].state = "ACTIVE";
     room.state = "PAUSE";
@@ -196,7 +191,12 @@ const Mutation = {
   },
   async back(parent, { roomID, index }, { db, rooms, pubSub }, info) {
     const room = rooms.get(roomID);
-    room.players[index] = util.getNewPlayer({ isBank: false, name: room.players[index].name, index, state: "ACTIVE", cash: room.players[index].cash });
+    if(room.state === "PAUSE"){
+      room.players[index] = util.getNewPlayer({ isBank: false, name: room.players[index].name, index, state: "ACTIVE", cash: room.players[index].cash });
+    }
+    else {
+      room.players[index].state = "BACK";
+    }
     pubSub.publish(`room_${roomID}`, { subscribeRoom: room });
     return room;
   },
@@ -225,7 +225,7 @@ const Mutation = {
           room.players[next].cards[0].visible = true;
         }
       }
-      if(room.players.filter(p => !p.isBank && p.state === "ACTIVE").length === 0){
+      if(room.players.filter(p => !p.isBank && (p.state === "ACTIVE" || p.state === "TURN")).length === 0){
         room.state = "PAUSE";
         room.players[11] = util.getNewPlayer({ isBank: true, name: room.players[11].name, index: 11, state: "ACTIVE", cash: room.players[11].cash });
       }

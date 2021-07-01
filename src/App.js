@@ -5,11 +5,14 @@ import Register from "./Containers/Register";
 import Menu from "./Containers/Menu";
 import Lobby from "./Containers/Lobby";
 import Game from "./Containers/Game";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, withRouter } from "react-router-dom";
+import {createBrowserHistory} from "history";
+
+const history = createBrowserHistory();
 
 function App() {
   return (
-    <Router>
+    <Router history={history} forceRefresh={true}>
       <Switch>
         <Route path="/" exact component={Login} />
         <Route path="/Login" exact component={Login} />
@@ -22,4 +25,4 @@ function App() {
   );
 }
 
-export default App;
+export default (App);

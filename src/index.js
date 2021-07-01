@@ -8,9 +8,13 @@ import {WebSocketLink} from "apollo-link-ws";
 import { split } from 'apollo-link';
 import { getMainDefinition } from '@apollo/client/utilities';
 
-const httpLink = new HttpLink({uri: "http://localhost:8080"});
+const url = new URL("/graphql", window.location.href);
+
+
+const httpLink = new HttpLink({uri: url.href});
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:8080/`,
+  // uri: `ws://localhost:8080/`,
+  uri: url.href.replace("http", "ws"),
   options: { reconnect: true }
 })
 

@@ -110,6 +110,12 @@ const battle = async (bank, player, roomID) => {
   const roomHistory = await db.RoomHistoryModel.findOne({ roomID }).exec();
   roomHistory.battles.push(battleHistory._id);
   await roomHistory.save();
+  const dbBank = await db.UserModel.findOne({name: bank.name}).exec();
+  if(!dbBank.history.includes(roomHistory._id)) dbBank.history.push(roomHistory._id);
+  await dbBank.save();
+  const dbPlayer = await db.UserModel.findOne({name: player.name}).exec();
+  if(!dbPlayer.history.includes(roomHistory._id)) dbPlayer.history.push(roomHistory._id);
+  await dbPlayer.save();
   // update player info
   player.canBattle = false;
   player.resultTimes = playerResultTimes;
@@ -121,6 +127,7 @@ const battle = async (bank, player, roomID) => {
 
 const findBlackJack = async (room) => {
   if (room.players[11].canBlackJack) {
+    room.players[11].cards[0].visible = true;
     for (const p of room.players.filter((p) => p.state === "ACTIVE" && !p.isBank)) {
       await battle(room.players[11], p, room.roomID);
     }
@@ -131,6 +138,7 @@ const findBlackJack = async (room) => {
   }
   if (room.players.filter((p) => !p.isBank && p.state === "ACTIVE").every((p) => !p.canBattle)) {
     room.state = "GAMEOVER";
+    room.players[11].cards[0].visible = true;
     room.players[11].canStand = false;
     room.players[11].canHit = false;
   }

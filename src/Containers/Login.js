@@ -6,15 +6,19 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Divider from "@material-ui/core/Divider";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import Divider from "@material-ui/core/Divider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "../css/Login_Register.css";
 import { LOG_IN, NAME_EXIST } from "../graphql/Query";
 import { useLazyQuery } from "@apollo/client";
-const Login = () => {
-  console.log(localStorage.getItem("NAME"));
+import { useLocation } from "react-router";
+const Login = ({history}) => {
   const classes = makeStyles({
     root: {
       display: "flex",
@@ -31,6 +35,30 @@ const Login = () => {
         "&.Mui-focused fieldset": { borderColor: "#d5d5d5" },
       },
     },
+    dialog: {
+      display: "flex",
+      background: "black",
+      color: "#c0c0c0",
+      borderWidth: "3px",
+      borderColor: "#c0c0c0",
+      borderStyle: "solid",
+      borderRadius: "20px",
+    },
+    dialogTitle: {
+      display: "flex",
+      paddingBottom: "0px",
+      justifyContent: "space-evenly",
+    },
+    dialogContent: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+    },
+    dialogActions: {
+      display: "flex",
+      alignSelf: "center",
+      justifyContent: "space-between",
+    },
   })();
   const [values, setValues] = useState({
     username: "",
@@ -41,6 +69,8 @@ const Login = () => {
   const [nameExistError, setNEError] = useState(false);
   const [matchError, setMError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const location = useLocation();
+  const [illegal, setIllegal] = useState(location.state && location.state.action === "illegal");
 
   const [nameExist] = useLazyQuery(NAME_EXIST, {
     fetchPolicy: "network-only",
@@ -64,8 +94,7 @@ const Login = () => {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
       if (data && data.isLogIn) {
-        localStorage.setItem("NAME", values.username);
-        window.location.href = `/Menu/${values.username}`;
+        history.push(`/Menu/${values.username}`, {loginName: values.username});
       } else {
         setMError(true);
       }
@@ -96,6 +125,29 @@ const Login = () => {
 
   return (
     <div className="page_container">
+      <Dialog
+        classes={{ paper: classes.dialog }}
+        open={illegal}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
+          Gotcha, you little fucking hacker !
+        </DialogTitle>
+        <Divider style={{ backgroundColor: "#d5d5d5", width: "80%", alignSelf: "center" }} />
+        <DialogContent className={classes.dialogContent}>
+          <img
+            src="https://truth.bahamut.com.tw/s01/202102/baeb59a884571d328245b04772b6c80e.JPG"
+          />
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button
+            color="secondary"
+            onClick={() => setIllegal(false)}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="img_container">
         <img
           src="https://i.imgur.com/68CxQO4.jpg"
@@ -155,7 +207,7 @@ const Login = () => {
             Log in
           </Button>
           <div style={{ height: 10 }} />
-          <Button id="join_btn" onClick={() => (window.location.href = "/Register")}>
+          <Button id="join_btn" onClick={() => history.push("/Register")}>
             No account? Create One
           </Button>
         </div>

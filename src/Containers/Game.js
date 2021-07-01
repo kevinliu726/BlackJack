@@ -10,11 +10,12 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
 import { FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useEffect } from "react";
 import { useBeforeunload } from "react-beforeunload";
-import { useQuery, useMutation } from "@apollo/client";
-import { GET_ROOM } from "../graphql/Query";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
+import { GET_ROOM, GET_NAME } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
+import { useLocation, useHistory, Redirect } from "react-router";
 import {
   CHOOSE_SEAT,
   HIT,
@@ -35,12 +36,8 @@ const Game = ({
   match: {
     params: { room_type, room_id, username },
   },
+  history,
 }) => {
-  const authenticatedName = localStorage.getItem("NAME");
-  if (authenticatedName !== username) {
-    localStorage.setItem("NAME", null);
-    window.location.href = "/";
-  }
   const classes = makeStyles(() => ({
     dialog: {
       display: "flex",
@@ -86,6 +83,7 @@ const Game = ({
   const [betError, setBetError] = useState(false);
   const [players, setPlayers] = useState([]);
   const [myIndex, setMyIndex] = useState(-1);
+  const location = useLocation();
   const { data, subscribeToMore } = useQuery(GET_ROOM, { variables: { roomID: room_id } });
   const [chooseSeat] = useMutation(CHOOSE_SEAT);
   const [hit] = useMutation(HIT);
@@ -103,10 +101,15 @@ const Game = ({
 
   useBeforeunload((event) => {
     leave({ variables: { roomID: room_id, index: myIndex } });
-    window.location.href = `/Lobby/${room_type}/${username}`;
+    history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
+    console.log(location.pathname);
+    // window.location.href = `/Lobby/${room_type}/${username}`;
+    // history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
   });
-  useLayoutEffect(() => {
-    subscribeToMore({
+
+
+  useEffect(() => {
+    const unsubscribe = subscribeToMore({
       document: SUBSCRIBE_ROOM,
       variables: { roomID: room_id },
       updateQuery: (prev, { subscriptionData }) => {
@@ -114,8 +117,9 @@ const Game = ({
         return { ...prev, getRoom: subscriptionData.data.subscribeRoom };
       },
     });
-  }, [subscribeToMore]);
-  useLayoutEffect(() => {
+    return () => unsubscribe();
+  }, []);
+  useEffect(() => {
     if (data && data.getRoom) {
       let index = -1;
       for (var i = 0; i < 12; i++) {
@@ -158,13 +162,13 @@ const Game = ({
       );
     } else {
       let index =
-        myIndex === 11 ? ((player.index + 6 - myIndex + 11) % 11) + 1 : ((player.index + 5 - myIndex + 11) % 11) + 1;
+        myIndex === 11 || myIndex === -1 ? (player.index % 11) + 1 : ((player.index + 5 - myIndex + 11) % 11) + 1;
       if (player.state === "UNSEATED") {
         if (data && data.getRoom.state === "PAUSE" && myIndex !== 11) {
           return (
             <div className={"player player_" + index + " " + player.state} onClick={() => sitSpot(player.index)}>
               <div style={{ display: "flex", position: "absolute", fontSize: "24px", top: "8px", left: "8px" }}>
-                {((player.index + 6) % 11) + 1}
+                {(player.index % 11) + 1}
               </div>
               <div className={"sit_text"}>SIT</div>
             </div>
@@ -194,15 +198,15 @@ const Game = ({
       }
     }
   });
-
-  return authenticatedName !== username ? (
-    <></>
+  
+  return false ? (
+    <Redirect to={{ pathname: "/Login", state: { action: "illegal", from: "game" } }} />
   ) : (
     <div className="game_container">
       {
         <Dialog
           classes={{ paper: classes.dialog }}
-          open={data && data.getRoom.state === "DEAD"}
+          open={data && data.getRoom && data.getRoom.state === "DEAD"}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
@@ -216,8 +220,9 @@ const Game = ({
             <Button
               color="secondary"
               onClick={() => {
-                leave({ variables: { roomID: room_id, index: myIndex } });
-                window.location.href = `/Lobby/${room_type}/${username}`;
+                // leave({ variables: { roomID: room_id, index: myIndex } });
+                // window.location.href = `/Lobby/${room_type}/${username}`;
+                history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
               }}
             >
               Leave
@@ -226,14 +231,15 @@ const Game = ({
         </Dialog>
       }
       <div className="top_btn_container">
-        {(myIndex < 0 || (data && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) )) && (
+        {(myIndex < 0 || (data && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle))) && (
           <button
             className="go_btn"
             id="leave_btn"
             vis
             onClick={() => {
               // leave({ variables: { roomID: room_id, index: myIndex } });
-              window.location.href = `/Lobby/${room_type}/${username}`;
+              // window.location.href = `/Lobby/${room_type}/${username}`;
+              history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
             }}
           >
             LEAVE
@@ -243,16 +249,17 @@ const Game = ({
           // data.getRoom.state === "PAUSE" &&
           myIndex >= 0 &&
           myIndex < 11 &&
-          ((players[myIndex].state === "ACTIVE" && (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
-            <button
-              className="go_btn"
-              id="away_btn"
-              onClick={() => away({ variables: { roomID: room_id, index: myIndex } })}
-            >
-              AWAY
-            </button>
-          )) ||
-            (players[myIndex].state === "AWAY" && data.getRoom.state === "PAUSE" && (
+          (((players[myIndex].state === "ACTIVE" || players[myIndex].state === "BACK") &&
+            (data.getRoom.state === "PAUSE" || !players[myIndex].canBattle) && (
+              <button
+                className="go_btn"
+                id="away_btn"
+                onClick={() => away({ variables: { roomID: room_id, index: myIndex } })}
+              >
+                AWAY
+              </button>
+            )) ||
+            (players[myIndex].state === "AWAY" && (
               <button
                 className="go_btn"
                 id="away_btn"

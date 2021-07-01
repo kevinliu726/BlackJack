@@ -1,5 +1,6 @@
 import "../css/Player.css";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
+import AirlineSeatReclineExtraIcon from '@material-ui/icons/AirlineSeatReclineExtra';
 
 const Player = ({
   className,
@@ -66,6 +67,19 @@ const Player = ({
         <div className="icon">
           <DirectionsWalkIcon style={{ display: "flex", height: "50%", width: "100%" }}></DirectionsWalkIcon>
           <span>AWAY</span>
+        </div>
+        <div className="away_info">
+          <div>{name}</div>
+          <div>{cash}</div>
+        </div>
+      </div>
+    );
+  } else if(state === "BACK") {
+    return (
+      <div className={className + " " + state}>
+        <div className="icon">
+          <AirlineSeatReclineExtraIcon style={{ display: "flex", height: "50%", width: "100%" }}></AirlineSeatReclineExtraIcon>
+          <span>BACK</span>
         </div>
         <div className="away_info">
           <div>{name}</div>
