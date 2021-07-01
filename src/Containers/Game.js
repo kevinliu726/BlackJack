@@ -12,7 +12,7 @@ import { FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLayoutEffect, useState, useEffect } from "react";
 import { useBeforeunload } from "react-beforeunload";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import { GET_ROOM } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
 import { useLocation, useHistory, Redirect } from "react-router";
@@ -85,6 +85,7 @@ const Game = ({
   const [myIndex, setMyIndex] = useState(-1);
   const location = useLocation();
   const { data, subscribeToMore } = useQuery(GET_ROOM, { variables: { roomID: room_id } });
+  // const [getData, {data}] = useLazyQuery(GET_ROOM, {fetchPolicy: "network-only"});
   const [chooseSeat] = useMutation(CHOOSE_SEAT);
   const [hit] = useMutation(HIT);
   const [stand] = useMutation(STAND);
@@ -99,11 +100,16 @@ const Game = ({
   const [leave] = useMutation(LEAVE);
   const [dealCards] = useMutation(DEAL_CARDS);
 
+  console.log(window.location);
+  console.log(window.location.state);
   useBeforeunload((event) => {
     leave({ variables: { roomID: room_id, index: myIndex } });
-    // window.location.href = `/Lobby/${room_type}/${username}`;
     history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
+    console.log(location.pathname);
+    // window.location.href = `/Lobby/${room_type}/${username}`;
+    // history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
   });
+
   // useEffect(() => {
   //   history.listen((newLocation, action) => {
   //     if(action !== "PUSH"){
@@ -113,7 +119,7 @@ const Game = ({
   //   })
   // });
   useEffect(() => {
-    subscribeToMore({
+    const unsubscribe = subscribeToMore({
       document: SUBSCRIBE_ROOM,
       variables: { roomID: room_id },
       updateQuery: (prev, { subscriptionData }) => {
@@ -121,7 +127,8 @@ const Game = ({
         return { ...prev, getRoom: subscriptionData.data.subscribeRoom };
       },
     });
-  }, [subscribeToMore]);
+    return () => unsubscribe();
+  }, []);
   useEffect(() => {
     if (data && data.getRoom) {
       let index = -1;
@@ -202,7 +209,7 @@ const Game = ({
     }
   });
   return false && (!location.state || location.state.loginName !== username) ? (
-    <Redirect to={{ pathname: "/Login", state: { action: "illegal" } }} />
+    <Redirect to={{ pathname: "/Login", state: { action: "illegal", from: "game" } }} />
   ) : (
     <div className="game_container">
       {

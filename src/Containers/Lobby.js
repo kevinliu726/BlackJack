@@ -48,9 +48,11 @@ const Lobby = ({
   const [searchName, setSearchName] = useState("");
   const location = useLocation();
 
+
   const [createRoom] = useMutation(CREATE_ROOM, {
     onCompleted: (createRoomData) => {
       if (createRoomData && createRoomData.createRoom) {
+        window.location.state = "fff";
         window.location = `/Game/${room_type}/${createRoomData.createRoom.roomID}/${username}`;
         // history.push(`/Game/${room_type}/${createRoomData.createRoom.roomID}/${username}`, {loginName: username});
       }
@@ -58,7 +60,7 @@ const Lobby = ({
   });
   const { data, subscribeToMore } = useQuery(GET_LOBBY, { variables: { roomType: room_type } });
   useLayoutEffect(() => {
-    subscribeToMore({
+    const unsubscribe = subscribeToMore({
       document: SUBSCRIBE_LOBBY,
       variables: { roomType: room_type },
       updateQuery: (prev, { subscriptionData }) => {
@@ -66,7 +68,8 @@ const Lobby = ({
         return { ...prev, getLobby: [...subscriptionData.data.subscribeLobby] };
       },
     });
-  }, [subscribeToMore]);
+    return () => unsubscribe();
+  }, []);
   useLayoutEffect(() => {
     if (data) {
       setRoomList(data.getLobby);
@@ -118,7 +121,7 @@ const Lobby = ({
     }
   };
   return (!location.state || location.state.loginName !== username) ? (
-    <Redirect to={{pathname: "/Login", state:{action: "illegal"}}}/>
+    <Redirect to={{pathname: "/Login", state:{action: "illegal", from: "lobby"}}}/>
   ) : (
     <div style={{ position: "relative" }}>
       <Button id="back_btn" onClick={() => goBackToMenu()}>
