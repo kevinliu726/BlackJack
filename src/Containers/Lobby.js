@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import Room from "../Components/Room";
 import EnterPasswordModal from "../Components/Modal/EnterPasswordModal";
 import CreateRoomModal from "../Components/Modal/CreateRoomModal";
@@ -13,17 +13,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GET_LOBBY } from "../graphql/Query";
 import { SUBSCRIBE_LOBBY } from "../graphql/Subscription";
 import { CREATE_ROOM } from "../graphql/Mutation";
+import { Redirect, useHistory, useLocation } from "react-router";
 import "../css/Lobby.css";
 const Lobby = ({
   match: {
     params: { username, room_type },
   },
+  history,
 }) => {
-  const authenticatedName = localStorage.getItem("NAME");
-  if (authenticatedName !== username) {
-    localStorage.setItem("NAME", null);
-    window.location.href = "/";
-  }
   const classes = makeStyles(() => ({
     form: {
       display: "flex",
@@ -49,11 +46,13 @@ const Lobby = ({
   const [roomList, setRoomList] = useState([]);
   const [correctPassword, setCorrectPassword] = useState("");
   const [searchName, setSearchName] = useState("");
+  const location = useLocation();
 
   const [createRoom] = useMutation(CREATE_ROOM, {
     onCompleted: (createRoomData) => {
       if (createRoomData && createRoomData.createRoom) {
-        window.location.href = `/Game/${room_type}/${createRoomData.createRoom.roomID}/${username}`;
+        window.location = `/Game/${room_type}/${createRoomData.createRoom.roomID}/${username}`;
+        // history.push(`/Game/${room_type}/${createRoomData.createRoom.roomID}/${username}`, {loginName: username});
       }
     },
   });
@@ -76,7 +75,7 @@ const Lobby = ({
   }, [data]);
 
   const goBackToMenu = () => {
-    window.location.href = `/Menu/${username}`;
+    history.push(`/Menu/${username}`, {loginName: username});
   };
   const handleOpenCreate = () => {
     setOpenCreateRoom(true);
@@ -96,7 +95,8 @@ const Lobby = ({
   };
   const handleEnter = () => {
     setOpenEnterPassword(false);
-    window.location.href = `/Game/${room_type}/${enterRoomID}/${username}`;
+    window.location = `/Game/${room_type}/${enterRoomID}/${username}`;
+    // history.push(`/Game/${room_type}/${enterRoomID}/${username}`, {loginName: username});
   };
 
   const handleCreate = ({ roomInfo }) => {
@@ -109,15 +109,16 @@ const Lobby = ({
 
   const goToGame = (roomID, password) => {
     if (isPublic) {
-      window.location.href = `/Game/${room_type}/${roomID}/${username}`;
+      window.location = `/Game/${room_type}/${roomID}/${username}`;
+      // history.push(`/Game/${room_type}/${roomID}/${username}`, {loginName: username});
     } else {
       setEnterRoomID(roomID);
       setCorrectPassword(password);
       handleOpenEnterPassword();
     }
   };
-  return authenticatedName !== username ? (
-    <></>
+  return (!location.state || location.state.loginName !== username) ? (
+    <Redirect to={{pathname: "/Login", state:{action: "illegal"}}}/>
   ) : (
     <div style={{ position: "relative" }}>
       <Button id="back_btn" onClick={() => goBackToMenu()}>

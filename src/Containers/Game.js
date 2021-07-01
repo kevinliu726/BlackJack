@@ -10,11 +10,12 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
 import { FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useEffect } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_ROOM } from "../graphql/Query";
 import { SUBSCRIBE_ROOM } from "../graphql/Subscription";
+import { useLocation, useHistory, Redirect } from "react-router";
 import {
   CHOOSE_SEAT,
   HIT,
@@ -35,12 +36,8 @@ const Game = ({
   match: {
     params: { room_type, room_id, username },
   },
+  history
 }) => {
-  const authenticatedName = localStorage.getItem("NAME");
-  if (authenticatedName !== username) {
-    localStorage.setItem("NAME", null);
-    window.location.href = "/";
-  }
   const classes = makeStyles(() => ({
     dialog: {
       display: "flex",
@@ -86,6 +83,7 @@ const Game = ({
   const [betError, setBetError] = useState(false);
   const [players, setPlayers] = useState([]);
   const [myIndex, setMyIndex] = useState(-1);
+  const location = useLocation();
   const { data, subscribeToMore } = useQuery(GET_ROOM, { variables: { roomID: room_id } });
   const [chooseSeat] = useMutation(CHOOSE_SEAT);
   const [hit] = useMutation(HIT);
@@ -103,9 +101,17 @@ const Game = ({
 
   useBeforeunload((event) => {
     leave({ variables: { roomID: room_id, index: myIndex } });
-    window.location.href = `/Lobby/${room_type}/${username}`;
+    // window.location.href = `/Lobby/${room_type}/${username}`;
+    history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
   });
-  useLayoutEffect(() => {
+  // useEffect(() => {
+  //   history.listen((newLocation, action) => {
+  //     if(action !== "PUSH"){
+  //             history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
+  //     }
+  //   })
+  // });
+  useEffect(() => {
     subscribeToMore({
       document: SUBSCRIBE_ROOM,
       variables: { roomID: room_id },
@@ -115,7 +121,7 @@ const Game = ({
       },
     });
   }, [subscribeToMore]);
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (data && data.getRoom) {
       let index = -1;
       for (var i = 0; i < 12; i++) {
@@ -194,15 +200,14 @@ const Game = ({
       }
     }
   });
-
-  return authenticatedName !== username ? (
-    <></>
+  return false && (!location.state || location.state.loginName !== username) ? (
+    <Redirect to={{pathname: "/Login", state:{action: "illegal"}}}/>
   ) : (
     <div className="game_container">
       {
         <Dialog
           classes={{ paper: classes.dialog }}
-          open={data && data.getRoom.state === "DEAD"}
+          open={data && data.getRoom && data.getRoom.state === "DEAD"}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title" className={classes.dialogTitle}>
@@ -217,7 +222,8 @@ const Game = ({
               color="secondary"
               onClick={() => {
                 leave({ variables: { roomID: room_id, index: myIndex } });
-                window.location.href = `/Lobby/${room_type}/${username}`;
+                // window.location.href = `/Lobby/${room_type}/${username}`;
+                history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
               }}
             >
               Leave
@@ -232,8 +238,9 @@ const Game = ({
             id="leave_btn"
             vis
             onClick={() => {
-              // leave({ variables: { roomID: room_id, index: myIndex } });
-              window.location.href = `/Lobby/${room_type}/${username}`;
+              leave({ variables: { roomID: room_id, index: myIndex } });
+              // window.location.href = `/Lobby/${room_type}/${username}`;
+              history.replace(`/Lobby/${room_type}/${username}`, {loginName: username});
             }}
           >
             LEAVE

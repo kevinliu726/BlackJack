@@ -6,10 +6,13 @@ import Menu from "./Containers/Menu";
 import Lobby from "./Containers/Lobby";
 import Game from "./Containers/Game";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {createBrowserHistory} from "history";
+
+const history = createBrowserHistory({forceRefresh: true});
 
 function App() {
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <Route path="/" exact component={Login} />
         <Route path="/Login" exact component={Login} />

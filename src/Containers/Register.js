@@ -13,6 +13,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import "../css/Login_Register.css";
 import { REGISTER } from "../graphql/Mutation";
 import { useMutation } from "@apollo/client";
+import { useHistory } from "react-router";
 
 const Register = () => {
   const classes = makeStyles({
@@ -44,12 +45,12 @@ const Register = () => {
   const [nameExistError, setNEError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const history = useHistory();
 
   const [register] = useMutation(REGISTER, {
     onCompleted: (registerData) => {
       if (registerData && registerData.register) {
-        localStorage.setItem("NAME", values.username);
-        window.location.href = `/Menu/${values.username}`;
+        history.push(`/Menu/${values.username}`, {loginName: values.username})
       } else {
         setNEError(true);
       }
@@ -167,7 +168,7 @@ const Register = () => {
             Register
           </Button>
           <div style={{ height: 10 }} />
-          <Button id="back_to_login_btn" onClick={() => (window.location.href = "/Login")}>
+          <Button id="back_to_login_btn" onClick={() => history.push("/Login")}>
             Back To Login
           </Button>
         </div>

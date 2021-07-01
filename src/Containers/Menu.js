@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingModal from "../Components/Modal/SettingModal";
 import HistoryModal from "../Components/Modal/HistoryModal";
 import RulesModal from "../Components/Modal/RulesModal";
@@ -6,20 +6,18 @@ import Button from "@material-ui/core/Button";
 import "../css/Menu.css";
 import { useMutation } from "@apollo/client";
 import { SET_PASSWORD } from "../graphql/Mutation";
+import { Redirect, useLocation, useHistory } from "react-router";
 
 const Menu = ({
   match: {
     params: { username },
   },
+  history,
 }) => {
-  const authenticatedName = localStorage.getItem("NAME");
-  if (authenticatedName !== username) {
-    localStorage.setItem("NAME", null);
-    window.location.href = "/";
-  }
   const [openSetting, setOpenSetting] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [openRules, setOpenRules] = useState(false);
+  const location = useLocation();
   const [setPassword] = useMutation(SET_PASSWORD);
   const handleOpenSetting = () => {
     setOpenSetting(true);
@@ -46,19 +44,18 @@ const Menu = ({
     setOpenSetting(false);
   };
   const logout = () => {
-    localStorage.setItem("NAME", null);
-    window.location.href = "/Login";
+    history.push("/Login");
   };
   const goToLobby = (isPublic) => {
     if (isPublic) {
-      window.location.href = `/Lobby/${"Public"}/${username}`;
+      history.push(`/Lobby/${"Public"}/${username}`, {loginName: username});
     } else {
-      window.location.href = `/Lobby/${"Private"}/${username}`;
+      history.push( `/Lobby/${"Private"}/${username}`, {loginName: username});
     }
   };
 
-  return authenticatedName !== username ? (
-    <></>
+  return (!location.state || location.state.loginName !== username) ? (
+    <Redirect to={{pathname: "/Login", state:{action: "illegal"}}}/>
   ) : (
     <div className="menu">
       <Button id="left_btn" variant="contained" onClick={() => goToLobby(true)}>
