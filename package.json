@@ -23,6 +23,7 @@
     "graphql-tag": "^2.12.5",
     "graphql-yoga": "^1.18.3",
     "history": "^5.0.0",
+    "mongoose": "^5.13.0",
     "nodemon": "^2.0.7",
     "react": "^17.0.2",
     "react-beforeunload": "^2.5.1",
