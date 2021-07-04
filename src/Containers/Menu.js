@@ -4,9 +4,10 @@ import HistoryModal from "../Components/Modal/HistoryModal";
 import RulesModal from "../Components/Modal/RulesModal";
 import Button from "@material-ui/core/Button";
 import "../css/Menu.css";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { SET_PASSWORD } from "../graphql/Mutation";
 import { Redirect, useLocation, useHistory } from "react-router";
+import { GET_NAME } from "../graphql/Query";
 
 const Menu = ({
   match: {
@@ -19,6 +20,18 @@ const Menu = ({
   const [openRules, setOpenRules] = useState(false);
   const location = useLocation();
   const [setPassword] = useMutation(SET_PASSWORD);
+  const {getNameData} = useQuery(GET_NAME, {
+    variables: {
+      id: sessionStorage.getItem("userID")
+    },
+    onCompleted: (getNameData) => {
+      if(getNameData.getName !== username){
+        sessionStorage.removeItem("userID");
+        sessionStorage.setItem("hacker", JSON.stringify(true));
+        window.location.href = "/Login";
+      }
+    }
+  });
   const handleOpenSetting = () => {
     setOpenSetting(true);
   };
@@ -44,17 +57,21 @@ const Menu = ({
     setOpenSetting(false);
   };
   const logout = () => {
-    history.push("/Login");
+    // setLoginName(null);
+    sessionStorage.removeItem("userID");
+    window.location = '/Login';
   };
   const goToLobby = (isPublic) => {
     if (isPublic) {
-      history.push(`/Lobby/${"Public"}/${username}`, {loginName: username});
+      window.location = `/Lobby/${"Public"}/${username}`;
+      // history.push(, {loginName: username});
     } else {
-      history.push( `/Lobby/${"Private"}/${username}`, {loginName: username});
+      window.location = `/Lobby/${"Private"}/${username}`;
+      // history.push( `/Lobby/${"Private"}/${username}`, {loginName: username});
     }
   };
 
-  return (!location.state || location.state.loginName !== username) ? (
+  return false  ? (
     <Redirect to={{pathname: "/Login", state:{action: "illegal"}}}/>
   ) : (
     <div className="menu">

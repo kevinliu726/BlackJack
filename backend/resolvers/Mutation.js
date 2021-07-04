@@ -6,9 +6,9 @@ const Mutation = {
     const { db } = context;
     const { name, password } = args;
     const user = await db.UserModel.findOne({ name });
-    if (user) return false;
+    if (user) return null;
     const newUser = await new db.UserModel({ name, password, history: [] }).save();
-    return true;
+    return newUser._id;
   },
   async setPassword(parent, { name, password }, { db }, info) {
     const user = await db.UserModel.findOne({ name });

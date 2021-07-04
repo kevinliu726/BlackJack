@@ -99,14 +99,28 @@ const Game = ({
   const [leave] = useMutation(LEAVE);
   const [dealCards] = useMutation(DEAL_CARDS);
 
+
   useBeforeunload((event) => {
+    console.log("fffffffffffffffffffffffffffffffffffffffffffffffffffff");
     leave({ variables: { roomID: room_id, index: myIndex } });
-    history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
-    console.log(location.pathname);
+    // history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
     // window.location.href = `/Lobby/${room_type}/${username}`;
     // history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
   });
 
+
+  const {getNameData} = useQuery(GET_NAME, {
+    variables: {
+      id: sessionStorage.getItem("userID")
+    },
+    onCompleted: (getNameData) => {
+      if(getNameData.getName !== username){
+        sessionStorage.removeItem("userID");
+        sessionStorage.setItem("hacker", JSON.stringify(true));
+        window.location.href = "/Login";
+      }
+    }
+  });
 
   useEffect(() => {
     const unsubscribe = subscribeToMore({
@@ -221,8 +235,8 @@ const Game = ({
               color="secondary"
               onClick={() => {
                 // leave({ variables: { roomID: room_id, index: myIndex } });
-                // window.location.href = `/Lobby/${room_type}/${username}`;
-                history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
+                window.location.href = `/Lobby/${room_type}/${username}`;
+                // history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
               }}
             >
               Leave
@@ -238,8 +252,10 @@ const Game = ({
             vis
             onClick={() => {
               // leave({ variables: { roomID: room_id, index: myIndex } });
-              // window.location.href = `/Lobby/${room_type}/${username}`;
-              history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
+              window.location.href = `/Lobby/${room_type}/${username}`;
+              // history.replace(`/Lobby/${room_type}/${username}`, { loginName: username });
+              // history.replace(`/testfff`, { loginName: username });
+              // window.location.pathname = '/testfff';
             }}
           >
             LEAVE

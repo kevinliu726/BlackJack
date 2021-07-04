@@ -50,7 +50,9 @@ const Register = () => {
   const [register] = useMutation(REGISTER, {
     onCompleted: (registerData) => {
       if (registerData && registerData.register) {
-        history.push(`/Menu/${values.username}`, {loginName: values.username})
+        sessionStorage.setItem("userID", registerData.register);
+        window.location = `/Menu/${values.username}`;
+        // history.push(`/Menu/${values.username}`, {loginName: values.username})
       } else {
         setNEError(true);
       }
@@ -168,7 +170,7 @@ const Register = () => {
             Register
           </Button>
           <div style={{ height: 10 }} />
-          <Button id="back_to_login_btn" onClick={() => history.push("/Login")}>
+          <Button id="back_to_login_btn" onClick={() => window.location = '/Login'}>
             Back To Login
           </Button>
         </div>

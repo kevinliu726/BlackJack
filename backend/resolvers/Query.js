@@ -6,12 +6,12 @@ const Query = {
     if (exist) return true;
     else return false;
   },
-  async isLogIn(parent, args, context, info) {
+  async logIn(parent, args, context, info) {
     const { db } = context;
     const { name, password } = args;
-    const exist = await db.UserModel.findOne({ name });
-    if (exist) return exist.password === password;
-    else return false;
+    const user = await db.UserModel.findOne({ name });
+    if (user.password === password) return user._id;
+    else return null;
   },
   async getName(parent, {id}, {db}, info){
     const user = await db.UserModel.findOne({_id: id});

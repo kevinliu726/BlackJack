@@ -7,8 +7,10 @@ import Lobby from "./Containers/Lobby";
 import Game from "./Containers/Game";
 import { BrowserRouter as Router, Switch, Route, withRouter } from "react-router-dom";
 import {createBrowserHistory} from "history";
+import { createHashHistory } from "history";
 
 const history = createBrowserHistory();
+// const history = createHashHistory();
 
 function App() {
   return (

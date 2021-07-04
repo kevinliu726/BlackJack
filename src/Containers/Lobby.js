@@ -10,7 +10,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Divider from "@material-ui/core/Divider";
 import { Button } from "@material-ui/core";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_LOBBY, GET_ID } from "../graphql/Query";
+import { GET_LOBBY, GET_ID, GET_NAME } from "../graphql/Query";
 import { SUBSCRIBE_LOBBY } from "../graphql/Subscription";
 import { CREATE_ROOM } from "../graphql/Mutation";
 import { Redirect, useHistory, useLocation } from "react-router";
@@ -47,7 +47,19 @@ const Lobby = ({
   const [correctPassword, setCorrectPassword] = useState("");
   const [searchName, setSearchName] = useState("");
   const location = useLocation();
-
+  
+  const {getNameData} = useQuery(GET_NAME, {
+    variables: {
+      id: sessionStorage.getItem("userID")
+    },
+    onCompleted: (getNameData) => {
+      if(getNameData.getName !== username){
+        sessionStorage.removeItem("userID");
+        sessionStorage.setItem("hacker", JSON.stringify(true));
+        window.location.href = "/Login";
+      }
+    }
+  });
 
   const [createRoom] = useMutation(CREATE_ROOM, {
     onCompleted: (createRoomData) => {
@@ -77,7 +89,8 @@ const Lobby = ({
   }, [data]);
 
   const goBackToMenu = () => {
-    history.push(`/Menu/${username}`, {loginName: username});
+    window.location = `/Menu/${username}`;
+    // history.push(`/Menu/${username}`, {loginName: username});
   };
   const handleOpenCreate = () => {
     setOpenCreateRoom(true);
@@ -113,13 +126,14 @@ const Lobby = ({
     if (isPublic) {
       window.location = `/Game/${room_type}/${roomID}/${username}`;
       // history.push(`/Game/${room_type}/${roomID}/${username}`, {loginName: username});
+      // history.replace(`/Game/${room_type}/${roomID}/${username}`, {loginName: username});
     } else {
       setEnterRoomID(roomID);
       setCorrectPassword(password);
       handleOpenEnterPassword();
     }
   };
-  return (!location.state || location.state.loginName !== username) ? (
+  return false && (!location.state || location.state.loginName !== username) ? (
     <Redirect to={{pathname: "/Login", state:{action: "illegal", from: "lobby"}}}/>
   ) : (
     <div style={{ position: "relative" }}>

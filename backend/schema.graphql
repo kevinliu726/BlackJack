@@ -1,6 +1,6 @@
 type Query {
     nameExist(name: String): Boolean
-    isLogIn(name: String, password: String): Boolean
+    logIn(name: String, password: String): ID
     getName(id: ID): String
     getID(name: String): String
     getLobby(roomType: String): [Room]
@@ -10,7 +10,7 @@ type Query {
 }
 
 type Mutation {
-    register(name: String, password: String): Boolean
+    register(name: String, password: String): ID
     setPassword(name: String, password: String): Boolean
     createRoom(roomInfo: CreateRoomInfo): Room
     startGame(roomID: ID): Room

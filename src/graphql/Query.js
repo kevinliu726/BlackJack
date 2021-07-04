@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 const LOG_IN = gql`
   query ($username: String, $password: String) {
-    isLogIn(name: $username, password: $password)
+    logIn(name: $username, password: $password)
   }
 `;
 

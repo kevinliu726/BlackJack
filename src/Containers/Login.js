@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -69,8 +69,8 @@ const Login = ({history}) => {
   const [nameExistError, setNEError] = useState(false);
   const [matchError, setMError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const location = useLocation();
-  const [illegal, setIllegal] = useState(location.state && location.state.action === "illegal");
+  // const location = useLocation();
+  const [illegal, setIllegal] = useState(sessionStorage.getItem("hacker") && JSON.parse(sessionStorage.getItem("hacker")));
 
   const [nameExist] = useLazyQuery(NAME_EXIST, {
     fetchPolicy: "network-only",
@@ -79,7 +79,7 @@ const Login = ({history}) => {
         setNEError(false);
         let username = values.username;
         let password = values.password;
-        isLogIn({
+        logIn({
           variables: {
             username,
             password,
@@ -90,16 +90,20 @@ const Login = ({history}) => {
       }
     },
   });
-  const [isLogIn] = useLazyQuery(LOG_IN, {
+  const [logIn] = useLazyQuery(LOG_IN, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
-      if (data && data.isLogIn) {
-        history.push(`/Menu/${values.username}`, {loginName: values.username});
+      if (data && data.logIn) {
+        // history.push(`/Menu/${values.username}`, {loginName: values.username});
+        // setLoginName(values.username);
+        sessionStorage.setItem("userID", data.logIn);
+        window.location.href = `/Menu/${values.username}`;
       } else {
         setMError(true);
       }
     },
   });
+
 
   const valuesOnChange = (event) => {
     const { name, value } = event.target;
@@ -142,7 +146,7 @@ const Login = ({history}) => {
         <DialogActions className={classes.dialogActions}>
           <Button
             color="secondary"
-            onClick={() => setIllegal(false)}
+            onClick={() => {sessionStorage.removeItem("hacker"); setIllegal(false);}}
           >
             Close
           </Button>
@@ -207,7 +211,7 @@ const Login = ({history}) => {
             Log in
           </Button>
           <div style={{ height: 10 }} />
-          <Button id="join_btn" onClick={() => history.push("/Register")}>
+          <Button id="join_btn" onClick={() => window.location = '/Register'}>
             No account? Create One
           </Button>
         </div>
